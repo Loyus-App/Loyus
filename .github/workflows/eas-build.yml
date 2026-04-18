@@ -1,7 +1,9 @@
 name: EAS Build
 
 on:
-  # Manual dispatch — pick platform + profile
+  # Manual dispatch only — pick platform + profile.
+  # Auto-triggered builds on push were removed to avoid burning EAS free minutes
+  # on every main merge. Use the "Run workflow" button in Actions to build.
   workflow_dispatch:
     inputs:
       platform:
@@ -16,17 +18,6 @@ on:
         default: preview
         type: choice
         options: [development, preview, production]
-  # Auto preview build on every push to main — useful for smoke-testing main
-  push:
-    branches: [main]
-    paths:
-      - "app/**"
-      - "src/**"
-      - "assets/**"
-      - "app.config.ts"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "eas.json"
 
 concurrency:
   group: eas-build-${{ github.ref }}
