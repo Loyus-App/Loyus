@@ -1,0 +1,69 @@
+name: EAS Build
+
+on:
+  # Manual dispatch — pick platform + profile
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        required: true
+        default: all
+        type: choice
+        options: [all, ios, android]
+      profile:
+        description: EAS build profile
+        required: true
+        default: preview
+        type: choice
+        options: [development, preview, production]
+  # Auto preview build on every push to main — useful for smoke-testing main
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "src/**"
+      - "assets/**"
+      - "app.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "eas.json"
+
+concurrency:
+  group: eas-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: EAS ${{ github.event.inputs.profile || 'preview' }} — ${{ github.event.inputs.platform || 'all' }}
+    runs-on: ubuntu-latest
+    # Only attempt if the EXPO_TOKEN secret is configured. Skip silently in forks.
+    if: github.repository == 'Loyus-App/Loyus'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build (non-interactive, no-wait)
+        run: |
+          eas build \
+            --profile ${{ github.event.inputs.profile || 'preview' }} \
+            --platform ${{ github.event.inputs.platform || 'all' }} \
+            --non-interactive \
+            --no-wait
+        env:
+          EAS_BUILD_NO_EXPO_GO_WARNING: "true"

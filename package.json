@@ -14,7 +14,11 @@
     "typecheck": "npx tsc --noEmit",
     "test": "npx jest --passWithNoTests",
     "test:e2e": "bash scripts/test-e2e.sh",
-    "test:e2e:studio": "maestro studio"
+    "test:e2e:studio": "maestro studio",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md,yaml,yml}": "biome check --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "@expo-google-fonts/manrope": "^0.4.2",
@@ -64,8 +68,10 @@
     "@biomejs/biome": "^2.4.12",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.2.10",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-expo": "^55.0.16",
+    "lint-staged": "^16.4.0",
     "react-test-renderer": "19.1.0",
     "typescript": "~5.9.2"
   }

@@ -1,0 +1,95 @@
+name: EAS Submit (Release)
+
+# Triggered by pushing a version tag (e.g. v0.1.0) OR manually.
+# Builds the production profile synchronously, then submits to stores.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to submit
+        required: true
+        default: all
+        type: choice
+        options: [all, ios, android]
+      skip_build:
+        description: Submit the latest existing build (skip a fresh build)
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: eas-submit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build + submit
+    runs-on: ubuntu-latest
+    if: github.repository == 'Loyus-App/Loyus'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build production (wait for completion)
+        if: ${{ github.event.inputs.skip_build != 'true' }}
+        run: |
+          eas build \
+            --profile production \
+            --platform ${{ github.event.inputs.platform || 'all' }} \
+            --non-interactive
+        env:
+          EAS_BUILD_NO_EXPO_GO_WARNING: "true"
+
+      - name: Submit iOS to App Store Connect
+        if: ${{ github.event.inputs.platform != 'android' }}
+        run: |
+          eas submit \
+            --platform ios \
+            --latest \
+            --non-interactive
+        env:
+          # Overrides eas.json submit config — safe to keep eas.json without personal IDs.
+          EXPO_APPLE_ID: ${{ secrets.APPLE_ID }}
+          EXPO_ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
+          EXPO_APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Decode Google service account JSON
+        if: ${{ github.event.inputs.platform != 'ios' }}
+        run: |
+          mkdir -p ./secrets
+          echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}' > ./secrets/google-service-account.json
+          chmod 600 ./secrets/google-service-account.json
+
+      - name: Submit Android to Play Console (internal track, draft)
+        if: ${{ github.event.inputs.platform != 'ios' }}
+        run: |
+          eas submit \
+            --platform android \
+            --latest \
+            --non-interactive \
+            --key ./secrets/google-service-account.json \
+            --track internal \
+            --release-status draft
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -rf ./secrets
