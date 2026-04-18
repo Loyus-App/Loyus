@@ -35,6 +35,7 @@ describe('cardStore', () => {
 
     const id = firstId();
     const before = useCardStore.getState().cards[id]?.updatedAt;
+    if (before === undefined) throw new Error('missing card');
 
     jest.spyOn(Date, 'now').mockReturnValue(before + 1000);
 
@@ -84,6 +85,7 @@ describe('cardStore', () => {
 
     const id = firstId();
     const before = useCardStore.getState().cards[id]?.updatedAt;
+    if (before === undefined) throw new Error('missing card');
 
     jest.spyOn(Date, 'now').mockReturnValue(before + 5000);
     useCardStore.getState().recordOpen(id);
