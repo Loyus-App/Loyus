@@ -21,7 +21,12 @@ concurrency:
 jobs:
   e2e-ios:
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 90
+
+    env:
+      # Bump when changing Xcode version — invalidates Pods/DerivedData caches
+      # so artifacts built with one Xcode aren't restored into another.
+      XCODE_VERSION: "26.2"
 
     steps:
       # 1. Checkout
@@ -45,27 +50,27 @@ jobs:
       # 4. Install dependencies
       - run: pnpm install --frozen-lockfile
 
-      # 5. Cache CocoaPods
+      # 5. Cache CocoaPods (keyed by Xcode version — Swift module ABI changes per Xcode)
       - uses: actions/cache@v4
         with:
           path: |
             ios/Pods
             ~/Library/Caches/CocoaPods
-          key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-${{ runner.os }}-
+          key: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
-      # 6. Cache DerivedData
+      # 6. Cache DerivedData (keyed by Xcode version)
       - uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: derived-data-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            derived-data-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}-
-            derived-data-${{ runner.os }}-
+            derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}-
+            derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
-      # 7. Select Xcode 26.2 (Expo SDK 55 requires Swift 6.2)
+      # 7. Select Xcode (Expo SDK 55 requires Swift 6.2 → Xcode 26.x)
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+        run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
 
       # 8. Boot iOS simulator
       - name: Boot simulator
