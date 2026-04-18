@@ -11,10 +11,8 @@ import { ErrorBoundary } from '../ErrorBoundary';
 // react-test-renderer 19.x ships no TS declarations; describe only what we use.
 interface TestInstance {
   readonly props: { readonly children?: unknown };
-  // biome-ignore lint/suspicious/noExplicitAny: component type is variadic
-  findByType(type: any): TestInstance;
-  // biome-ignore lint/suspicious/noExplicitAny: component type is variadic
-  findAllByType(type: any): readonly TestInstance[];
+  findByType(type: unknown): TestInstance;
+  findAllByType(type: unknown): readonly TestInstance[];
 }
 interface RendererWithRoot extends TestRenderer.ReactTestRenderer {
   readonly root: TestInstance;

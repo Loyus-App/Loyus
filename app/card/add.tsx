@@ -15,7 +15,7 @@ export default function AddCardScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const { lightImpact } = useHaptic();
-  const helpItems = [
+  const helpItems: { icon: keyof typeof Ionicons.glyphMap; title: string; desc: string }[] = [
     {
       icon: 'storefront-outline',
       title: t('cardAdd.helpItemStoreName'),
