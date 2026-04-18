@@ -46,7 +46,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # 5. Cache CocoaPods
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ios/Pods
@@ -55,7 +55,7 @@ jobs:
           restore-keys: pods-${{ runner.os }}-
 
       # 6. Cache DerivedData
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: derived-data-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('pnpm-lock.yaml') }}
