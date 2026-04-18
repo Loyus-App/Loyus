@@ -78,7 +78,7 @@ describe('selectRecentCards', () => {
   it('returns cards sorted by updatedAt desc, limited to default 3', () => {
     const result = selectRecentCards()(state);
     expect(result).toHaveLength(3);
-    expect(result[0]?.updatedAt).toBeGreaterThanOrEqual(result[1]?.updatedAt);
+    expect(result[0]?.updatedAt).toBeGreaterThanOrEqual(result[1]?.updatedAt ?? 0);
   });
 
   it('respects custom limit', () => {

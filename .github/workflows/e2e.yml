@@ -2,6 +2,15 @@ name: E2E Tests (Maestro)
 
 on:
   pull_request:
+    paths:
+      - "app/**"
+      - "src/**"
+      - "assets/**"
+      - "app.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".maestro/**"
+      - ".github/workflows/e2e.yml"
   push:
     branches: [main]
 
@@ -12,7 +21,7 @@ concurrency:
 jobs:
   e2e-ios:
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       # 1. Checkout
