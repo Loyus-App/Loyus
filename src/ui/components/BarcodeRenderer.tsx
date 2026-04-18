@@ -1,6 +1,7 @@
 import Barcode, { type Format } from '@kichiyaki/react-native-barcode-generator';
 import { View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { validateBarcode } from '../../domain/barcode';
 import { BarcodeFormat, JSBARCODE_FORMAT } from '../../domain/card';
 import { tid } from '../testIds';
 import { StyleSheet } from '../theme/unistyles';
@@ -36,7 +37,7 @@ export function BarcodeRenderer({
 
   if (format === BarcodeFormat.QR_CODE) {
     content = <QRCode value={code} size={Math.min(width * 0.8, 300)} />;
-  } else if (RENDERABLE_1D.includes(format)) {
+  } else if (RENDERABLE_1D.includes(format) && validateBarcode(code, format).valid) {
     content = (
       <Barcode
         value={code}
