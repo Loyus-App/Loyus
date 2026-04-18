@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # JavaScript dependencies — weekly, grouped to limit PR noise
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 10
+    labels: [dependencies, javascript]
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      expo:
+        patterns: ["expo", "expo-*", "@expo/*"]
+      react-native:
+        patterns:
+          - "react-native"
+          - "react-native-*"
+          - "@react-native/*"
+          - "@react-native-community/*"
+      dev-tooling:
+        patterns:
+          - "@biomejs/*"
+          - "typescript"
+          - "jest"
+          - "jest-expo"
+          - "@types/*"
+          - "husky"
+          - "lint-staged"
+    ignore:
+      # react-native + react are upgraded together with Expo SDK bumps — manage manually.
+      - dependency-name: react
+      - dependency-name: react-dom
+      - dependency-name: react-native
+      - dependency-name: react-test-renderer
+
+  # GitHub Actions — weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels: [dependencies, github-actions]
+    commit-message:
+      prefix: ci
