@@ -1,0 +1,46 @@
+appId: com.loyus.app
+name: "Design: Copy Number"
+---
+- runFlow: shared/launch-fresh.yaml
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# Add a card
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 5000
+- tapOn:
+    id: "card-name-input"
+- inputText: "CVS"
+- tapOn:
+    id: "card-code-input"
+- inputText: "4567890123"
+- tapOn:
+    id: "save-card-button"
+
+# Open card detail
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- tapOn:
+    id: "card-grid-tile"
+
+# Tap copy button
+- extendedWaitUntil:
+    visible:
+      id: "copy-number-button"
+    timeout: 5000
+- tapOn:
+    id: "copy-number-button"
+
+# Verify "Copied!" feedback appears briefly
+- extendedWaitUntil:
+    visible:
+      text: "Copied!"
+    timeout: 3000

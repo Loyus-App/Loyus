@@ -1,0 +1,34 @@
+appId: com.loyus.app
+name: "04 - Scan confirmation saves card"
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Deep link to confirm with E2E prefill params (EAN-13 barcode)
+- openLink: "loyus:///card/confirm?code=3250390000112&format=EAN13"
+- extendedWaitUntil:
+    visible:
+      id: "confirm-screen"
+    timeout: 5000
+# The code should be pre-filled in the form
+- assertVisible:
+    id: "card-code-input"
+# Enter a card name (required field)
+- tapOn:
+    id: "card-name-input"
+- inputText: "Test Scanned Card"
+# Save
+- tapOn:
+    id: "save-card-button"
+# Should navigate to card list with the new card
+- extendedWaitUntil:
+    visible:
+      id: "card-grid-tile"
+    timeout: 5000

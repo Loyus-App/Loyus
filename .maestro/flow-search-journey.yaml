@@ -1,0 +1,117 @@
+appId: com.loyus.app
+name: "Flow: Home search trigger → search screen → find card → navigate"
+---
+# ─── SETUP: seed two cards ────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# Add card 1
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Starbucks"
+- tapOn:
+    id: "card-code-input"
+- inputText: "6012345678901"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# Add card 2
+- tapOn:
+    id: "add-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Costco"
+- tapOn:
+    id: "card-code-input"
+- inputText: "COST123456"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# ─── STEP 1: Tap search trigger on home ───────────────────────────────────────
+- assertVisible:
+    text: "Find a card..."
+- tapOn:
+    text: "Find a card..."
+- extendedWaitUntil:
+    visible:
+      id: "search-screen"
+    timeout: 6000
+
+# ─── STEP 2: Search screen shows all cards by default ─────────────────────────
+- assertVisible:
+    id: "search-input"
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    text: "Costco"
+- assertVisible:
+    text: "All Cards"
+- assertVisible:
+    text: "Favorites"
+- assertVisible:
+    text: "Recently Used"
+
+# ─── STEP 3: Type a query — results filter live ───────────────────────────────
+- tapOn:
+    id: "search-input"
+- inputText: "Star"
+- extendedWaitUntil:
+    visible:
+      text: "Starbucks"
+    timeout: 5000
+- assertNotVisible:
+    text: "Costco"
+
+# ─── STEP 4: Navigate to matching card ────────────────────────────────────────
+- tapOn:
+    text: "Starbucks"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 8000
+- assertVisible:
+    text: "Starbucks"
+
+# ─── STEP 5: Back → search screen still shows query ───────────────────────────
+- tapOn:
+    id: "close-detail-button"
+- extendedWaitUntil:
+    visible:
+      id: "search-screen"
+    timeout: 5000
+
+# ─── STEP 6: Cancel search returns to home ────────────────────────────────────
+- tapOn:
+    text: "Cancel"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertVisible:
+    text: "ALL CARDS"

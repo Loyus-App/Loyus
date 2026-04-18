@@ -1,0 +1,89 @@
+appId: com.loyus.app
+name: "Flow: Manual entry form → live preview updates → format picker → save"
+---
+# ─── SETUP ────────────────────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# ─── STEP 1: Open Manual Entry ────────────────────────────────────────────────
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- assertVisible:
+    text: "Manual Entry"
+- assertVisible:
+    text: "STORE NAME"
+- assertVisible:
+    text: "CARD NUMBER / CODE"
+- assertVisible:
+    text: "BARCODE TYPE"
+- assertVisible:
+    text: "Mark as Favorite"
+
+# ─── STEP 2: Card preview visible before any input ───────────────────────────
+- assertVisible:
+    id: "card-preview"
+- assertVisible:
+    text: "ENTER CARD DETAILS ABOVE"
+
+# ─── STEP 3: Type name — preview reflects entry mode ─────────────────────────
+- tapOn:
+    id: "card-name-input"
+- inputText: "CVS Pharmacy"
+
+# ─── STEP 4: Type code — preview renders barcode ─────────────────────────────
+- tapOn:
+    id: "card-code-input"
+- inputText: "1234567890"
+- assertVisible:
+    id: "card-preview"
+
+# ─── STEP 5: Change barcode type via dropdown ─────────────────────────────────
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "EAN-13"
+# Format picker closed, dropdown shows new selection
+- assertVisible:
+    text: "EAN-13"
+
+# ─── STEP 6: Toggle favorite ─────────────────────────────────────────────────
+- tapOn:
+    id: "mark-favorite-toggle"
+
+# ─── STEP 7: Save — validation fires for bad EAN-13 code, fix it ─────────────
+- tapOn:
+    id: "save-card-button"
+# Code "1234567890" is invalid EAN-13 — error shown
+- assertVisible:
+    text: "EAN-13"
+# Switch back to Code 128 which accepts any string
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "Code 128"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# ─── STEP 8: Card saved, visible on home, favorites section shows ─────────────
+- assertVisible:
+    text: "CVS Pharmacy"
+- assertVisible:
+    id: "favorites-section"
+- assertVisible:
+    text: "FAVORITES"

@@ -1,0 +1,42 @@
+appId: com.loyus.app
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Add a card and mark as favorite during creation
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "FavStore"
+- tapOn:
+    id: "card-code-input"
+- inputText: "FAVCODE123"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "Code 128"
+- tapOn:
+    id: "mark-favorite-toggle"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+# Verify "FAVORITES" section header appears
+- assertVisible:
+    id: "favorites-section"
+- assertVisible:
+    text: "FAVORITES"

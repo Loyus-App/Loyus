@@ -1,0 +1,44 @@
+appId: com.loyus.app
+name: "Design: Barcode View"
+---
+- runFlow: shared/launch-fresh.yaml
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# Add a card first
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 5000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Starbucks"
+- tapOn:
+    id: "card-code-input"
+- inputText: "6012345678901"
+- tapOn:
+    id: "save-card-button"
+
+# Tap the card to open detail
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- tapOn:
+    id: "card-grid-tile"
+
+# Verify barcode detail elements
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 5000
+- assertVisible:
+    id: "barcode-display"
+- assertVisible:
+    id: "wallet-secure-badge"
+- assertVisible:
+    id: "close-detail-button"

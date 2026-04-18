@@ -1,0 +1,8 @@
+appId: com.loyus.app
+---
+- runFlow: shared/launch-fresh.yaml
+- assertVisible:
+    id: "home-title"
+- assertVisible:
+    id: "theme-label"
+- takeScreenshot: 01-cold-start

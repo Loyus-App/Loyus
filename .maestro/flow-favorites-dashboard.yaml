@@ -1,0 +1,103 @@
+appId: com.loyus.app
+name: "Flow: Add cards → mark favorites → verify dashboard → open from favorites"
+---
+# ─── SETUP ────────────────────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# ─── STEP 1: Add first card and mark as favorite ──────────────────────────────
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Starbucks"
+- tapOn:
+    id: "card-code-input"
+- inputText: "6012345678901"
+# Toggle favorite before saving
+- tapOn:
+    id: "mark-favorite-toggle"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# ─── STEP 2: Favorites section appears on home ────────────────────────────────
+- assertVisible:
+    id: "favorites-section"
+- assertVisible:
+    text: "FAVORITES"
+- assertVisible:
+    text: "View All"
+- assertVisible:
+    text: "Starbucks"
+
+# ─── STEP 3: Add a second card as favorite ────────────────────────────────────
+- tapOn:
+    id: "add-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Kroger"
+- tapOn:
+    id: "card-code-input"
+- inputText: "KROG9876543"
+- tapOn:
+    id: "mark-favorite-toggle"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# ─── STEP 4: Both favorites visible on home ───────────────────────────────────
+- assertVisible:
+    id: "favorites-section"
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    text: "Kroger"
+
+# ─── STEP 5: Tap first favorite opens barcode detail ─────────────────────────
+- tapOn:
+    text: "Starbucks"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 8000
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    id: "brightness-button"
+- tapOn:
+    id: "close-detail-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+
+# ─── STEP 6: ALL CARDS section also shows both cards ──────────────────────────
+- assertVisible:
+    text: "ALL CARDS"
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    text: "Kroger"

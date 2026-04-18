@@ -1,0 +1,36 @@
+appId: com.loyus.app
+name: "Design: Form Preview"
+---
+- runFlow: shared/launch-fresh.yaml
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# Open add card via empty state
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 5000
+
+# Verify form elements
+- assertVisible:
+    text: "Manual Entry"
+
+# Type card details and verify preview appears
+- tapOn:
+    id: "card-name-input"
+- inputText: "Blue Bottle"
+- tapOn:
+    id: "card-code-input"
+- inputText: "9876543210"
+
+# Card preview should now show barcode
+- assertVisible:
+    id: "card-preview"
+
+# Verify save button visible
+- assertVisible:
+    id: "save-card-button"

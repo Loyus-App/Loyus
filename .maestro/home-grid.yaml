@@ -1,0 +1,25 @@
+appId: com.loyus.app
+name: "Design: Home Grid"
+---
+- runFlow: shared/launch-fresh.yaml
+
+# Verify home screen loads with new design
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# Verify Loyus title is visible
+- assertVisible:
+    text: "Loyus"
+
+# Add a test card via E2E backdoor
+- runFlow: shared/seed-test-card.yaml
+
+# Back on home, verify grid tile visible
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertVisible:
+    id: "card-grid-tile"

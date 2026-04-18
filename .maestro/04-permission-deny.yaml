@@ -1,0 +1,26 @@
+appId: com.loyus.app
+name: "04 - Camera permission denial shows rationale"
+---
+- launchApp:
+    clearState: true
+    permissions:
+      camera: deny
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Navigate to scan screen via deep link
+- openLink: "loyus:///card/scan"
+- extendedWaitUntil:
+    visible:
+      id: "permission-rationale"
+    timeout: 5000
+# Rationale screen should show with "Open Settings" button
+- assertVisible:
+    id: "permission-rationale"
+- assertVisible:
+    id: "open-settings-button"

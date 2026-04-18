@@ -1,0 +1,99 @@
+appId: com.loyus.app
+name: "Flow: Add card → edit name → verify update → delete → empty state returns"
+---
+# ─── SETUP ────────────────────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# ─── STEP 1: Add a card ───────────────────────────────────────────────────────
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "OldName Store"
+- tapOn:
+    id: "card-code-input"
+- inputText: "EDIT123456"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      text: "OldName Store"
+    timeout: 8000
+
+# ─── STEP 2: Open barcode detail, then edit ───────────────────────────────────
+- tapOn:
+    id: "card-grid-tile"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 8000
+- assertVisible:
+    text: "OldName Store"
+- tapOn:
+    id: "edit-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+
+# ─── STEP 3: Edit the name ────────────────────────────────────────────────────
+- tapOn:
+    id: "card-name-input"
+- eraseText:
+    charactersToErase: 15
+- inputText: "NewName Store"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+
+# ─── STEP 4: Home shows updated name ─────────────────────────────────────────
+- assertVisible:
+    text: "NewName Store"
+- assertNotVisible:
+    text: "OldName Store"
+
+# ─── STEP 5: Open detail — shows updated name ────────────────────────────────
+- tapOn:
+    id: "card-grid-tile"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 8000
+- assertVisible:
+    text: "NewName Store"
+- tapOn:
+    id: "close-detail-button"
+
+# ─── STEP 6: Long-press to delete ────────────────────────────────────────────
+- longPressOn:
+    id: "card-grid-tile"
+- tapOn:
+    text: "Delete"
+- tapOn:
+    text: "Delete"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 6000
+
+# ─── STEP 7: Empty state returns after last card deleted ─────────────────────
+- assertVisible:
+    id: "empty-state-cta"
+- assertVisible:
+    text: "Start your digital wallet"

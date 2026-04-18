@@ -1,0 +1,12 @@
+appId: com.loyus.app
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering system "Open in App?" dialog from previous deep-link flows
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000

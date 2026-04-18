@@ -1,0 +1,45 @@
+appId: com.loyus.app
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Empty state should show CTA
+- assertVisible:
+    id: "empty-state-cta"
+# Tap add button via empty state CTA
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+# Fill name
+- tapOn:
+    id: "card-name-input"
+- inputText: "Carrefour"
+# Fill code (valid EAN-13: 3250390000112)
+- tapOn:
+    id: "card-code-input"
+- inputText: "3250390000112"
+# Select format
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "EAN-13"
+# Save
+- tapOn:
+    id: "save-card-button"
+# Verify back on list with card visible
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertVisible:
+    text: "Carrefour"

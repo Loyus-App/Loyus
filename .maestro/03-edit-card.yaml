@@ -1,0 +1,59 @@
+appId: com.loyus.app
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Add a card first
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "OldName"
+- tapOn:
+    id: "card-code-input"
+- inputText: "ABC123"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "Code 128"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      text: "OldName"
+    timeout: 5000
+# Open card detail
+- tapOn:
+    text: "OldName"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-display"
+    timeout: 5000
+# Tap edit button
+- tapOn:
+    id: "edit-card-button"
+# Clear and edit name
+- tapOn:
+    id: "card-name-input"
+- eraseText:
+    charactersToErase: 7
+- inputText: "NewName"
+# Save
+- tapOn:
+    id: "save-card-button"
+# Verify updated name visible
+- extendedWaitUntil:
+    visible:
+      text: "NewName"
+    timeout: 5000

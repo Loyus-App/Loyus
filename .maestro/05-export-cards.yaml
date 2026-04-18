@@ -1,0 +1,59 @@
+appId: com.loyus.app
+---
+# Export cards E2E flow
+# Adds a card, navigates to Settings, taps Export Cards, verifies share sheet.
+
+- runFlow: shared/launch-fresh.yaml
+
+# Add a card so there is data to export
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "Export Test Card"
+- tapOn:
+    id: "card-code-input"
+- inputText: "1234567890128"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "EAN-13"
+- tapOn:
+    id: "save-card-button"
+
+# Wait for list to show the card
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertVisible:
+    text: "Export Test Card"
+
+# Navigate to Settings tab
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 15000
+
+# Tap Export Cards row
+- tapOn:
+    id: "export-cards-row"
+
+# The share sheet is presented by the OS. Maestro can detect it on iOS
+# via the activity view controller. We take a screenshot as verification.
+# Note: Share sheet detection varies by OS. The key assertion is that
+# tapping export does not crash the app.
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: export-share-sheet
+
+# Dismiss the share sheet (tap Close/Cancel on iOS share sheet)
+# On iOS the share sheet has a "Close" button at the bottom
+- tapOn:
+    text: "Close"
+    optional: true

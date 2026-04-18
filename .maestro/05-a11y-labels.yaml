@@ -1,0 +1,63 @@
+appId: com.loyus.app
+# Full VoiceOver/TalkBack verification requires manual device testing
+# or Accessibility Inspector; Maestro validates element presence and
+# navigation integrity after accessibility attribute changes.
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Add a card so we can navigate to detail
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "A11yCard"
+- tapOn:
+    id: "card-code-input"
+- inputText: "12345678"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "Code 128"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      text: "A11yCard"
+    timeout: 5000
+# Navigate to card detail
+- tapOn:
+    text: "A11yCard"
+# Verify detail screen renders with a11y elements
+- extendedWaitUntil:
+    visible:
+      id: "card-detail-name"
+    timeout: 5000
+- assertVisible:
+    id: "barcode-display"
+# Navigate back to list
+- tapOn:
+    text: "Cards"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+# Navigate to Settings tab
+- tapOn:
+    text: "Settings"
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 5000
+- takeScreenshot: "05-a11y-labels-settings"

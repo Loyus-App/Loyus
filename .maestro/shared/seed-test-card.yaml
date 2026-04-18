@@ -1,0 +1,10 @@
+appId: com.loyus.app
+---
+# Adds a test card via E2E backdoor (bypasses form input).
+# Requires the app to be on the home screen first.
+- tapOn:
+    id: "e2e-add-test-card"
+- extendedWaitUntil:
+    visible:
+      id: "card-grid-tile"
+    timeout: 5000

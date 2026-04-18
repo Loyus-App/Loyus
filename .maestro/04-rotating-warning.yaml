@@ -1,0 +1,24 @@
+appId: com.loyus.app
+name: "04 - Rotating code shows warning"
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Deep link with JWT-like code to trigger rotating-code warning
+- openLink: "loyus:///card/confirm?code=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0&format=QR_CODE"
+- extendedWaitUntil:
+    visible:
+      id: "confirm-screen"
+    timeout: 5000
+# Warning banner should be visible for JWT-like code
+- assertVisible:
+    id: "rotating-code-warning"
+# Warning should contain the expected text
+- assertVisible: "temporary token"

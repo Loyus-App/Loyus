@@ -1,0 +1,60 @@
+appId: com.loyus.app
+---
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+# Add a card first
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "ToDelete"
+- tapOn:
+    id: "card-code-input"
+- inputText: "999888777"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "Code 128"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      text: "ToDelete"
+    timeout: 5000
+# Open card, go to edit, delete
+- tapOn:
+    text: "ToDelete"
+- extendedWaitUntil:
+    visible:
+      id: "edit-card-button"
+    timeout: 5000
+- tapOn:
+    id: "edit-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "delete-card-button"
+    timeout: 5000
+- tapOn:
+    id: "delete-card-button"
+# Confirm delete in native alert
+- tapOn:
+    text: "Delete"
+# Verify back on home, card gone
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertNotVisible:
+    text: "ToDelete"

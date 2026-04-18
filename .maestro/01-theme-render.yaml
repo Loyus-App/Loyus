@@ -1,0 +1,9 @@
+# Verifies placeholder screen renders with Inter font and Unistyles light theme tokens.
+appId: com.loyus.app
+---
+- runFlow: shared/launch-fresh.yaml
+- assertVisible:
+    id: "home-title"
+- assertVisible:
+    id: "theme-label"
+- takeScreenshot: 01-theme-render-light

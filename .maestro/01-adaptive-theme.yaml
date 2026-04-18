@@ -1,0 +1,16 @@
+# Requires dev-client built with: EXPO_PUBLIC_E2E=true EXPO_PUBLIC_E2E_THEME=dark
+# Verifies Unistyles adaptive theme follows the forced dark color scheme.
+# Appearance.setColorScheme('dark') is called at module load (via initAppearanceOverride),
+# which triggers Unistyles adaptive theme to switch to dark tokens.
+#
+# CI NOTE: This flow runs against the standard E2E build (light theme) in CI.
+# For true dark-theme verification, build locally with EXPO_PUBLIC_E2E_THEME=dark.
+# The screenshot artifact shows the visual difference for human review.
+appId: com.loyus.app
+---
+- runFlow: shared/launch-fresh.yaml
+- assertVisible:
+    id: "home-title"
+- assertVisible:
+    id: "theme-label"
+- takeScreenshot: 01-adaptive-theme-dark

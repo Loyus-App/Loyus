@@ -1,0 +1,11 @@
+# Requires dev-client built with: EXPO_PUBLIC_E2E=true EXPO_PUBLIC_E2E_OFFLINE=true
+# Verifies app renders home screen when NetInfo reports no connectivity.
+# Since Loyus is offline-first, behavior should be identical to online launch.
+appId: com.loyus.app
+---
+- runFlow: shared/launch-fresh.yaml
+- assertVisible:
+    id: "home-title"
+- assertVisible:
+    id: "theme-label"
+- takeScreenshot: 01-offline-launch

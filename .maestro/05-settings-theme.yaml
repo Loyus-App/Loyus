@@ -1,0 +1,33 @@
+appId: com.loyus.app
+---
+# Settings screen: theme switcher E2E flow
+# Exercises Light/Dark/System theme switching and verifies about section content.
+
+- runFlow: shared/launch-fresh.yaml
+
+# Navigate to Settings tab
+- tapOn: "Settings"
+
+# Verify sections visible
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 15000
+
+- assertVisible: "Appearance"
+- assertVisible: "SYNCHRONIZATION"
+- assertVisible: "Cloud Sync"
+- assertVisible: "DATA PORTABILITY"
+- assertVisible: "Export Backup"
+
+# Switch to Dark theme
+- tapOn:
+    id: "theme-dark"
+- assertVisible:
+    text: "Dark mode"
+
+# Switch to Light theme
+- tapOn:
+    id: "theme-light"
+- assertVisible:
+    text: "Light mode"

@@ -1,0 +1,51 @@
+# Publisher-private planning and workflow artifacts — not part of the public repo
+.planning/
+
+# Claude Code per-developer settings (permissions, env vars) + runtime locks
+.claude/settings.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# EAS submit credentials — do not commit; set via CLI or env at submit time
+eas.json.local
+
+# Dependencies
+node_modules/
+# Project is pnpm-managed — block stray npm/yarn lockfiles (EAS picks the wrong package manager otherwise).
+package-lock.json
+yarn.lock
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native builds
+ios/
+android/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+*.pem
+
+# Maestro E2E reports (keep .gitkeep)
+.maestro/reports/*.xml
+.maestro/reports/*.png
+
+# Coverage
+coverage/
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*

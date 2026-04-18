@@ -1,0 +1,89 @@
+appId: com.loyus.app
+name: "Flow: Add card → view barcode → copy number → close"
+---
+# ─── SETUP ────────────────────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# ─── STEP 1: Empty state shows onboarding CTA ─────────────────────────────────
+- assertVisible:
+    id: "empty-state-cta"
+- assertVisible:
+    text: "Start your digital wallet"
+- assertVisible:
+    text: "Add Your First Card"
+
+# ─── STEP 2: Open Manual Entry from empty state ───────────────────────────────
+- tapOn:
+    id: "empty-state-cta"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- assertVisible:
+    text: "Manual Entry"
+- assertVisible:
+    id: "card-preview"
+
+# ─── STEP 3: Fill the form ─────────────────────────────────────────────────────
+- tapOn:
+    id: "card-name-input"
+- inputText: "Starbucks"
+- tapOn:
+    id: "card-code-input"
+- inputText: "6012345678901"
+# Card preview should update with barcode
+- assertVisible:
+    id: "card-preview"
+
+# ─── STEP 4: Save and return home ─────────────────────────────────────────────
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    text: "ALL CARDS"
+
+# ─── STEP 5: Open barcode detail ──────────────────────────────────────────────
+- tapOn:
+    id: "card-grid-tile"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-card"
+    timeout: 8000
+- assertVisible:
+    text: "Starbucks"
+- assertVisible:
+    id: "barcode-card"
+- assertVisible:
+    id: "brightness-button"
+- assertVisible:
+    id: "close-detail-button"
+
+# ─── STEP 6: Copy number ──────────────────────────────────────────────────────
+- tapOn:
+    id: "copy-number-button"
+- assertVisible:
+    text: "Copied!"
+
+# ─── STEP 7: Close returns to card list ───────────────────────────────────────
+- tapOn:
+    id: "close-detail-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertVisible:
+    text: "Starbucks"

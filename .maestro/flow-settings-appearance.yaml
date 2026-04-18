@@ -1,0 +1,73 @@
+appId: com.loyus.app
+name: "Flow: Settings → toggle theme → verify labels → data portability rows"
+---
+# ─── SETUP ────────────────────────────────────────────────────────────────────
+- launchApp:
+    clearState: true
+# Dismiss any lingering "Open in App?" system dialog
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+
+# ─── STEP 1: Navigate to Settings tab ────────────────────────────────────────
+- tapOn:
+    text: "Settings"
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 8000
+
+# ─── STEP 2: Settings page structure is correct ───────────────────────────────
+- assertVisible:
+    text: "Settings"
+- assertVisible:
+    text: "VISUAL ENVIRONMENT"
+- assertVisible:
+    text: "Appearance"
+- assertVisible:
+    text: "SYNCHRONIZATION"
+- assertVisible:
+    text: "Cloud Sync"
+- assertVisible:
+    text: "Privacy First"
+- assertVisible:
+    text: "DATA PORTABILITY"
+- assertVisible:
+    text: "Export Backup"
+- assertVisible:
+    text: "Import Data"
+
+# ─── STEP 3: Switch to Dark theme ─────────────────────────────────────────────
+- tapOn:
+    id: "theme-dark"
+- assertVisible:
+    text: "Dark mode"
+
+# ─── STEP 4: Switch to Light theme ───────────────────────────────────────────
+- tapOn:
+    id: "theme-light"
+- assertVisible:
+    text: "Light mode"
+
+# ─── STEP 5: Export row is tappable ──────────────────────────────────────────
+- tapOn:
+    id: "export-cards-row"
+# Export with no cards is graceful (alert or no-op)
+- tapOn:
+    text: "OK"
+    optional: true
+
+# ─── STEP 6: Footer links visible ────────────────────────────────────────────
+- swipe:
+    direction: DOWN
+    duration: 2000
+- assertVisible:
+    text: "TERMS OF SERVICE"
+- assertVisible:
+    text: "PRIVACY POLICY"
+- assertVisible:
+    text: "SECURITY"
