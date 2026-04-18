@@ -21,6 +21,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: 'com.loyus.app',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      // A transitive dependency references CoreLocation APIs but Loyus never invokes them.
+      // Apple requires a purpose string whenever an API is referenced, even if unused.
+      NSLocationWhenInUseUsageDescription:
+        'Loyus does not access your location. This description is required by iOS because a bundled library references the location API, even though Loyus never requests it.',
     },
     privacyManifests: {
       NSPrivacyCollectedDataTypes: [],
