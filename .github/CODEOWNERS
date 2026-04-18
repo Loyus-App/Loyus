@@ -1,0 +1,16 @@
+# Default owner for everything in the repo.
+# Add more specific rules below as the team grows.
+
+*                               @arthurmtro
+
+# Domain layer — architectural invariants (purity, no RN/Expo imports)
+/src/domain/                    @arthurmtro
+
+# CI/CD + release plumbing
+/.github/                       @arthurmtro
+/eas.json                       @arthurmtro
+/app.config.ts                  @arthurmtro
+
+# Privacy policy + licensing — public-facing, high review bar
+/docs/PRIVACY_POLICY.md         @arthurmtro
+/LICENSE                        @arthurmtro
