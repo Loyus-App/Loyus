@@ -1,0 +1,68 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+title: "bug: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill in as much as you can — the faster we can reproduce, the faster we can fix.
+
+  - type: input
+    id: version
+    attributes:
+      label: Loyus version
+      description: App version from Settings → About, or commit SHA if running from source.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device + OS version
+      placeholder: "iPhone 15 Pro, iOS 18.3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps. State what you expected vs. what actually happened.
+      placeholder: |
+        1. Open the app.
+        2. Tap Add → Scan.
+        3. Point at an EAN-13 barcode.
+
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, screenshots, or video
+      description: Optional but extremely helpful. Paste crash logs, attach screenshots, or link a screen recording.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I searched existing issues and didn't find a duplicate
+          required: true
+        - label: I can reproduce this on the latest released version
+          required: false

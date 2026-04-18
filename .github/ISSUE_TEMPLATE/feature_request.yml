@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement or a new capability
+title: "feat: "
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user-facing problem first. Solutions come later.
+      placeholder: |
+        When I have 40 cards, finding the one I need at checkout takes too long because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Optional. How would you solve it? Multiple options welcome.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you've tried, or approaches you rejected and why.
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints this must not violate
+      description: Loyus has non-negotiable principles. Check the ones your proposal respects.
+      options:
+        - label: Works fully offline (no network calls on critical path)
+          required: true
+        - label: Does not add analytics, tracking, or account requirements
+          required: true
+        - label: Does not rely on retailer-specific partnerships
+          required: true
