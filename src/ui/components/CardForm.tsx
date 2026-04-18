@@ -65,9 +65,9 @@ function showAndroidPicker(onChange: (f: BarcodeFormat) => void): void {
     ...ALL_FORMATS.map((f) => ({
       text: FORMAT_DISPLAY_NAME[f],
       onPress: () => onChange(f),
-      style: 'default',
+      style: 'default' as const,
     })),
-    { text: i18n.t('common.cancel'), style: 'cancel' },
+    { text: i18n.t('common.cancel'), style: 'cancel' as const },
   ]);
 }
 
@@ -154,14 +154,14 @@ export function CardForm({
   function handleNameChange(text: string) {
     nameText.current = text;
     setName(text);
-    setErrors((prev) => ({ code: prev.code }));
+    setErrors((prev) => (prev.code === undefined ? {} : { code: prev.code }));
     notifyChange(text, codeText.current, format);
   }
 
   function handleCodeChange(text: string) {
     codeText.current = text;
     setCode(text);
-    setErrors((prev) => ({ name: prev.name }));
+    setErrors((prev) => (prev.name === undefined ? {} : { name: prev.name }));
     notifyChange(nameText.current, text, format);
   }
 

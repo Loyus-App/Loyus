@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 permissions:
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   validate:
@@ -29,10 +29,7 @@ jobs:
             build
             style
             revert
-          # Scope is optional but must be lowercase (e.g. "feat(domain): ..." or "chore: ...")
+          # Scope is optional (e.g. "feat(domain): ..." or plain "chore: ...").
+          # Subject is free-form — lowercase allowed (standard conventional commits).
           requireScope: false
-          subjectPattern: ^[A-Z].+$
-          subjectPatternError: |
-            The subject "{subject}" found in the PR title "{title}"
-            must start with an uppercase character.
           wip: true
