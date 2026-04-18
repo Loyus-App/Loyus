@@ -63,9 +63,9 @@ jobs:
             derived-data-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}-
             derived-data-${{ runner.os }}-
 
-      # 7. Select Xcode 16.4
+      # 7. Select Xcode 26.2 (Expo SDK 55 requires Swift 6.2)
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.4.0.app/Contents/Developer
+        run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
 
       # 8. Boot iOS simulator
       - name: Boot simulator
