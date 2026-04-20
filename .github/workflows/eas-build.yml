@@ -30,7 +30,7 @@ jobs:
     # Only attempt if the EXPO_TOKEN secret is configured. Skip silently in forks.
     if: github.repository == 'Loyus-App/Loyus'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
         with:
