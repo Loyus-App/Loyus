@@ -25,7 +25,7 @@
     "@expo/vector-icons": "^15.0.3",
     "@kichiyaki/react-native-barcode-generator": "^0.6.7",
     "@react-native-community/netinfo": "^12.0.1",
-    "@react-navigation/native": "^7.1.8",
+    "@react-navigation/native": "^7.2.4",
     "@shopify/flash-list": "2.0.2",
     "expo": "55",
     "expo-brightness": "~55.0.13",
