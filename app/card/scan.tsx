@@ -51,7 +51,6 @@ export default function ScanScreen(): React.JSX.Element {
   if (!device) {
     return (
       <SafeAreaView style={styles.container}>
-        {/* Header */}
         <View style={styles.header}>
           <Pressable
             style={styles.headerBtn}
@@ -99,7 +98,6 @@ export default function ScanScreen(): React.JSX.Element {
 
         <ScannerOverlay />
 
-        {/* Header overlay */}
         <View style={styles.header}>
           <Pressable
             style={styles.headerBtn}
@@ -114,9 +112,7 @@ export default function ScanScreen(): React.JSX.Element {
           {!hasTorch && <View style={styles.headerBtn} />}
         </View>
 
-        {/* Bottom bar */}
         <View style={styles.bottomBar}>
-          {/* Enter Manually button */}
           <Pressable
             style={styles.manualButton}
             onPress={() => {
@@ -130,7 +126,6 @@ export default function ScanScreen(): React.JSX.Element {
             <Text style={styles.manualButtonText}>{t('scan.enterManuallyText')}</Text>
           </Pressable>
 
-          {/* Quick Tip */}
           <View style={styles.quickTip}>
             <View style={styles.quickTipIcon}>
               <Ionicons name="information-circle" size={18} color="#1b6c3b" />

@@ -21,7 +21,6 @@ export function CardPreview({ name, code, format }: CardPreviewProps): React.JSX
     <View {...tid('cardPreview')}>
       <Text style={styles.sectionLabel}>{t('form.cardPreview')}</Text>
       <View style={styles.card}>
-        {/* Header row: icon left, labels right */}
         <View style={styles.cardHeader}>
           <View style={styles.iconBox}>
             <Ionicons name="pricetag-outline" size={20} color="#fff" />
@@ -34,7 +33,6 @@ export function CardPreview({ name, code, format }: CardPreviewProps): React.JSX
           </View>
         </View>
 
-        {/* Barcode area */}
         <View style={styles.barcodeArea}>
           {hasCode ? (
             <BarcodeErrorBoundary>

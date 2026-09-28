@@ -1,12 +1,7 @@
 import { Appearance } from 'react-native';
 import { e2eTheme, isE2E } from '../env';
 
-/**
- * In E2E mode, force the color scheme to the value of EXPO_PUBLIC_E2E_THEME.
- * This must run before any component reads useColorScheme().
- *
- * Values: 'light' | 'dark' | undefined (= follow system)
- */
+/** Must run before any component reads useColorScheme(). */
 export function initAppearanceOverride(): void {
   if (!isE2E) return;
 

@@ -2,10 +2,6 @@ import { ActionSheetIOS, Alert, Platform } from 'react-native';
 import type { Card } from '../../domain/card';
 import { i18n } from '../../infra/i18n';
 
-/**
- * Show a native confirmation dialog before deleting a card.
- * Uses Alert.alert which renders natively on both iOS and Android.
- */
 export function confirmDelete(cardName: string, onConfirm: () => void): void {
   Alert.alert(
     i18n.t('quickActions.deleteTitle'),
@@ -17,10 +13,6 @@ export function confirmDelete(cardName: string, onConfirm: () => void): void {
   );
 }
 
-/**
- * Show platform-appropriate quick actions for a card (long-press menu).
- * iOS: native ActionSheetIOS. Android: Alert with buttons.
- */
 export function showQuickActions(
   card: Card,
   actions: {

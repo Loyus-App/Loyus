@@ -166,14 +166,12 @@ export default function CardsScreen(): React.JSX.Element {
 
   const filteredCards = allCards;
 
-  // Favorite card width: 2 columns with gap
   const favCardWidth = (screenWidth - theme.spacing.md * 2 - theme.spacing.sm) / 2;
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ScreenShell {...tid('homeScreen')}>
-        {/* Custom Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle} {...tid('homeTitle')}>
             {t('home.title')}
@@ -185,7 +183,6 @@ export default function CardsScreen(): React.JSX.Element {
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Search trigger — tapping navigates to Search tab */}
             <Pressable
               onPress={() => router.navigate('/(tabs)/search')}
               style={styles.searchTrigger}
@@ -196,7 +193,6 @@ export default function CardsScreen(): React.JSX.Element {
               <Text style={styles.searchPlaceholder}>{t('home.searchPlaceholder')}</Text>
             </Pressable>
 
-            {/* Favorites Section — only shown when not all cards are favorites */}
             {favorites.length > 0 && favorites.length < allCards.length && (
               <View {...tid('favoritesSection')}>
                 <View style={styles.sectionHeader}>
@@ -222,7 +218,6 @@ export default function CardsScreen(): React.JSX.Element {
               </View>
             )}
 
-            {/* All Cards Section */}
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>{t('home.sectionAllCards')}</Text>
               <ViewModeToggle
@@ -261,7 +256,6 @@ export default function CardsScreen(): React.JSX.Element {
           <EmptyState onAddCard={navigateToAdd} />
         )}
 
-        {/* Floating Add Button */}
         {hasCards && (
           <Pressable
             onPress={navigateToAdd}
@@ -274,7 +268,6 @@ export default function CardsScreen(): React.JSX.Element {
           </Pressable>
         )}
 
-        {/* E2E-only: seed button to add a test card without form input */}
         {isE2E && (
           <Pressable
             onPress={() => {

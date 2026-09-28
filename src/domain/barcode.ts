@@ -1,5 +1,3 @@
-// Barcode validation and format parsing — zero react-native / expo imports
-
 import { BarcodeFormat } from './card';
 
 export interface BarcodeValidationResult {
@@ -13,7 +11,6 @@ function invalid(error: string): BarcodeValidationResult {
   return { valid: false, error };
 }
 
-// --- top-level regex constants ---
 const RE_DIGITS_12_13 = /^\d{12,13}$/;
 const RE_DIGITS_7_8 = /^\d{7,8}$/;
 const RE_DIGITS_11_12 = /^\d{11,12}$/;
@@ -24,15 +21,11 @@ const RE_CODABAR = /^[0-9\-$:/.+]+$/;
 const RE_DIGITS_ONLY = /^\d+$/;
 const RE_DIGITS_1_6 = /^\d{1,6}$/;
 
-/**
- * Computes the EAN/UPC mod-10 check digit for a digit string.
- * Works for EAN-13 (12 digits), EAN-8 (7 digits), UPC-A (11 digits), ITF-14 (13 digits).
- */
+// GS1 mod-10 check digit: weights 3,1,3,... starting from the rightmost payload digit.
 function computeCheckDigit(digits: string): number {
   let sum = 0;
   for (let i = 0; i < digits.length; i++) {
     const digit = Number(digits[i]);
-    // From rightmost digit: weight 3, then alternating 1, 3, 1, 3...
     const indexFromRight = digits.length - 1 - i;
     const weight = indexFromRight % 2 === 0 ? 3 : 1;
     sum += digit * weight;
@@ -55,7 +48,6 @@ function isAsciiOnly(str: string): boolean {
   return [...str].every((c) => c.charCodeAt(0) <= 127);
 }
 
-// --- per-format validators ---
 function validateEan13(code: string): BarcodeValidationResult {
   if (!RE_DIGITS_12_13.test(code)) return invalid('EAN-13 must be 12 or 13 digits');
   return verifyCheckDigit(code, 13);
@@ -149,15 +141,10 @@ const VALIDATORS: Record<BarcodeFormat, Validator> = {
   [BarcodeFormat.GS1_DATABAR]: validateGs1Databar,
 };
 
-/** Validates a barcode string against its format rules. */
 export function validateBarcode(code: string, format: BarcodeFormat): BarcodeValidationResult {
   return VALIDATORS[format](code);
 }
 
-/**
- * Best-effort heuristic to detect barcode format from a raw code string.
- * Returns null if format cannot be determined.
- */
 export function parseBarcodeFormat(code: string): BarcodeFormat | null {
   if (code.length === 0) return null;
   if (!RE_DIGITS_ONLY.test(code)) return null;

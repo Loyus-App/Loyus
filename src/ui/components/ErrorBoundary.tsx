@@ -15,15 +15,7 @@ interface ErrorBoundaryState {
 
 const MAX_RETRIES = 3;
 
-/**
- * Generic error boundary for screen-level crash isolation.
- * Uses plain RN StyleSheet (NOT Unistyles) so it never depends on
- * theme infrastructure that might itself be broken.
- *
- * Threat T-05-05: Tracks error count — after 3 consecutive errors,
- * shows "Please restart the app" instead of "Try Again" to prevent
- * infinite retry loops.
- */
+/** Uses plain RN StyleSheet, not Unistyles, so the fallback survives a broken theme. */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);

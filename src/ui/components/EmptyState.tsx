@@ -14,35 +14,29 @@ export function EmptyState({ onAddCard }: EmptyStateProps): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      {/* Card Illustration */}
       <View style={styles.illustrationWrapper}>
         <View style={styles.card}>
-          {/* Top row */}
           <View style={styles.cardTop}>
             <View style={styles.walletIconBox}>
               <Ionicons name="wallet-outline" size={22} color={theme.colors.textOnPrimary} />
             </View>
             <Ionicons name="stats-chart-outline" size={16} color="rgba(255,255,255,0.5)" />
           </View>
-          {/* Card lines */}
           <View style={styles.cardLines}>
             <View style={styles.cardLine} />
             <View style={[styles.cardLine, styles.cardLineShort]} />
           </View>
         </View>
-        {/* Shield badge overlapping bottom-right */}
         <View style={styles.shieldBadge}>
           <Ionicons name="shield-checkmark" size={20} color={theme.colors.primary} />
         </View>
       </View>
 
-      {/* Text */}
       <Text style={styles.title} accessibilityRole="header">
         {t('empty.title')}
       </Text>
       <Text style={styles.subtitle}>{t('empty.subtitle')}</Text>
 
-      {/* CTA Button */}
       <Pressable
         onPress={onAddCard}
         style={({ pressed }) => [styles.button, { opacity: pressed ? 0.85 : 1 }]}
@@ -54,7 +48,6 @@ export function EmptyState({ onAddCard }: EmptyStateProps): React.JSX.Element {
         <Text style={styles.buttonText}>{t('empty.addFirstCard')}</Text>
       </Pressable>
 
-      {/* Import link */}
       <Pressable accessibilityLabel={t('empty.importLabel')} accessibilityRole="button">
         <Text style={styles.importText}>{t('empty.importExisting')}</Text>
       </Pressable>

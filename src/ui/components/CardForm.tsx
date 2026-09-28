@@ -37,13 +37,9 @@ interface CardFormProps {
   onSubmit: (values: CardFormValues) => void;
   onValuesChange?: (values: Pick<CardFormValues, 'name' | 'code' | 'format'>) => void;
   submitLabel: string;
-  /** Hide the color picker (used in Add screen where the design omits it) */
   hideColorPicker?: boolean;
-  /** Show icons inside inputs (Add screen design) */
   showInputIcons?: boolean;
-  /** Use solid teal button instead of gradient */
   solidButton?: boolean;
-  /** Rendered inside the ScrollView, between fields and the submit button */
   renderBelowFields?: ReactNode;
 }
 
@@ -171,8 +167,6 @@ export function CardForm({
   }
 
   function handleSubmit() {
-    // Read from refs to get the true current value (works even if onChangeText
-    // was not fired by the test runner due to controlled-input quirks).
     const trimmedName = nameText.current.trim();
     const nameError = validateName(
       trimmedName,
@@ -204,7 +198,6 @@ export function CardForm({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Store Name */}
         <View style={styles.field}>
           <Text style={styles.label}>{t('form.storeName')}</Text>
           <View style={styles.inputWrapper}>
@@ -232,7 +225,6 @@ export function CardForm({
           {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
         </View>
 
-        {/* Card Number / Code */}
         <View style={styles.field}>
           <Text style={styles.label}>{t('form.cardCode')}</Text>
           <View style={styles.inputWrapper}>
@@ -271,7 +263,6 @@ export function CardForm({
           {errors.code ? <Text style={styles.error}>{errors.code}</Text> : null}
         </View>
 
-        {/* Barcode Type */}
         <View style={styles.field}>
           <Text style={styles.label}>{t('form.barcodeType')}</Text>
           <Pressable
@@ -287,7 +278,6 @@ export function CardForm({
           </Pressable>
         </View>
 
-        {/* Color Picker (hidden in add-screen mode) */}
         {!hideColorPicker && (
           <View style={styles.field}>
             <Text style={styles.label}>{t('form.color')}</Text>
@@ -295,10 +285,8 @@ export function CardForm({
           </View>
         )}
 
-        {/* Mark as Favorite */}
         <FavoriteRow isFavorite={isFavorite} onToggle={setIsFavorite} />
 
-        {/* Slot for card preview or other content before the button */}
         {renderBelowFields}
 
         <FormSubmitButton label={submitLabel} solidButton={solidButton} onPress={handleSubmit} />

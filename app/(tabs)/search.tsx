@@ -59,8 +59,6 @@ function buildSearchCardActions(
   };
 }
 
-// --- Sub-components ---
-
 interface SearchNoResultsProps {
   query: string;
 }
@@ -197,8 +195,6 @@ function SearchResultsView({ results, renderCard }: SearchResultsViewProps): Rea
   );
 }
 
-// --- Main screen ---
-
 export default function SearchScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
@@ -305,7 +301,6 @@ export default function SearchScreen(): React.JSX.Element {
 
   return (
     <ScreenShell {...tid('searchScreen')}>
-      {/* Search bar row */}
       <View style={styles.searchRow}>
         <View style={styles.searchBar}>
           <Ionicons

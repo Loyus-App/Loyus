@@ -38,8 +38,7 @@ export function initI18n(savedLanguage: LanguageCode): void {
       de: { translation: de },
     },
     interpolation: { escapeValue: false },
-    // Resources provided directly — no async backend, so init is synchronous.
-    // This prevents a flash of missing key strings on first render in React Native.
+    // Inline resources, no async backend: init is synchronous, so no missing-key flash.
   });
 }
 

@@ -1,11 +1,7 @@
-// Domain types — zero react-native / expo imports
-
 declare const CardIdBrand: unique symbol;
 
-/** Branded string type for card identifiers (UUID v4). */
 export type CardId = string & { readonly [CardIdBrand]: typeof CardIdBrand };
 
-/** All barcode/QR formats supported in v0.1. */
 export enum BarcodeFormat {
   CODE128 = 'CODE128',
   CODE39 = 'CODE39',
@@ -24,10 +20,7 @@ export enum BarcodeFormat {
   GS1_DATABAR = 'GS1_DATABAR',
 }
 
-/**
- * Maps BarcodeFormat enum values to the format strings expected by JsBarcode.
- * Note: codabar and pharmacode are lowercase; UPC_A -> "UPC", UPC_E -> "UPCE".
- */
+/** JsBarcode format names; casing matters ('codabar', 'pharmacode' are lowercase). */
 export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.CODE128]: 'CODE128',
   [BarcodeFormat.CODE39]: 'CODE39',
@@ -46,7 +39,6 @@ export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.GS1_DATABAR]: 'GS1_DATABAR',
 };
 
-/** Core loyalty card entity. */
 export interface Card {
   readonly id: CardId;
   readonly name: string;
@@ -60,7 +52,6 @@ export interface Card {
   readonly updatedAt: number;
 }
 
-/** Input for the card factory. `id` is passed in (generated externally). */
 export interface CreateCardInput {
   readonly id: CardId;
   readonly name: string;
@@ -70,7 +61,6 @@ export interface CreateCardInput {
   readonly note?: string | undefined;
 }
 
-/** Creates a new Card with default values (isFavorite=false, timestamps=now). */
 export function createCard(input: CreateCardInput): Card {
   const now = Date.now();
   return {

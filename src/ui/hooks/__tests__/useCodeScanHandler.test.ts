@@ -7,7 +7,6 @@ function makeCode(value: string, format = BarcodeFormat.QR_CODE): DetectedCode {
   return { value, format };
 }
 
-// Minimal renderHook using react-test-renderer
 function renderHook<T>(hookFn: () => T): { result: { current: T }; rerender: () => void } {
   const result: { current: T } = {} as { current: T };
   function TestComponent(): null {
@@ -62,7 +61,6 @@ describe('useCodeScanHandler', () => {
     });
     expect(onConfirm).not.toHaveBeenCalled();
 
-    // Second scan after debounce window (>500ms)
     now = 1600;
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
@@ -81,7 +79,6 @@ describe('useCodeScanHandler', () => {
       result.current([makeCode('ABC123')]);
     });
 
-    // Second scan within 500ms
     now = 1300;
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
@@ -99,7 +96,6 @@ describe('useCodeScanHandler', () => {
       result.current([makeCode('ABC123')]);
     });
 
-    // Scan different code after debounce
     now = 1600;
     TestRenderer.act(() => {
       result.current([makeCode('XYZ789')]);
@@ -114,26 +110,22 @@ describe('useCodeScanHandler', () => {
 
     const { result } = renderHook(() => useCodeScanHandler(onConfirm));
 
-    // 1st scan
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
     });
 
-    // 2nd scan — confirms
     now = 1600;
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
     });
     expect(onConfirm).toHaveBeenCalledTimes(1);
 
-    // 3rd scan — should NOT immediately confirm (counter reset)
     now = 2200;
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
     });
     expect(onConfirm).toHaveBeenCalledTimes(1);
 
-    // 4th scan — should confirm again
     now = 2800;
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);

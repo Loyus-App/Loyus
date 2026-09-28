@@ -61,7 +61,6 @@ describe('searchCards', () => {
   });
 
   it('ranks name match above code match', () => {
-    // carrefour matches by name (score=2), codeMatch matches by code (score=1)
     const result = searchCards([codeMatch, carrefour], 'carre');
     expect(result[0]?.id).toBe(carrefour.id);
     expect(result[1]?.id).toBe(codeMatch.id);
@@ -93,12 +92,10 @@ describe('searchCards', () => {
   });
 
   it('gives additive score 3 when both name and code match', () => {
-    // "123" appears in both name and code → score 2+1=3
     const both = makeCard({ id: 'both', name: 'Store 123', code: '1234567' });
     const nameOnly = makeCard({ id: 'name', name: 'Store 123', code: '9999999' });
     const codeOnly = makeCard({ id: 'code', name: 'Unrelated', code: '1234567' });
     const result = searchCards([codeOnly, nameOnly, both], '123');
-    // both (score 3) should come first, then nameOnly (2), then codeOnly (1)
     expect(result[0]?.id).toBe('both');
     expect(result[1]?.id).toBe('name');
     expect(result[2]?.id).toBe('code');

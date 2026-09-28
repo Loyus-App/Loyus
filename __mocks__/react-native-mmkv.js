@@ -1,6 +1,3 @@
-// Manual mock for react-native-mmkv v4.x (JSI native module)
-// In-memory implementation preserving per-instance isolation via id
-
 const stores = new Map();
 
 function createMMKV(config) {

@@ -18,10 +18,6 @@ const FAKE_ONLINE = {
   details: null,
 } as unknown as NetInfoState;
 
-/**
- * Fetch current connectivity. In E2E mode, reads EXPO_PUBLIC_E2E_OFFLINE
- * to simulate offline state deterministically.
- */
 export async function fetchNetInfo(): Promise<NetInfoState> {
   if (isE2E) {
     return e2eOffline ? FAKE_OFFLINE : FAKE_ONLINE;
@@ -29,10 +25,6 @@ export async function fetchNetInfo(): Promise<NetInfoState> {
   return await NetInfo.fetch();
 }
 
-/**
- * Subscribe to connectivity changes. In E2E mode, fires once with the
- * faked state and returns a no-op unsubscribe.
- */
 export function subscribeNetInfo(callback: (state: NetInfoState) => void): NetInfoSubscription {
   if (isE2E) {
     callback(e2eOffline ? FAKE_OFFLINE : FAKE_ONLINE);

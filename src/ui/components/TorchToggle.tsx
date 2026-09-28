@@ -8,15 +8,9 @@ interface TorchToggleProps {
   enabled: boolean;
   onToggle: () => void;
   visible: boolean;
-  /** When true, renders as an inline button (for use inside a header row) */
   inline?: boolean;
 }
 
-/**
- * Torch on/off button. Returns null when device has no torch.
- * Default: absolutely positioned in the scan view.
- * inline=true: renders as a 40×40 circle for use inside a header row.
- */
 export function TorchToggle({
   enabled,
   onToggle,

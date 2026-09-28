@@ -1,6 +1,3 @@
-// Manual mock for @react-native-community/netinfo (native module)
-// Prevents Jest tests from crashing on native module import
-
 const defaultState = {
   type: 'wifi',
   isConnected: true,

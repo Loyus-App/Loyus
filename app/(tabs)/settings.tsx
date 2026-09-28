@@ -91,17 +91,14 @@ export default function SettingsScreen(): React.JSX.Element {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ScreenShell {...tid('settingsScreen')}>
-        {/* Custom Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('home.title')}</Text>
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          {/* Page Title */}
           <Text style={styles.pageTitle}>{t('settings.title')}</Text>
           <Text style={styles.pageSubtitle}>{t('settings.subtitle')}</Text>
 
-          {/* VISUAL ENVIRONMENT */}
           <Text style={styles.sectionLabel}>{t('settings.sectionVisual')}</Text>
           <View style={styles.card}>
             <View style={styles.appearanceRow}>
@@ -143,7 +140,6 @@ export default function SettingsScreen(): React.JSX.Element {
             </View>
           </View>
 
-          {/* LANGUAGE */}
           <Text style={styles.sectionLabel}>{t('settings.sectionLanguage')}</Text>
           <View style={styles.card}>
             <Pressable
@@ -166,10 +162,8 @@ export default function SettingsScreen(): React.JSX.Element {
             </Pressable>
           </View>
 
-          {/* SYNCHRONIZATION */}
           <Text style={styles.sectionLabel}>{t('settings.sectionSync')}</Text>
 
-          {/* Cloud Sync Card */}
           <View style={styles.card}>
             <View style={styles.syncHeader}>
               <View style={styles.syncIconBox}>
@@ -190,7 +184,6 @@ export default function SettingsScreen(): React.JSX.Element {
             </Pressable>
           </View>
 
-          {/* Privacy First Card */}
           <View style={[styles.card, styles.cardTopMargin]}>
             <View style={styles.privacyIconBox}>
               <Ionicons name="shield-outline" size={22} color={theme.colors.primary} />
@@ -202,7 +195,6 @@ export default function SettingsScreen(): React.JSX.Element {
             </Pressable>
           </View>
 
-          {/* DATA PORTABILITY */}
           <Text style={styles.sectionLabel}>{t('settings.sectionData')}</Text>
           <View style={styles.card}>
             <Pressable
@@ -251,7 +243,6 @@ export default function SettingsScreen(): React.JSX.Element {
             </Pressable>
           </View>
 
-          {/* Footer Links */}
           <View style={styles.footerLinks}>
             <Pressable accessibilityLabel={t('settings.footerTerms')} accessibilityRole="link">
               <Text style={styles.footerLink}>{t('settings.footerTerms')}</Text>
@@ -324,7 +315,6 @@ const styles = StyleSheet.create((theme) => ({
   cardTopMargin: {
     marginTop: theme.spacing.sm,
   },
-  // Appearance
   appearanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -379,7 +369,6 @@ const styles = StyleSheet.create((theme) => ({
     fontFamily: theme.typography.fontFamily.semiBold,
     color: theme.colors.text,
   },
-  // Cloud Sync
   syncHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -430,7 +419,6 @@ const styles = StyleSheet.create((theme) => ({
     fontSize: theme.typography.fontSize.base,
     color: theme.colors.text,
   },
-  // Privacy
   privacyIconBox: {
     width: 44,
     height: 44,
@@ -446,7 +434,6 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.text,
     textDecorationLine: 'underline',
   },
-  // Data
   dataRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -486,7 +473,6 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.containerHigh,
     marginVertical: theme.spacing.xs,
   },
-  // Footer
   footerLinks: {
     flexDirection: 'row',
     justifyContent: 'center',

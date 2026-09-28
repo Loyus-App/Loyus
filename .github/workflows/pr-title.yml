@@ -4,8 +4,7 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 
-# Read-only token is enough — we fail the job on bad titles, we don't comment back.
-# This keeps the workflow working under the "read" default org-wide permission setting.
+# Read-only suffices (we fail, never comment), so it works under a read-only org default.
 permissions:
   contents: read
 
@@ -20,7 +19,6 @@ jobs:
         run: |
           set -eu
           TYPES='feat|fix|test|docs|refactor|chore|perf|ci|build|style|revert'
-          # Optional scope, optional breaking-change !, required colon + space + non-empty subject.
           PATTERN="^(${TYPES})(\\([a-z0-9._/-]+\\))?!?: .+"
           if ! [[ "$TITLE" =~ $PATTERN ]]; then
             echo "::error title=Invalid PR title::PR title does not follow Conventional Commits."

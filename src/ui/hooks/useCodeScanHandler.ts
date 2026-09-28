@@ -25,7 +25,6 @@ export function useCodeScanHandler(
 
       const now = Date.now();
 
-      // Debounce: ignore duplicate within 500ms
       if (value === lastCode.current && now - lastTime.current < DEBOUNCE_MS) {
         return;
       }

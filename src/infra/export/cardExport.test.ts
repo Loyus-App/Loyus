@@ -1,7 +1,6 @@
 import { BarcodeFormat, type Card } from '../../domain/card';
 import { SERIALIZER_VERSION } from '../../domain/serializer';
 
-// Import pure functions only — exportCards depends on native modules
 import { buildExportFileName, buildExportJson } from './cardExport';
 
 const sampleCard: Card = {
@@ -36,7 +35,6 @@ describe('buildExportJson', () => {
     expect(parsed.cards).toHaveLength(1);
     expect(parsed.cards[0]).toEqual(sampleCard);
 
-    // Verify it's indented (pretty-printed)
     expect(json).toContain('\n');
     expect(json).toContain('  ');
   });

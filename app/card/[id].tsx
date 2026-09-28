@@ -33,8 +33,7 @@ export default function CardDetailScreen(): React.JSX.Element {
   const isRotated = card?.barcodeRotated ?? false;
   const panelWidth = screenWidth - 48;
 
-  // When rotated: the panel is rotated 90°, so layout width becomes visual height
-  // We want the rotated barcode to fill available vertical space
+  // Rotated 90°: panel layout width becomes visual height, so size it from screen height
   const rotatedPanelWidth = Math.min(screenHeight * 0.7, 580);
   const barcodeWidth = isRotated ? rotatedPanelWidth - 32 : panelWidth - 48;
 
@@ -89,7 +88,6 @@ export default function CardDetailScreen(): React.JSX.Element {
       <StatusBar style="dark" />
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Header row: close — name — edit */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <Pressable
           onPress={() => router.back()}
@@ -123,7 +121,6 @@ export default function CardDetailScreen(): React.JSX.Element {
         </Pressable>
       </View>
 
-      {/* Barcode section — fills available space */}
       <View style={styles.barcodeSection}>
         <View
           style={[
@@ -150,7 +147,6 @@ export default function CardDetailScreen(): React.JSX.Element {
         </View>
       </View>
 
-      {/* Bottom controls — pinned to bottom */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 16 }]}>
         <View style={styles.bottomActions}>
           <Pressable

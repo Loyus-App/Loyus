@@ -60,7 +60,6 @@ export function ThemeSwitcher(): React.JSX.Element {
   );
 }
 
-/** Apply persisted theme on app launch. Call once in root layout. */
 export function restoreTheme(): void {
   const theme = useSettingsStore.getState().theme;
   applyTheme(theme);

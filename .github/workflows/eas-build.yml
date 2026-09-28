@@ -1,9 +1,7 @@
 name: EAS Build
 
 on:
-  # Manual dispatch only — pick platform + profile.
-  # Auto-triggered builds on push were removed to avoid burning EAS free minutes
-  # on every main merge. Use the "Run workflow" button in Actions to build.
+  # Manual only: building on every main push burned EAS free-tier minutes.
   workflow_dispatch:
     inputs:
       platform:
@@ -27,7 +25,7 @@ jobs:
   build:
     name: EAS ${{ github.event.inputs.profile || 'preview' }} — ${{ github.event.inputs.platform || 'all' }}
     runs-on: ubuntu-latest
-    # Only attempt if the EXPO_TOKEN secret is configured. Skip silently in forks.
+    # Skip in forks, which lack the EXPO_TOKEN secret.
     if: github.repository == 'Loyus-App/Loyus'
     steps:
       - uses: actions/checkout@v4

@@ -24,12 +24,10 @@ jobs:
     timeout-minutes: 90
 
     env:
-      # Bump when changing Xcode version — invalidates Pods/DerivedData caches
-      # so artifacts built with one Xcode aren't restored into another.
+      # Part of cache keys so Pods/DerivedData from another Xcode are never restored.
       XCODE_VERSION: "26.2"
 
     steps:
-      # 1. Checkout
       - uses: actions/checkout@v4
 
       - run: corepack enable
@@ -38,7 +36,7 @@ jobs:
           node-version: 24
           cache: yarn
 
-      # 3. Setup Java 17 (Maestro 2.x requires GraalJS / Java 17+)
+      # Maestro 2.x needs Java 17+ (GraalJS).
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -46,7 +44,6 @@ jobs:
 
       - run: yarn install --immutable
 
-      # 5. Cache CocoaPods (keyed by Xcode version — Swift module ABI changes per Xcode)
       - uses: actions/cache@v4
         with:
           path: |
@@ -55,7 +52,6 @@ jobs:
           key: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}
           restore-keys: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
-      # 6. Cache DerivedData (keyed by Xcode version)
       - uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
@@ -64,32 +60,26 @@ jobs:
             derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}-
             derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
-      # 7. Select Xcode (Expo SDK 55 requires Swift 6.2 → Xcode 26.x)
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
 
-      # 8. Boot iOS simulator
       - name: Boot simulator
         run: |
           xcrun simctl boot "iPhone 16" 2>/dev/null || true
           xcrun simctl bootstatus "iPhone 16" -b
 
-      # 9. Install Maestro CLI (version pinned in .maestro/maestro-version)
       - name: Install Maestro
         run: |
           export MAESTRO_VERSION=$(cat .maestro/maestro-version)
           curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      # 10. Build E2E dev-client
-      # expo run:ios handles prebuild + xcodebuild + simulator install in one step
       - name: Build E2E dev-client
         run: npx expo run:ios --device "iPhone 16" --configuration Release
         env:
           EXPO_PUBLIC_E2E: "true"
           CI: "true"
 
-      # 11. Run Maestro tests
       - name: Run Maestro tests
         run: |
           maestro test \
@@ -98,7 +88,6 @@ jobs:
             --test-output-dir .maestro/reports \
             .maestro/
 
-      # 12. Upload artifacts on failure only
       - name: Upload Maestro artifacts
         if: failure()
         uses: actions/upload-artifact@v4

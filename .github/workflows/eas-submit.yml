@@ -1,7 +1,5 @@
 name: EAS Submit (Release)
 
-# Triggered by pushing a version tag (e.g. v0.1.0) OR manually.
-# Builds the production profile synchronously, then submits to stores.
 on:
   push:
     tags: ["v*"]
@@ -65,7 +63,7 @@ jobs:
             --latest \
             --non-interactive
         env:
-          # Overrides eas.json submit config — safe to keep eas.json without personal IDs.
+          # Overrides eas.json submit config so eas.json stays free of personal IDs.
           EXPO_APPLE_ID: ${{ secrets.APPLE_ID }}
           EXPO_ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
           EXPO_APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}

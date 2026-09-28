@@ -59,7 +59,6 @@ export default function AddCardScreen(): React.JSX.Element {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ScreenShell>
-        {/* Custom header */}
         <View style={styles.header}>
           <Pressable
             onPress={() => router.back()}
@@ -101,7 +100,6 @@ export default function AddCardScreen(): React.JSX.Element {
         />
       </ScreenShell>
 
-      {/* Help modal */}
       <Modal
         visible={helpVisible}
         transparent
@@ -179,7 +177,6 @@ const styles = StyleSheet.create((theme) => ({
     fontSize: theme.typography.fontSize.base,
     color: theme.colors.textOnPrimary,
   },
-  // Help modal
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',

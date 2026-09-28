@@ -6,7 +6,6 @@ beforeEach(() => {
   useCardStore.setState({ cards: {} });
 });
 
-/** Helper: get the first card id from the store. */
 function firstId(): CardId {
   return Object.keys(useCardStore.getState().cards)[0] as CardId;
 }

@@ -1,11 +1,6 @@
 import { View } from 'react-native';
 
-/**
- * Placeholder screen for the Scan tab.
- * The actual scan functionality is handled by intercepting the tab press
- * and navigating to /card/scan instead. This file exists because
- * Expo Router requires a file for each tab screen name.
- */
+// Never rendered: the tab press is intercepted to push /card/scan; Expo Router needs the file.
 export default function ScanTabPlaceholder(): React.JSX.Element {
   return <View />;
 }

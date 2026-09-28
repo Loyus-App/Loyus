@@ -23,7 +23,6 @@ const withBackupRules = (config) => {
     const app = config.modResults.manifest.application?.[0];
     if (!app) return config;
 
-    // Write XML resource files
     const resXmlDir = resolve(
       config.modRequest.platformProjectRoot,
       'app/src/main/res/xml',
@@ -35,7 +34,6 @@ const withBackupRules = (config) => {
     );
     writeFileSync(resolve(resXmlDir, 'backup_rules.xml'), BACKUP_RULES);
 
-    // Set manifest attributes
     app.$['android:allowBackup'] = 'true';
     app.$['android:dataExtractionRules'] = '@xml/data_extraction_rules';
     app.$['android:fullBackupContent'] = '@xml/backup_rules';

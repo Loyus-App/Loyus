@@ -20,7 +20,7 @@ export default function ConfirmScreen(): React.JSX.Element {
   const params = useLocalSearchParams<{ code?: string; format?: string }>();
   const [ready, setReady] = useState(false);
 
-  // E2E prefill: populate captureStore from deep-link params when store is empty
+  // Maestro can't scan, so E2E flows deep-link here with code/format params
   useEffect(() => {
     if (isE2E && params.code && params.format) {
       const { scannedCode } = useCaptureStore.getState();
@@ -41,7 +41,6 @@ export default function ConfirmScreen(): React.JSX.Element {
       </ScreenShell>
     );
 
-  // No scan data: redirect back (user navigated directly)
   if (!(scannedCode && scannedFormat)) {
     return (
       <ScreenShell>

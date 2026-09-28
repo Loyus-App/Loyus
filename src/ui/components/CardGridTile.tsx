@@ -13,7 +13,6 @@ interface CardGridTileProps {
   onLongPress?: () => void;
 }
 
-/** Derive a short 3-letter abbreviation from a card name */
 function getAbbreviation(name: string): string {
   const words = name.trim().split(WHITESPACE_RE).filter(Boolean);
   if (words.length >= 3) {

@@ -1,30 +1,27 @@
 export const colors = {
   light: {
-    // Surfaces — 4-layer tonal hierarchy (no 1px borders, use tone separation)
-    bg: '#fbf9f4', // base surface (ivory)
-    surface: '#fbf9f4', // same as bg for ScreenShell
-    containerLow: '#f5f3ee', // cards, list rows — one step down
-    containerLowest: '#ffffff', // inputs, modals — pure white
-    containerHigh: '#eae8e3', // pressed state, dividers
-    containerHighest: '#e4e2dd', // strong separator
+    // Separate surfaces by tone, not 1px borders.
+    bg: '#fbf9f4',
+    surface: '#fbf9f4',
+    containerLow: '#f5f3ee',
+    containerLowest: '#ffffff',
+    containerHigh: '#eae8e3',
+    containerHighest: '#e4e2dd',
 
-    // Brand
     primary: '#00535b',
     primaryContainer: '#006d77',
     primaryLight: '#1a7a85',
     textOnPrimary: '#ffffff',
 
-    // Text
     text: '#1b1c19',
     textSecondary: '#3e494a',
     textTertiary: '#6b7b7c',
     textPlaceholder: '#9baeb0',
 
-    // Outline (ghost only — use sparingly, 15% opacity)
+    // Ghost outlines only, at 15% opacity.
     outlineVariant: '#bec8ca',
-    border: '#bec8ca', // alias for components using theme.colors.border
+    border: '#bec8ca', // alias of outlineVariant
 
-    // Semantic
     error: '#ba1a1a',
     errorContainer: '#ffdad6',
     success: '#1b6c3b',

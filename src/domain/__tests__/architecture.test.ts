@@ -16,7 +16,6 @@ const FORBIDDEN_PATTERNS = [
   /require\(\s*['"]react/,
 ];
 
-/** Recursively collect .ts/.tsx files, excluding __tests__/ and *.test.ts. */
 function collectDomainFiles(dir: string): string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

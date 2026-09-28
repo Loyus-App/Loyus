@@ -1,8 +1,5 @@
-// Domain serializer — zero react-native / expo imports
-
 import type { Card } from './card';
 
-/** Current serialization format version. */
 export const SERIALIZER_VERSION = 1;
 
 interface SerializedData {
@@ -20,9 +17,6 @@ const REQUIRED_CARD_FIELDS: readonly (keyof Card)[] = [
   'updatedAt',
 ];
 
-/**
- * Serializes cards to a JSON string with a version header.
- */
 export function serializeCards(cards: readonly Card[]): string {
   const data: SerializedData = {
     version: SERIALIZER_VERSION,
@@ -67,11 +61,6 @@ function validateCard(card: unknown, index: number): void {
   }
 }
 
-/**
- * Deserializes cards from a JSON string.
- * Validates version header and required card fields.
- * Throws on invalid input.
- */
 export function deserializeCards(json: string): Card[] {
   const parsed = parseJson(json);
   const cards = extractCardArray(parsed);

@@ -8,10 +8,6 @@ const SCAN_HEIGHT = 180;
 const CORNER_SIZE = 28;
 const CORNER_WIDTH = 3;
 
-/**
- * Scanner viewfinder overlay with teal corner bracket markers.
- * pointerEvents="none" so taps pass through to camera/buttons.
- */
 export function ScannerOverlay(): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
@@ -19,26 +15,17 @@ export function ScannerOverlay(): React.JSX.Element {
 
   return (
     <View style={styles.root} pointerEvents="none" {...tid('scannerOverlay')}>
-      {/* Top dark band */}
       <View style={styles.darkBand} />
 
-      {/* Middle row */}
       <View style={styles.middleRow}>
         <View style={styles.darkBand} />
 
-        {/* Scan cutout */}
         <View style={styles.cutout}>
-          {/* Corner brackets */}
-          {/* Top-left */}
           <View style={[styles.corner, styles.cornerTL, { borderColor: tealColor }]} />
-          {/* Top-right */}
           <View style={[styles.corner, styles.cornerTR, { borderColor: tealColor }]} />
-          {/* Bottom-left */}
           <View style={[styles.corner, styles.cornerBL, { borderColor: tealColor }]} />
-          {/* Bottom-right */}
           <View style={[styles.corner, styles.cornerBR, { borderColor: tealColor }]} />
 
-          {/* Center instruction */}
           <View style={styles.centerLabel}>
             <Text style={styles.alignText}>{t('scanner.alignText')}</Text>
           </View>
@@ -47,7 +34,6 @@ export function ScannerOverlay(): React.JSX.Element {
         <View style={styles.darkBand} />
       </View>
 
-      {/* Bottom dark band */}
       <View style={styles.bottomBand} />
     </View>
   );
@@ -75,7 +61,6 @@ const styles = StyleSheet.create(() => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Corner brackets
   corner: {
     position: 'absolute',
     width: CORNER_SIZE,

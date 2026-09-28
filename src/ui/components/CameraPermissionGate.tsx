@@ -10,12 +10,6 @@ interface CameraPermissionGateProps {
   children: React.ReactNode;
 }
 
-/**
- * Wraps camera content with a permission check.
- * - Permission granted: renders children
- * - Permission not requested: shows rationale + "Grant Camera Access" button
- * - Permission denied: shows rationale + "Go to Settings" button
- */
 export function CameraPermissionGate({ children }: CameraPermissionGateProps): React.JSX.Element {
   const { t } = useTranslation();
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -34,7 +28,6 @@ export function CameraPermissionGate({ children }: CameraPermissionGateProps): R
     return <>{children}</>;
   }
 
-  // Permission denied after explicit request -> show "Go to Settings"
   const showSettingsButton = wasRequested && !hasPermission;
 
   return (

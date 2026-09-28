@@ -49,9 +49,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       ],
     },
   },
-  // FOUND-09: Android Data Safety declaration is a Play Console form (Phase 6).
-  // Declaration: "No data collected, no data shared."
-  // Enforced by architecture: no analytics SDKs, no network on critical path.
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',

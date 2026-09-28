@@ -1,4 +1,4 @@
-// VisionCamera CodeType <-> domain BarcodeFormat mapping — zero react-native runtime imports
+// iOS: VisionCamera object output (iOS-only); Android: ML Kit (no iOS simulator slices).
 
 import type { ScannedObjectType } from 'react-native-vision-camera';
 import type {

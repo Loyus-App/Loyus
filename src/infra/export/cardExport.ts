@@ -11,10 +11,6 @@ interface ExportData {
   readonly cards: Card[];
 }
 
-/**
- * Build the export filename in `loyus-cards-YYYY-MM-DD.json` format.
- * Pure function — safe to test.
- */
 export function buildExportFileName(date: Date = new Date()): string {
   const y = date.getUTCFullYear();
   const m = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -22,10 +18,6 @@ export function buildExportFileName(date: Date = new Date()): string {
   return `loyus-cards-${y}-${m}-${d}.json`;
 }
 
-/**
- * Build human-readable (indented) JSON with version header and export metadata.
- * Pure function — safe to test.
- */
 export function buildExportJson(cards: readonly Card[]): string {
   const data: ExportData = {
     version: SERIALIZER_VERSION,
@@ -35,10 +27,6 @@ export function buildExportJson(cards: readonly Card[]): string {
   return JSON.stringify(data, null, 2);
 }
 
-/**
- * Export all cards: serialize to JSON, write temp file, open OS share sheet.
- * Side-effectful — NOT unit-tested (depends on native modules).
- */
 export async function exportCards(): Promise<void> {
   const cards = Object.values(useCardStore.getState().cards);
   const json = buildExportJson(cards);
@@ -54,10 +42,9 @@ export async function exportCards(): Promise<void> {
     UTI: 'public.json',
   });
 
-  // Clean up temp file (non-blocking)
   try {
     file.delete();
   } catch {
-    // Ignore cleanup errors
+    // Best-effort: a leftover cache file is harmless
   }
 }

@@ -142,7 +142,6 @@ describe('validateBarcode', () => {
 
   describe('ITF14', () => {
     it('accepts valid 14-digit ITF14', () => {
-      // ITF14 check digit: same mod-10 algorithm
       const result = validateBarcode('00012345678905', BarcodeFormat.ITF14);
       expect(result).toEqual({ valid: true });
     });

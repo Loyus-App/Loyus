@@ -30,7 +30,6 @@ describe('runMigrations', () => {
   it('throws on missing migration function', () => {
     const registry: MigrationRegistry = {
       1: (s: unknown) => s,
-      // missing 2
     };
     expect(() => runMigrations({}, 0, 2, registry)).toThrow(/migration.*2/i);
   });

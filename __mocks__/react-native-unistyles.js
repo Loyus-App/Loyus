@@ -1,6 +1,4 @@
-// Manual mock for react-native-unistyles 3.x (C++ Nitro Module core)
-// Required because Unistyles crashes Jest with "Failed to get NitroModules"
-// See: https://github.com/jpudysz/react-native-unistyles/issues/394
+// Unistyles crashes Jest ("Failed to get NitroModules"): jpudysz/react-native-unistyles#394
 
 let themes = {};
 let currentThemeName = 'light';
