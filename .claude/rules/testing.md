@@ -21,7 +21,7 @@ paths:
 
 ## Transform Patterns
 
-- pnpm `transformIgnorePatterns`: `node_modules/(?!(.pnpm/[^/]+/node_modules/)?(pkg))` handles both npm and pnpm layouts
+- `transformIgnorePatterns`: `node_modules/(?!(pkg))` — Yarn uses a flat `node_modules` layout (`nodeLinker: node-modules`)
 
 ## Domain Tests
 

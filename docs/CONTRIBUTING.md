@@ -5,18 +5,19 @@ Thanks for considering a contribution. This document covers the development work
 ## Dev setup
 
 ```bash
-pnpm install         # triggers `prepare` script, which wires Husky hooks
+corepack enable      # once per machine — picks the Yarn version pinned in package.json
+yarn install         # triggers `postinstall` script, which wires Husky hooks
 ```
 
-After install, commits will run `pnpm lint-staged` automatically (fast Biome check on staged files only). To skip in an emergency: `git commit --no-verify`. CI enforces the same checks, so skipping only delays the pain.
+After install, commits will run `yarn lint-staged` automatically (fast Biome check on staged files only). To skip in an emergency: `git commit --no-verify`. CI enforces the same checks, so skipping only delays the pain.
 
 ## Quality gates (local)
 
 ```bash
-pnpm check:fix       # Biome lint + format (autofix)
-pnpm typecheck       # TypeScript strict
-pnpm test            # Jest unit tests
-pnpm test:e2e        # Maestro E2E (requires iOS simulator + Maestro CLI)
+yarn check:fix       # Biome lint + format (autofix)
+yarn typecheck       # TypeScript strict
+yarn test            # Jest unit tests
+yarn test:e2e        # Maestro E2E (requires iOS simulator + Maestro CLI)
 ```
 
 ## CI pipeline

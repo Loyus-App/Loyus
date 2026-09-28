@@ -1,6 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useFocusEffect } from '@react-navigation/native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,6 +8,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  type TextInputInstance,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -204,7 +204,7 @@ export default function SearchScreen(): React.JSX.Element {
   const { theme } = useUnistyles();
   const { selection, mediumImpact } = useHaptic();
   const { width: screenWidth } = useWindowDimensions();
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
 
   const searchQuery = useUiStore((s) => s.searchQuery);
   const setSearchQuery = useUiStore((s) => s.setSearchQuery);

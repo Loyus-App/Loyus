@@ -45,7 +45,7 @@ export async function exportCards(): Promise<void> {
   const filename = buildExportFileName();
   const file = new File(Paths.cache, filename);
 
-  file.write(json);
+  await file.write(json);
 
   await shareAsync(file.uri, {
     mimeType: 'application/json',

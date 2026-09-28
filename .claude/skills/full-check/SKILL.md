@@ -2,7 +2,7 @@
 name: full-check
 description: Run the complete Loyus quality check suite (Biome, TypeScript, Jest, Maestro)
 disable-model-invocation: true
-allowed-tools: Bash(pnpm *)
+allowed-tools: Bash(yarn *)
 ---
 
 # Full Quality Check
@@ -14,7 +14,7 @@ Run the complete verification suite for Loyus. Execute each step sequentially �
 ### 1. Biome check
 
 ```bash
-pnpm check:fix
+yarn check:fix
 ```
 
 Auto-fixes lint and format issues. If errors remain after auto-fix, diagnose and resolve them.
@@ -22,7 +22,7 @@ Auto-fixes lint and format issues. If errors remain after auto-fix, diagnose and
 ### 2. TypeScript
 
 ```bash
-pnpm typecheck
+yarn typecheck
 ```
 
 Strict type checking. All errors must be resolved — no `any` escape hatches, no `@ts-ignore`.
@@ -30,7 +30,7 @@ Strict type checking. All errors must be resolved — no `any` escape hatches, n
 ### 3. Unit tests
 
 ```bash
-pnpm test
+yarn test
 ```
 
 Jest 29 suite. All tests must pass. If a test fails, diagnose the root cause and fix it.
@@ -38,7 +38,7 @@ Jest 29 suite. All tests must pass. If a test fails, diagnose the root cause and
 ### 4. E2E tests (if simulator available)
 
 ```bash
-pnpm test:e2e
+yarn test:e2e
 ```
 
 Maestro flows. Requires iOS simulator running. If the simulator is not available, skip this step and report it.

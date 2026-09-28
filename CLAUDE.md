@@ -1,16 +1,16 @@
 # Loyus
 
-Offline-first loyalty-card wallet for iOS/Android. Expo SDK 55, React Native 0.83, React 19, TypeScript strict.
+Offline-first loyalty-card wallet for iOS/Android. Expo SDK 58, React Native 0.88, React 19.3, TypeScript 6 strict. Yarn 4 (Corepack, `nodeLinker: node-modules`).
 
 ## Build and Run
 
 ```bash
-pnpm ios              # Dev build for iOS (no Expo Go)
-pnpm android          # Dev build for Android
-pnpm check:fix        # Biome lint + format (biome check --write)
-pnpm typecheck        # TypeScript strict (tsc --noEmit)
-pnpm test             # Jest unit tests
-pnpm test:e2e         # Maestro E2E flows
+yarn ios              # Dev build for iOS (no Expo Go)
+yarn android          # Dev build for Android
+yarn check:fix        # Biome lint + format (biome check --write)
+yarn typecheck        # TypeScript strict (tsc --noEmit)
+yarn test             # Jest unit tests
+yarn test:e2e         # Maestro E2E flows
 ```
 
 ## Architecture (4-layer, strict boundaries)
@@ -29,7 +29,7 @@ pnpm test:e2e         # Maestro E2E flows
 
 ## Linting (Biome.js, NOT ESLint)
 
-- Run: `pnpm check:fix` (biome check --write)
+- Run: `yarn check:fix` (biome check --write)
 - Config: `biome.json` at repo root
 - NEVER suggest ESLint, Prettier, or eslint-* packages
 

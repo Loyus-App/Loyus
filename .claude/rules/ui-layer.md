@@ -27,7 +27,7 @@ paths:
 
 ## Navigation
 
-- `useFocusEffect` for screen-level cleanup (brightness restore, etc.)
+- `useFocusEffect` for screen-level cleanup (brightness restore, etc.) — import it from `expo-router`, never `@react-navigation/*` (expo-router 56+ bundles its own navigation)
 - After delete, navigate to `/(tabs)` instead of `router.back()` to avoid returning to deleted card
 
 ## Accessibility
@@ -37,5 +37,5 @@ paths:
 
 ## Typography
 
-- Font: Manrope family from `@expo-google-fonts/manrope` (Regular, Medium, SemiBold, Bold, ExtraBold)
-- ScrollView for home screen (heterogeneous layout, < 50 cards, not FlashList)
+- Font: Manrope family bundled in `assets/fonts/` and loaded by the `expo-font` config plugin (Regular, Medium, SemiBold, Bold, ExtraBold)
+- ScrollView for home screen (heterogeneous layout, < 50 cards)

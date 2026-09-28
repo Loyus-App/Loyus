@@ -47,5 +47,5 @@ Create a new screen named "$ARGUMENTS" with all required wiring:
 ## 6. Verify
 
 ```bash
-pnpm check:fix && pnpm typecheck && pnpm test
+yarn check:fix && yarn typecheck && yarn test
 ```

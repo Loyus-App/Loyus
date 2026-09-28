@@ -1,6 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router, Tabs } from 'expo-router';
+import { router } from 'expo-router';
+import { Tabs } from 'expo-router/js-tabs';
+import type { ColorValue } from 'react-native';
 import { useUnistyles } from '../../src/ui/theme/unistyles';
+
+// Tint colors are theme token strings; RN types them as the wider ColorValue.
+function iconColor(color: ColorValue): string | undefined {
+  return typeof color === 'string' ? color : undefined;
+}
 
 export default function TabLayout(): React.JSX.Element {
   const { theme } = useUnistyles();
@@ -29,7 +36,11 @@ export default function TabLayout(): React.JSX.Element {
           title: 'Cards',
           headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'card' : 'card-outline'} size={size} color={color} />
+            <Ionicons
+              name={focused ? 'card' : 'card-outline'}
+              size={size}
+              color={iconColor(color)}
+            />
           ),
         }}
       />
@@ -39,7 +50,11 @@ export default function TabLayout(): React.JSX.Element {
           title: 'Search',
           headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'search' : 'search-outline'} size={size} color={color} />
+            <Ionicons
+              name={focused ? 'search' : 'search-outline'}
+              size={size}
+              color={iconColor(color)}
+            />
           ),
         }}
       />
@@ -54,7 +69,11 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: 'Scan',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'scan' : 'scan-outline'} size={size} color={color} />
+            <Ionicons
+              name={focused ? 'scan' : 'scan-outline'}
+              size={size}
+              color={iconColor(color)}
+            />
           ),
         }}
       />
@@ -63,7 +82,11 @@ export default function TabLayout(): React.JSX.Element {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />
+            <Ionicons
+              name={focused ? 'settings' : 'settings-outline'}
+              size={size}
+              color={iconColor(color)}
+            />
           ),
         }}
       />

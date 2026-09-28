@@ -32,36 +32,36 @@ Strict 4-layer separation, enforced by tests:
 
 ## Stack
 
-- Expo SDK 55, React Native 0.83, React 19
+- Expo SDK 58, React Native 0.88, React 19.3
 - TypeScript strict (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
 - Zustand 5 + MMKV for state + persistence
 - Unistyles 3.x for theming (warm-tone palette, light/dark)
-- react-native-vision-camera 4.7 for scanning
+- react-native-vision-camera 5 for scanning (native AVFoundation on iOS, ML Kit on Android)
 - Biome.js (not ESLint/Prettier)
 - Jest 29 for unit, Maestro for E2E
 - i18n: en, fr, es, pt, ru, de
 
 ## Develop
 
-**Prerequisites:** Node 20+, pnpm 10+, Xcode 15+ (iOS) / Android Studio (Android), Maestro CLI 2.4.0 for E2E.
+**Prerequisites:** Node 22.13+ or 24 LTS, Yarn 4 via Corepack (`corepack enable`), Xcode 26.4+ (iOS) / Android Studio (Android), Maestro CLI 2.4.0 for E2E.
 
 ```bash
 # Install
-pnpm install
+yarn install
 
 # Run on device/simulator
-pnpm ios            # iOS dev build (no Expo Go)
-pnpm android        # Android dev build
+yarn ios            # iOS dev build (no Expo Go)
+yarn android        # Android dev build
 
 # Quality gates
-pnpm check:fix      # Biome lint + format
-pnpm typecheck      # tsc --noEmit
-pnpm test           # Jest unit tests
+yarn check:fix      # Biome lint + format
+yarn typecheck      # tsc --noEmit
+yarn test           # Jest unit tests
 
 # E2E
 EXPO_PUBLIC_E2E=true npx expo run:ios   # build E2E flavor
-pnpm test:e2e                            # run all Maestro flows
-pnpm test:e2e:studio                     # interactive flow debugging
+yarn test:e2e                            # run all Maestro flows
+yarn test:e2e:studio                     # interactive flow debugging
 ```
 
 **E2E build flags:**
@@ -81,7 +81,7 @@ See [PRIVACY_POLICY.md](./docs/PRIVACY_POLICY.md). Loyus collects nothing, share
 
 Contributions welcome. Before opening a PR:
 
-1. `pnpm check:fix && pnpm typecheck && pnpm test` must all pass
+1. `yarn check:fix && yarn typecheck && yarn test` must all pass
 2. If you add a user-facing string, add it to **all 6** locale files (`src/infra/i18n/locales/`)
 3. Domain layer stays pure (no RN/Expo imports)
 4. No `any` in app code (Biome enforces)

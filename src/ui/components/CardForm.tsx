@@ -10,6 +10,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  type TextInputInstance,
   View,
 } from 'react-native';
 import { validateBarcode } from '../../domain/barcode';
@@ -134,10 +135,9 @@ export function CardForm({
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const resolved = resolveInitialValues(initialValues);
-  // Use refs to always read the current native text, bypassing controlled-input
-  // reset issues that occur with automated testing tools (e.g. Maestro on iOS).
-  const nameRef = useRef<TextInput>(null);
-  const codeRef = useRef<TextInput>(null);
+  // Read live text from refs: controlled inputs miss onChangeText under Maestro on iOS.
+  const nameRef = useRef<TextInputInstance>(null);
+  const codeRef = useRef<TextInputInstance>(null);
   const nameText = useRef(resolved.name);
   const codeText = useRef(resolved.code);
   const [_name, setName] = useState(resolved.name);

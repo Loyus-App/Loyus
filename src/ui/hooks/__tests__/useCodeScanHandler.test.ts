@@ -1,10 +1,10 @@
 import React from 'react';
-import type { Code } from 'react-native-vision-camera';
 import TestRenderer from 'react-test-renderer';
-import { useCodeScanHandler } from '../useCodeScanHandler';
+import { BarcodeFormat } from '../../../domain/card';
+import { type DetectedCode, useCodeScanHandler } from '../useCodeScanHandler';
 
-function makeCode(value: string, type = 'qr'): Code {
-  return { value, type } as Code;
+function makeCode(value: string, format = BarcodeFormat.QR_CODE): DetectedCode {
+  return { value, format };
 }
 
 // Minimal renderHook using react-test-renderer
@@ -67,7 +67,7 @@ describe('useCodeScanHandler', () => {
     TestRenderer.act(() => {
       result.current([makeCode('ABC123')]);
     });
-    expect(onConfirm).toHaveBeenCalledWith('ABC123', 'qr');
+    expect(onConfirm).toHaveBeenCalledWith('ABC123', BarcodeFormat.QR_CODE);
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
@@ -152,7 +152,7 @@ describe('useCodeScanHandler', () => {
   it('ignores codes with falsy value', () => {
     const { result } = renderHook(() => useCodeScanHandler(onConfirm));
     TestRenderer.act(() => {
-      result.current([{ type: 'qr' } as Code]);
+      result.current([{ value: undefined, format: BarcodeFormat.QR_CODE }]);
     });
     expect(onConfirm).not.toHaveBeenCalled();
   });

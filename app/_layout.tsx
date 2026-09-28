@@ -17,7 +17,7 @@ export { ErrorBoundary } from '../src/ui/components/ErrorBoundary';
 
 // biome-ignore lint/style/useNamingConvention: Expo Router requires this exact export name
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  anchor: '(tabs)',
 };
 
 SplashScreen.preventAutoHideAsync();

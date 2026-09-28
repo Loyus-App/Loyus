@@ -42,12 +42,13 @@ describe('architecture: domain layer purity', () => {
     expect(domainFiles.length).toBeGreaterThan(0);
   });
 
-  it.each(
-    domainFiles.map((f) => [relative(DOMAIN_ROOT, f), f]),
-  )('%s has no forbidden imports', (_rel, fullPath) => {
-    const content = readFileSync(fullPath as string, 'utf-8');
-    for (const pattern of FORBIDDEN_PATTERNS) {
-      expect(content).not.toMatch(pattern);
-    }
-  });
+  it.each(domainFiles.map((f) => [relative(DOMAIN_ROOT, f), f]))(
+    '%s has no forbidden imports',
+    (_rel, fullPath) => {
+      const content = readFileSync(fullPath as string, 'utf-8');
+      for (const pattern of FORBIDDEN_PATTERNS) {
+        expect(content).not.toMatch(pattern);
+      }
+    },
+  );
 });

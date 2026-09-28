@@ -18,8 +18,11 @@ Bridge between domain logic and platform capabilities. May import domain types a
 
 ## Camera
 
-- react-native-vision-camera 4.7+ with built-in code scanner
-- VisionCamera Expo plugin handles `NSCameraUsageDescription` (no manual infoPlist)
+- react-native-vision-camera 5 (Nitro). Scanning is split per platform in `src/ui/hooks/useScanOutput.{ios,android}.ts`:
+  - iOS: native object output (`useObjectOutput`, AVFoundation) — the object output does not exist on Android
+  - Android: ML Kit via `react-native-vision-camera-barcode-scanner`, excluded from iOS autolinking in `package.json` (ML Kit has no iOS simulator slices)
+- Format mapping for both platforms lives in `src/infra/camera/formatMap.ts`
+- VisionCamera 5 has no config plugin: `NSCameraUsageDescription` is in `ios.infoPlist` and the CAMERA permission in `android.permissions` (`app.config.ts`)
 - `useRef`-based state in scan handler (not useState) to avoid re-renders from high-frequency callbacks
 
 ## Barcode Rendering

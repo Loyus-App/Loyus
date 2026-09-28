@@ -1,18 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InteractionManager, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
-import { BarcodeFormat } from '../../src/domain/card';
-import { CODE_TYPE_TO_FORMAT, SCAN_CODE_TYPES } from '../../src/infra/camera/formatMap';
+import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import type { BarcodeFormat } from '../../src/domain/card';
 import { useCaptureStore } from '../../src/state/stores/captureStore';
 import { CameraPermissionGate } from '../../src/ui/components/CameraPermissionGate';
 import { ScannerOverlay } from '../../src/ui/components/ScannerOverlay';
 import { TorchToggle } from '../../src/ui/components/TorchToggle';
 import { useCodeScanHandler } from '../../src/ui/hooks/useCodeScanHandler';
+import { useScanOutput } from '../../src/ui/hooks/useScanOutput';
 import { useTorch } from '../../src/ui/hooks/useTorch';
 import { tid } from '../../src/ui/testIds';
 import { StyleSheet } from '../../src/ui/theme/unistyles';
@@ -32,13 +32,11 @@ export default function ScanScreen(): React.JSX.Element {
   }, []);
 
   const onConfirm = useCallback(
-    async (code: string, codeType: string) => {
+    async (code: string, format: BarcodeFormat) => {
       useCaptureStore.getState().setIsScanning(false);
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const format =
-        CODE_TYPE_TO_FORMAT[codeType as keyof typeof CODE_TYPE_TO_FORMAT] ?? BarcodeFormat.QR_CODE;
       useCaptureStore.getState().setScannedResult(code, format);
-      InteractionManager.runAfterInteractions(() => {
+      requestIdleCallback(() => {
         router.push('/card/confirm');
       });
     },
@@ -47,10 +45,8 @@ export default function ScanScreen(): React.JSX.Element {
 
   const handleScanned = useCodeScanHandler(onConfirm);
 
-  const codeScanner = useCodeScanner({
-    codeTypes: SCAN_CODE_TYPES,
-    onCodeScanned: handleScanned,
-  });
+  const scanOutput = useScanOutput(handleScanned);
+  const outputs = useMemo(() => [scanOutput], [scanOutput]);
 
   if (!device) {
     return (
@@ -97,8 +93,8 @@ export default function ScanScreen(): React.JSX.Element {
           style={styles.camera}
           device={device}
           isActive={isScanning}
-          codeScanner={codeScanner}
-          torch={torchEnabled ? 'on' : 'off'}
+          outputs={outputs}
+          torchMode={torchEnabled ? 'on' : 'off'}
         />
 
         <ScannerOverlay />

@@ -28,9 +28,9 @@ paths:
 
 ## Running
 
-- Run all: `pnpm test:e2e` (wraps `bash scripts/test-e2e.sh`)
+- Run all: `yarn test:e2e` (wraps `bash scripts/test-e2e.sh`)
 - Single flow: `maestro test .maestro/<flow>.yaml`
-- Studio: `pnpm test:e2e:studio`
+- Studio: `yarn test:e2e:studio`
 
 ## Data Injection
 

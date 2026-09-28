@@ -1,6 +1,6 @@
-import { useFocusEffect } from '@react-navigation/native';
 import * as Brightness from 'expo-brightness';
 import { useKeepAwake } from 'expo-keep-awake';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef } from 'react';
 
 /**

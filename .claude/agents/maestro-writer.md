@@ -42,7 +42,7 @@ Read `src/ui/testIds.ts` for the full list of available test identifiers. Always
 
 ## Running flows
 
-- `pnpm test:e2e` — run all flows
+- `yarn test:e2e` — run all flows
 - `maestro test .maestro/<flow>.yaml` — run a single flow
 
 ## Deep-link prefill pattern

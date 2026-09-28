@@ -8,11 +8,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'loyus',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
-  splash: {
-    image: './assets/images/splash-icon.png',
-    resizeMode: 'contain',
-    backgroundColor: '#FFFFFF',
-  },
   updates: {
     checkAutomatically: 'NEVER' as const,
   },
@@ -21,8 +16,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: 'com.loyus.app',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
-      // A transitive dependency references CoreLocation APIs but Loyus never invokes them.
-      // Apple requires a purpose string whenever an API is referenced, even if unused.
+      NSCameraUsageDescription: 'Loyus needs camera access to scan loyalty card barcodes.',
+      // Apple requires this because a transitive dep references CoreLocation, though unused.
       NSLocationWhenInUseUsageDescription:
         'Loyus does not access your location. This description is required by iOS because a bundled library references the location API, even though Loyus never requests it.',
     },
@@ -63,30 +58,31 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: '#FFFFFF',
     },
     package: 'com.loyus.app',
+    permissions: ['android.permission.CAMERA'],
   },
   plugins: [
     'expo-router',
     [
-      'react-native-vision-camera',
+      'expo-splash-screen',
       {
-        cameraPermissionText:
-          'Loyus needs camera access to scan loyalty card barcodes.',
-        enableCodeScanner: true,
+        image: './assets/images/splash-icon.png',
+        resizeMode: 'contain',
+        backgroundColor: '#FFFFFF',
       },
     ],
+    'expo-localization',
+    'expo-sharing',
+    'expo-status-bar',
+    'expo-web-browser',
     [
       'expo-build-properties',
       {
         android: {
           minSdkVersion: 29,
-          compileSdkVersion: 36,
-          targetSdkVersion: 35,
         },
       },
     ],
-    'react-native-edge-to-edge',
-    // PERS-04: iOS MMKV in Documents/mmkv/ — backup-eligible by default, no config needed
-    // PERS-05: Android MMKV backup rules (API 29-30 + API 31+)
+    // Android only: iOS MMKV lives in Documents/, which is backed up by default.
     './plugins/withBackupRules',
     [
       'expo-font',

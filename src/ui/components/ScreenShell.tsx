@@ -1,11 +1,10 @@
-import type { ReactNode } from 'react';
-import type { ViewStyle } from 'react-native';
+import type { ComponentProps, ReactNode } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from '../theme/unistyles';
 
 interface ScreenShellProps {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: ComponentProps<typeof SafeAreaView>['style'];
   testID?: string;
 }
 

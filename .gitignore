@@ -11,9 +11,18 @@ eas.json.local
 
 # Dependencies
 node_modules/
-# Project is pnpm-managed — block stray npm/yarn lockfiles (EAS picks the wrong package manager otherwise).
+# Project is Yarn-managed — block stray npm/pnpm lockfiles (EAS picks the wrong package manager otherwise).
 package-lock.json
-yarn.lock
+pnpm-lock.yaml
+
+# Yarn Berry (no zero-installs)
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
 
 # Expo
 .expo/
