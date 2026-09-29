@@ -4,9 +4,7 @@ import { type Barcode, useBarcodeScannerOutput } from 'react-native-vision-camer
 import { ANDROID_FORMAT_TO_FORMAT, ANDROID_SCAN_FORMATS } from '../../infra/camera/formatMap';
 import type { DetectedCode } from './useCodeScanHandler';
 
-function ignoreFrameError(): void {
-  // Non-fatal: the scanner keeps running and retries on the next frame.
-}
+const ignoreFrameError = (): undefined => undefined;
 
 export function useScanOutput(onCodes: (codes: DetectedCode[]) => void): CameraOutput {
   const onBarcodeScanned = useCallback(

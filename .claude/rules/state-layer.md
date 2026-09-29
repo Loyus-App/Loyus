@@ -16,7 +16,7 @@ paths:
 
 - Selectors live in `src/state/selectors/` -- never subscribe to whole-store
 - Use `useShallow` for array/object selectors to prevent unnecessary rerenders
-- Selector functions are pure and composable (e.g., `selectSortedCards`, `selectCardById`)
+- Selector functions are pure and composable (e.g., `selectPinnedCards(mode)`, `selectCardById`)
 
 ## ID Generation
 

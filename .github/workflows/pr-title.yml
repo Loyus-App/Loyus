@@ -4,7 +4,6 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 
-# Read-only suffices (we fail, never comment), so it works under a read-only org default.
 permissions:
   contents: read
 

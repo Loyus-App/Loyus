@@ -1,8 +1,7 @@
-import type { CardId } from '../../domain/card';
 import { useUiStore } from '../stores/uiStore';
 
 beforeEach(() => {
-  useUiStore.setState({ searchQuery: '', selectedCardId: null });
+  useUiStore.setState({ searchQuery: '', actionSheet: null, brandPick: null });
 });
 
 describe('uiStore', () => {
@@ -15,15 +14,23 @@ describe('uiStore', () => {
     expect(useUiStore.getState().searchQuery).toBe('cafe');
   });
 
-  it('setSelectedCardId sets card id', () => {
-    const id = 'some-id' as CardId;
-    useUiStore.getState().setSelectedCardId(id);
-    expect(useUiStore.getState().selectedCardId).toBe(id);
+  it('shows and hides an action sheet request', () => {
+    const request = { title: 'Carrefour', actions: [{ label: 'Edit', run: jest.fn() }] };
+    useUiStore.getState().showActionSheet(request);
+    expect(useUiStore.getState().actionSheet).toBe(request);
+
+    useUiStore.getState().hideActionSheet();
+    expect(useUiStore.getState().actionSheet).toBeNull();
   });
 
-  it('clearSelection resets selectedCardId to null', () => {
-    useUiStore.getState().setSelectedCardId('some-id' as CardId);
-    useUiStore.getState().clearSelection();
-    expect(useUiStore.getState().selectedCardId).toBeNull();
+  it('hands a brand pick over once', () => {
+    useUiStore.getState().pickBrand('carrefour');
+    expect(useUiStore.getState().takeBrandPick()).toEqual({ brandId: 'carrefour' });
+    expect(useUiStore.getState().takeBrandPick()).toBeNull();
+  });
+
+  it('records choosing no brand', () => {
+    useUiStore.getState().pickBrand(null);
+    expect(useUiStore.getState().takeBrandPick()).toEqual({ brandId: null });
   });
 });

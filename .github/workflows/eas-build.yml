@@ -1,7 +1,6 @@
 name: EAS Build
 
 on:
-  # Manual only: building on every main push burned EAS free-tier minutes.
   workflow_dispatch:
     inputs:
       platform:
@@ -25,7 +24,6 @@ jobs:
   build:
     name: EAS ${{ github.event.inputs.profile || 'preview' }} — ${{ github.event.inputs.platform || 'all' }}
     runs-on: ubuntu-latest
-    # Skip in forks, which lack the EXPO_TOKEN secret.
     if: github.repository == 'Loyus-App/Loyus'
     steps:
       - uses: actions/checkout@v4

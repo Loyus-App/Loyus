@@ -21,7 +21,6 @@ const RE_CODABAR = /^[0-9\-$:/.+]+$/;
 const RE_DIGITS_ONLY = /^\d+$/;
 const RE_DIGITS_1_6 = /^\d{1,6}$/;
 
-// GS1 mod-10 check digit: weights 3,1,3,... starting from the rightmost payload digit.
 function computeCheckDigit(digits: string): number {
   let sum = 0;
   for (let i = 0; i < digits.length; i++) {

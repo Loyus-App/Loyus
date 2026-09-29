@@ -38,7 +38,6 @@ export function initI18n(savedLanguage: LanguageCode): void {
       de: { translation: de },
     },
     interpolation: { escapeValue: false },
-    // Inline resources, no async backend: init is synchronous, so no missing-key flash.
   });
 }
 

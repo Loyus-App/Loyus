@@ -1,6 +1,6 @@
 import type { Card } from './card';
 
-export const SERIALIZER_VERSION = 1;
+export const SERIALIZER_VERSION = 2;
 
 interface SerializedData {
   readonly version: number;
@@ -12,15 +12,19 @@ const REQUIRED_CARD_FIELDS: readonly (keyof Card)[] = [
   'name',
   'code',
   'format',
-  'isFavorite',
   'createdAt',
   'updatedAt',
 ];
 
+export function portableCard(card: Card): Card {
+  const { photos: _photos, ...rest } = card;
+  return rest;
+}
+
 export function serializeCards(cards: readonly Card[]): string {
   const data: SerializedData = {
     version: SERIALIZER_VERSION,
-    cards: [...cards],
+    cards: cards.map(portableCard),
   };
   return JSON.stringify(data);
 }
@@ -61,11 +65,21 @@ function validateCard(card: unknown, index: number): void {
   }
 }
 
+function normalizeCard(raw: Record<string, unknown>): Card {
+  const { isFavorite, photos: _photos, brandId, ...rest } = raw;
+  return {
+    ...rest,
+    ...(typeof brandId === 'string' && brandId ? { brandId } : {}),
+    isPinned: typeof raw.isPinned === 'boolean' ? raw.isPinned : isFavorite === true,
+    openCount: typeof raw.openCount === 'number' ? raw.openCount : 0,
+  } as unknown as Card;
+}
+
 export function deserializeCards(json: string): Card[] {
   const parsed = parseJson(json);
   const cards = extractCardArray(parsed);
   for (let i = 0; i < cards.length; i++) {
     validateCard(cards[i], i);
   }
-  return cards as Card[];
+  return (cards as Record<string, unknown>[]).map(normalizeCard);
 }

@@ -12,6 +12,16 @@ interface ScoredCard {
   readonly score: number;
 }
 
+function scoreCard(card: Card, normalizedQuery: string): number {
+  const matches = (text: string | undefined): boolean =>
+    text !== undefined && normalizeForSearch(text).includes(normalizedQuery);
+  return (
+    (matches(card.name) ? 2 : 0) +
+    (card.code.toLowerCase().includes(normalizedQuery) ? 1 : 0) +
+    (matches(card.owner) ? 1 : 0)
+  );
+}
+
 export function searchCards(cards: readonly Card[], query: string): Card[] {
   const trimmed = query.trim();
   if (trimmed === '') {
@@ -19,31 +29,16 @@ export function searchCards(cards: readonly Card[], query: string): Card[] {
   }
 
   const normalizedQuery = normalizeForSearch(trimmed);
-
   const scored: ScoredCard[] = [];
 
   for (const card of cards) {
-    let score = 0;
-
-    if (normalizeForSearch(card.name).includes(normalizedQuery)) {
-      score += 2;
-    }
-
-    if (card.code.toLowerCase().includes(normalizedQuery)) {
-      score += 1;
-    }
-
+    const score = scoreCard(card, normalizedQuery);
     if (score > 0) {
       scored.push({ card, score });
     }
   }
 
-  scored.sort((a, b) => {
-    if (a.score !== b.score) {
-      return b.score - a.score;
-    }
-    return a.card.name.localeCompare(b.card.name);
-  });
+  scored.sort((a, b) => b.score - a.score || a.card.name.localeCompare(b.card.name));
 
   return scored.map((s) => s.card);
 }

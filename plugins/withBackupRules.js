@@ -6,15 +6,18 @@ const DATA_EXTRACTION_RULES = `<?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
   <cloud-backup>
     <include domain="file" path="mmkv/" />
+    <include domain="file" path="card-photos/" />
   </cloud-backup>
   <device-transfer>
     <include domain="file" path="mmkv/" />
+    <include domain="file" path="card-photos/" />
   </device-transfer>
 </data-extraction-rules>`;
 
 const BACKUP_RULES = `<?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
   <include domain="file" path="mmkv/" />
+  <include domain="file" path="card-photos/" />
 </full-backup-content>`;
 
 /** @type {import('expo/config-plugins').ConfigPlugin} */

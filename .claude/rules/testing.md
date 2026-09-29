@@ -15,7 +15,7 @@ paths:
 
 ## Mocks
 
-- Mocks in `__mocks__/` for: unistyles, mmkv, expo-crypto, nitro-modules, netinfo
+- Official Unistyles and Reanimated mocks in `jest.setup.ts`; `__mocks__/` for mmkv, expo-crypto, nitro-modules, netinfo, vision-camera
 - Unistyles mock matches 3.2.x `StyleSheet` API
 - MMKV mock uses in-memory Map for synchronous get/set
 

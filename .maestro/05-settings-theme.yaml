@@ -1,33 +1,49 @@
 appId: com.loyus.app
 ---
-# Settings screen: theme switcher E2E flow
-# Exercises Light/Dark/System theme switching and verifies about section content.
-
 - runFlow: shared/launch-fresh.yaml
-
-# Navigate to Settings tab
-- tapOn: "Settings"
-
-# Verify sections visible
+- tapOn:
+    text: "Settings"
 - extendedWaitUntil:
     visible:
       id: "settings-screen"
     timeout: 15000
-
-- assertVisible: "Appearance"
-- assertVisible: "SYNCHRONIZATION"
-- assertVisible: "Cloud Sync"
-- assertVisible: "DATA PORTABILITY"
-- assertVisible: "Export Backup"
-
-# Switch to Dark theme
-- tapOn:
-    id: "theme-dark"
 - assertVisible:
-    text: "Dark mode"
-
-# Switch to Light theme
-- tapOn:
+    id: "theme-system"
+- assertVisible:
     id: "theme-light"
 - assertVisible:
-    text: "Light mode"
+    id: "theme-dark"
+- tapOn:
+    id: "theme-dark"
+- takeScreenshot: "05-settings-theme-dark"
+- tapOn:
+    id: "theme-light"
+- takeScreenshot: "05-settings-theme-light"
+- tapOn:
+    id: "theme-system"
+- tapOn:
+    id: "language-row"
+- extendedWaitUntil:
+    visible:
+      text: "Same as the phone"
+    timeout: 5000
+- assertVisible:
+    text: "English"
+- assertVisible:
+    text: "Français"
+- tapOn:
+    text: "Same as the phone"
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 5000
+- assertVisible:
+    id: "max-brightness-switch"
+- assertVisible:
+    id: "export-cards-row"
+- assertVisible:
+    id: "restore-backup-row"
+- assertVisible:
+    id: "privacy-policy-row"
+- assertVisible:
+    id: "about-version"

@@ -1,5 +1,3 @@
-// iOS: VisionCamera object output (iOS-only); Android: ML Kit (no iOS simulator slices).
-
 import type { ScannedObjectType } from 'react-native-vision-camera';
 import type {
   BarcodeFormat as MlKitBarcodeFormat,
@@ -7,7 +5,6 @@ import type {
 } from 'react-native-vision-camera-barcode-scanner';
 import { BarcodeFormat } from '../../domain/card';
 
-/** AVFoundation has no UPC-A type: it reports UPC-A as EAN-13 with a leading 0. */
 export const IOS_TYPE_TO_FORMAT: Partial<Record<ScannedObjectType, BarcodeFormat>> = {
   'ean-13': BarcodeFormat.EAN13,
   'ean-8': BarcodeFormat.EAN8,
@@ -25,7 +22,6 @@ export const IOS_TYPE_TO_FORMAT: Partial<Record<ScannedObjectType, BarcodeFormat
 
 export const IOS_SCAN_TYPES = Object.keys(IOS_TYPE_TO_FORMAT) as ScannedObjectType[];
 
-/** ML Kit does not support GS1 DataBar. */
 export const ANDROID_FORMAT_TO_FORMAT: Partial<Record<MlKitBarcodeFormat, BarcodeFormat>> = {
   'ean-13': BarcodeFormat.EAN13,
   'ean-8': BarcodeFormat.EAN8,

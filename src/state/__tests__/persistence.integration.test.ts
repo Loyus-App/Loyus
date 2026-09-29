@@ -4,15 +4,13 @@ import { mmkvStateStorage } from '../../infra/persistence/mmkv';
 import { useCardStore } from '../stores/cardStore';
 
 beforeEach(() => {
-  useCardStore.setState({ cards: {} });
+  useCardStore.setState({ cards: {}, manualOrder: [] });
 });
 
-// Snapshot first: persist's subscriber writes the cleared state back to MMKV on setState.
 async function simulateColdRestart(): Promise<void> {
-  // Cast: MMKV getItem is synchronous, returns string | null at runtime
   const snapshot = mmkvStateStorage.getItem('cards') as string | null;
 
-  useCardStore.setState({ cards: {} } as any, true);
+  useCardStore.setState({ cards: {}, manualOrder: [] });
 
   if (snapshot !== null) {
     mmkvStateStorage.setItem('cards', snapshot);
@@ -42,9 +40,55 @@ describe('persistence integration', () => {
     expect(restored?.name).toBe('Carrefour');
     expect(restored?.code).toBe('3260123456789');
     expect(restored?.format).toBe(BarcodeFormat.EAN13);
-    expect(restored?.isFavorite).toBe(false);
+    expect(restored?.isPinned).toBe(false);
     expect(restored?.createdAt).toBe(original.createdAt);
     expect(restored?.updatedAt).toBe(original.updatedAt);
+  });
+
+  it('manual order persists across store reset and rehydration', async () => {
+    const first = useCardStore
+      .getState()
+      .addCard({ name: 'First', code: '1', format: BarcodeFormat.CODE128 });
+    const second = useCardStore
+      .getState()
+      .addCard({ name: 'Second', code: '2', format: BarcodeFormat.CODE128 });
+    useCardStore.getState().setManualOrder([second, first]);
+
+    await simulateColdRestart();
+
+    expect(useCardStore.getState().manualOrder).toEqual([second, first]);
+  });
+
+  it('migration from version 2 seeds the manual order by creation date', async () => {
+    const v2Card = (id: string, createdAt: number) => ({
+      id,
+      name: id,
+      code: id,
+      format: BarcodeFormat.CODE128,
+      isPinned: false,
+      openCount: 0,
+      createdAt,
+      updatedAt: createdAt,
+    });
+    const v2Data = {
+      state: {
+        cards: {
+          newest: v2Card('newest', 3000),
+          oldest: v2Card('oldest', 1000),
+          middle: v2Card('middle', 2000),
+        },
+      },
+      version: 2,
+    };
+
+    mmkvStateStorage.setItem('cards', JSON.stringify(v2Data));
+
+    await useCardStore.persist.rehydrate();
+
+    const state = useCardStore.getState();
+    expect(state.manualOrder).toEqual(['oldest', 'middle', 'newest']);
+    expect(Object.keys(state.cards).sort()).toEqual(['middle', 'newest', 'oldest']);
+    expect(state.cards.oldest?.createdAt).toBe(1000);
   });
 
   it('migration from version 0 data loads correctly', async () => {
@@ -73,7 +117,11 @@ describe('persistence integration', () => {
     const migrated = cards['test-migration-id'] as Card | undefined;
     expect(migrated).toBeDefined();
     expect(migrated?.name).toBe('Migrated');
-    expect(migrated?.isFavorite).toBe(true);
+    expect(migrated?.isPinned).toBe(true);
+    expect(migrated).not.toHaveProperty('isFavorite');
+    expect(migrated?.openCount).toBe(0);
+    expect(migrated?.lastOpenedAt).toBe(2000000);
     expect(migrated?.createdAt).toBe(1000000);
+    expect(useCardStore.getState().manualOrder).toEqual(['test-migration-id']);
   });
 });

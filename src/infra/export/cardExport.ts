@@ -2,8 +2,9 @@ import { File, Paths } from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
 
 import type { Card } from '../../domain/card';
-import { SERIALIZER_VERSION } from '../../domain/serializer';
+import { portableCard, SERIALIZER_VERSION } from '../../domain/serializer';
 import { useCardStore } from '../../state/stores/cardStore';
+import { deleteQuietly } from '../files';
 
 interface ExportData {
   readonly version: number;
@@ -22,7 +23,7 @@ export function buildExportJson(cards: readonly Card[]): string {
   const data: ExportData = {
     version: SERIALIZER_VERSION,
     exportedAt: new Date().toISOString(),
-    cards: [...cards],
+    cards: cards.map(portableCard),
   };
   return JSON.stringify(data, null, 2);
 }
@@ -42,9 +43,5 @@ export async function exportCards(): Promise<void> {
     UTI: 'public.json',
   });
 
-  try {
-    file.delete();
-  } catch {
-    // Best-effort: a leftover cache file is harmless
-  }
+  deleteQuietly(file);
 }

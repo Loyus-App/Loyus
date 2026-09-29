@@ -4,10 +4,10 @@ import { join } from 'node:path';
 const REPO_ROOT = join(__dirname, '..', '..', '..');
 
 const CRITICAL_PATH_FILES = [
-  'app/_layout.tsx',
-  'app/(tabs)/_layout.tsx',
-  'app/(tabs)/index.tsx',
-  'app/card/[id].tsx',
+  'src/app/_layout.tsx',
+  'src/app/(tabs)/_layout.tsx',
+  'src/app/(tabs)/(cards)/index.tsx',
+  'src/app/card/[id].tsx',
   'src/state/stores/cardStore.ts',
   'src/state/stores/uiStore.ts',
   'src/state/stores/settingsStore.ts',

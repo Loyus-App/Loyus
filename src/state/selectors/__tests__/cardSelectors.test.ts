@@ -1,109 +1,72 @@
-import { BarcodeFormat, type Card, type CardId } from '../../../domain/card';
+import type { CardId } from '@/domain/card';
+import { makeCard } from '@/testing/makeCard';
 import {
   selectCardById,
-  selectFavorites,
-  selectRecentCards,
+  selectCardCount,
+  selectPinnedCards,
+  selectRecentlyOpened,
   selectSearchResults,
-  selectSortedCards,
+  selectUnpinnedCards,
 } from '../cardSelectors';
 
-function makeCard(overrides: {
-  id: string;
-  name: string;
-  code?: string;
-  isFavorite?: boolean;
-  updatedAt?: number;
-}): Card {
-  return {
-    id: overrides.id as CardId,
-    name: overrides.name,
-    code: overrides.code ?? '0000000000000',
-    format: BarcodeFormat.EAN13,
-    isFavorite: overrides.isFavorite ?? false,
-    createdAt: 1000,
-    updatedAt: overrides.updatedAt ?? 1000,
-  };
-}
-
-const fav1 = makeCard({ id: 'f1', name: 'Alpha', isFavorite: true, updatedAt: 3000 });
-const fav2 = makeCard({ id: 'f2', name: 'Beta', isFavorite: true, updatedAt: 2000 });
-const card1 = makeCard({ id: 'c1', name: 'Gamma', updatedAt: 4000 });
-const card2 = makeCard({ id: 'c2', name: 'Delta', updatedAt: 1000 });
+const pinnedOften = makeCard({
+  id: 'p1',
+  name: 'Alpha',
+  isPinned: true,
+  openCount: 5,
+  lastOpenedAt: 10,
+});
+const pinnedRare = makeCard({
+  id: 'p2',
+  name: 'Beta',
+  isPinned: true,
+  openCount: 1,
+  lastOpenedAt: 30,
+});
+const opened = makeCard({ id: 'c1', name: 'Gamma', openCount: 3, lastOpenedAt: 20 });
+const neverOpened = makeCard({ id: 'c2', name: 'Delta' });
 
 const state = {
-  cards: {
-    [fav1.id]: fav1,
-    [fav2.id]: fav2,
-    [card1.id]: card1,
-    [card2.id]: card2,
-  },
+  cards: Object.fromEntries([pinnedOften, pinnedRare, opened, neverOpened].map((c) => [c.id, c])),
+  manualOrder: ['c2', 'p2', 'c1', 'p1'],
 };
 
-describe('selectSortedCards', () => {
-  it('returns favorites first, then by updatedAt desc', () => {
-    const result = selectSortedCards(state);
-    expect(result[0]?.id).toBe('f1');
-    expect(result[1]?.id).toBe('f2');
-    expect(result[2]?.isFavorite).toBe(false);
-  });
-});
+const ids = (cards: readonly { id: string }[]): string[] => cards.map((card) => card.id);
 
-describe('selectCardById', () => {
-  it('returns the card when found', () => {
-    const card = selectCardById('f1' as CardId)(state);
-    expect(card).not.toBeNull();
-    expect(card?.name).toBe('Alpha');
+describe('card selectors', () => {
+  it('counts cards', () => {
+    expect(selectCardCount(state)).toBe(4);
   });
 
-  it('returns null when not found', () => {
-    const card = selectCardById('nonexistent' as CardId)(state);
-    expect(card).toBeNull();
-  });
-});
-
-describe('selectFavorites', () => {
-  it('returns only favorite cards', () => {
-    const result = selectFavorites(state);
-    expect(result).toHaveLength(2);
-    expect(result.every((c) => c.isFavorite)).toBe(true);
+  it('finds a card by id, or null', () => {
+    expect(selectCardById('c1' as CardId)(state)?.name).toBe('Gamma');
+    expect(selectCardById('missing' as CardId)(state)).toBeNull();
   });
 
-  it('returns empty array when no favorites', () => {
-    const noFavs = { cards: { [card1.id]: card1, [card2.id]: card2 } };
-    expect(selectFavorites(noFavs)).toEqual([]);
-  });
-});
-
-describe('selectRecentCards', () => {
-  it('returns cards sorted by updatedAt desc, limited to default 3', () => {
-    const result = selectRecentCards()(state);
-    expect(result).toHaveLength(3);
-    expect(result[0]?.updatedAt).toBeGreaterThanOrEqual(result[1]?.updatedAt ?? 0);
+  it('splits pinned and unpinned cards, each sorted by the chosen mode', () => {
+    expect(ids(selectPinnedCards('mostUsed')(state))).toEqual(['p1', 'p2']);
+    expect(ids(selectPinnedCards('recent')(state))).toEqual(['p2', 'p1']);
+    expect(ids(selectUnpinnedCards('alphabetical')(state))).toEqual(['c2', 'c1']);
   });
 
-  it('respects custom limit', () => {
-    const result = selectRecentCards(2)(state);
-    expect(result).toHaveLength(2);
+  it('follows the manual order within each group', () => {
+    expect(ids(selectPinnedCards('manual')(state))).toEqual(['p2', 'p1']);
+    expect(ids(selectUnpinnedCards('manual')(state))).toEqual(['c2', 'c1']);
   });
 
-  it('returns all cards when limit exceeds count', () => {
-    const result = selectRecentCards(10)(state);
-    expect(result).toHaveLength(4);
-  });
-});
-
-describe('selectSearchResults', () => {
-  it('finds cards by name query', () => {
-    const result = selectSearchResults('alpha')(state);
-    expect(result).toHaveLength(1);
-    expect(result[0]?.id).toBe('f1');
+  it('keeps cards missing from the manual order, after the ordered ones', () => {
+    const partial = { ...state, manualOrder: ['c1'] };
+    expect(ids(selectUnpinnedCards('manual')(partial))).toEqual(['c1', 'c2']);
+    expect(ids(selectPinnedCards('manual')({ cards: state.cards }))).toEqual(['p1', 'p2']);
   });
 
-  it('returns empty for empty query', () => {
-    expect(selectSearchResults('')(state)).toEqual([]);
+  it('lists only opened cards, most recent first, up to the limit', () => {
+    expect(ids(selectRecentlyOpened()(state))).toEqual(['p2', 'c1', 'p1']);
+    expect(ids(selectRecentlyOpened(1)(state))).toEqual(['p2']);
   });
 
-  it('returns empty when no matches', () => {
-    expect(selectSearchResults('zzzzz')(state)).toEqual([]);
+  it('searches by name and returns nothing for a blank query', () => {
+    expect(ids(selectSearchResults('gam')(state))).toEqual(['c1']);
+    expect(selectSearchResults('  ')(state)).toEqual([]);
   });
 });

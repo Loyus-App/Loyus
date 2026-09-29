@@ -63,7 +63,6 @@ jobs:
             --latest \
             --non-interactive
         env:
-          # Overrides eas.json submit config so eas.json stays free of personal IDs.
           EXPO_APPLE_ID: ${{ secrets.APPLE_ID }}
           EXPO_ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
           EXPO_APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}

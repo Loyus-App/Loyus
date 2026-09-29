@@ -7,6 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: '0.1.0',
   scheme: 'loyus',
   orientation: 'portrait',
+  userInterfaceStyle: 'automatic',
   icon: './assets/images/icon.png',
   updates: {
     checkAutomatically: 'NEVER' as const,
@@ -16,8 +17,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: 'com.loyus.app',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
-      NSCameraUsageDescription: 'Loyus needs camera access to scan loyalty card barcodes.',
-      // Apple requires this because a transitive dep references CoreLocation, though unused.
+      NSCameraUsageDescription:
+        'Loyus uses the camera to scan loyalty card barcodes and, if you want, to photograph your cards.',
       NSLocationWhenInUseUsageDescription:
         'Loyus does not access your location. This description is required by iOS because a bundled library references the location API, even though Loyus never requests it.',
     },
@@ -64,13 +65,48 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         image: './assets/images/splash-icon.png',
         resizeMode: 'contain',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#F2F3F5',
+        dark: { backgroundColor: '#0B0F14' },
       },
     ],
     'expo-localization',
     'expo-sharing',
     'expo-status-bar',
     'expo-web-browser',
+    [
+      'expo-image-picker',
+      {
+        photosPermission:
+          'Loyus opens your photos only to read a barcode or add a picture of a card you choose.',
+        cameraPermission:
+          'Loyus uses the camera to scan loyalty card barcodes and, if you want, to photograph your cards.',
+        microphonePermission: false,
+      },
+    ],
+    [
+      'expo-widgets',
+      {
+        bundleIdentifier: 'com.loyus.app.widgets',
+        groupIdentifier: 'group.com.loyus.app',
+        widgets: [
+          {
+            name: 'LoyusCards',
+            displayName: 'Cards',
+            description: 'Your pinned cards, one tap from the till.',
+            ios: {
+              supportedFamilies: [
+                'systemSmall',
+                'systemMedium',
+                'accessoryRectangular',
+                'accessoryCircular',
+              ],
+              initialLayout: 'src/widgets/CardsWidget.ios.tsx',
+            },
+            android: null,
+          },
+        ],
+      },
+    ],
     [
       'expo-build-properties',
       {
@@ -79,24 +115,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    // Android only: iOS MMKV lives in Documents/, which is backed up by default.
     './plugins/withBackupRules',
-    [
-      'expo-font',
-      {
-        fonts: [
-          './assets/fonts/Inter-Regular.ttf',
-          './assets/fonts/Inter-Medium.ttf',
-          './assets/fonts/Inter-SemiBold.ttf',
-          './assets/fonts/Inter-Bold.ttf',
-          './assets/fonts/Manrope-Regular.ttf',
-          './assets/fonts/Manrope-Medium.ttf',
-          './assets/fonts/Manrope-SemiBold.ttf',
-          './assets/fonts/Manrope-Bold.ttf',
-          './assets/fonts/Manrope-ExtraBold.ttf',
-        ],
-      },
-    ],
   ],
   experiments: {
     typedRoutes: true,

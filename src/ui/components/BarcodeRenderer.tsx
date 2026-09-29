@@ -1,65 +1,35 @@
-import Barcode, { type Format } from '@kichiyaki/react-native-barcode-generator';
 import { View } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { validateBarcode } from '../../domain/barcode';
-import { BarcodeFormat, JSBARCODE_FORMAT } from '../../domain/card';
+import Svg, { Path } from 'react-native-svg';
+import { StyleSheet, withUnistyles } from 'react-native-unistyles';
+import type { SymbolLayout } from '@/domain/barcodeLayout';
 import { tid } from '../testIds';
-import { StyleSheet } from '../theme/unistyles';
-import { TextFallback } from './TextFallback';
+import type { EncodedSymbol } from './barcodeSymbol';
 
-const RENDERABLE_1D: BarcodeFormat[] = [
-  BarcodeFormat.CODE128,
-  BarcodeFormat.CODE39,
-  BarcodeFormat.EAN13,
-  BarcodeFormat.EAN8,
-  BarcodeFormat.UPC_A,
-  BarcodeFormat.UPC_E,
-  BarcodeFormat.ITF14,
-  BarcodeFormat.CODABAR,
-  BarcodeFormat.MSI,
-  BarcodeFormat.PHARMACODE,
-];
+type Props = {
+  readonly symbol: EncodedSymbol;
+  readonly layout: SymbolLayout;
+  readonly accessibilityLabel?: string | undefined;
+};
 
-interface BarcodeRendererProps {
-  code: string;
-  format: BarcodeFormat;
-  width: number;
-  accessibilityLabel?: string;
-}
+const Ink = withUnistyles(Path, (theme) => ({ fill: theme.barcode.ink }));
 
-export function BarcodeRenderer({
-  code,
-  format,
-  width,
-  accessibilityLabel,
-}: BarcodeRendererProps): React.JSX.Element {
-  let content: React.JSX.Element;
-
-  if (format === BarcodeFormat.QR_CODE) {
-    content = <QRCode value={code} size={Math.min(width * 0.8, 300)} />;
-  } else if (RENDERABLE_1D.includes(format) && validateBarcode(code, format).valid) {
-    content = (
-      <Barcode
-        value={code}
-        format={JSBARCODE_FORMAT[format] as Format}
-        maxWidth={width - 32}
-        lineColor="#000000"
-        background="#FFFFFF"
-      />
-    );
-  } else {
-    content = <TextFallback code={code} format={format} />;
-  }
-
+export function BarcodeRenderer({ symbol, layout, accessibilityLabel }: Props): React.JSX.Element {
   return (
     <View
       style={styles.wrapper}
-      accessible={true}
-      importantForAccessibility="yes"
+      accessible
+      accessibilityRole="image"
       accessibilityLabel={accessibilityLabel}
       {...tid('barcodeDisplay')}
     >
-      {content}
+      <Svg
+        width={layout.width}
+        height={layout.height}
+        viewBox={`0 0 ${symbol.modules} ${symbol.rows}`}
+        preserveAspectRatio="none"
+      >
+        <Ink d={symbol.path} />
+      </Svg>
     </View>
   );
 }
@@ -68,6 +38,5 @@ const styles = StyleSheet.create(() => ({
   wrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
   },
 }));

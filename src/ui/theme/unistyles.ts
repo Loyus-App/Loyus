@@ -1,62 +1,30 @@
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { cardShadow, colors, radius, spacing, subtleShadow, typography } from './tokens';
+import { StyleSheet } from 'react-native-unistyles';
+import { applyAccent } from './accents';
+import { breakpoints } from './breakpoints';
+import { applyNativeColorScheme, initialAccent, initialThemePreference } from './preference';
+import { type AppTheme, darkTheme, lightTheme } from './themes';
 
-type LightTheme = {
-  colors: typeof colors.light;
-  spacing: typeof spacing;
-  typography: typeof typography;
-  radius: typeof radius;
-  cardShadow: typeof cardShadow;
-  subtleShadow: typeof subtleShadow;
+const accent = initialAccent();
+
+const themes: { light: AppTheme; dark: AppTheme } = {
+  light: applyAccent(lightTheme, 'light', accent),
+  dark: applyAccent(darkTheme, 'dark', accent),
 };
 
-type DarkTheme = {
-  colors: typeof colors.dark;
-  spacing: typeof spacing;
-  typography: typeof typography;
-  radius: typeof radius;
-  cardShadow: typeof cardShadow;
-  subtleShadow: typeof subtleShadow;
-};
+type AppThemes = typeof themes;
+type AppBreakpoints = typeof breakpoints;
 
 declare module 'react-native-unistyles' {
-  interface UnistylesThemes {
-    light: LightTheme;
-    dark: DarkTheme;
-  }
-
-  interface UnistylesBreakpoints {
-    sm: 0;
-    md: 390;
-  }
+  export interface UnistylesThemes extends AppThemes {}
+  export interface UnistylesBreakpoints extends AppBreakpoints {}
 }
 
+const preference = initialThemePreference();
+
 StyleSheet.configure({
-  themes: {
-    light: {
-      colors: colors.light,
-      spacing,
-      typography,
-      radius,
-      cardShadow,
-      subtleShadow,
-    },
-    dark: {
-      colors: colors.dark,
-      spacing,
-      typography,
-      radius,
-      cardShadow,
-      subtleShadow,
-    },
-  },
-  breakpoints: {
-    sm: 0,
-    md: 390,
-  },
-  settings: {
-    adaptiveThemes: true,
-  },
+  themes,
+  breakpoints,
+  settings: preference === 'system' ? { adaptiveThemes: true } : { initialTheme: preference },
 });
 
-export { StyleSheet, useUnistyles };
+applyNativeColorScheme(preference);

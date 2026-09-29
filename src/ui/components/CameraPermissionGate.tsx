@@ -1,104 +1,48 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, Text, View } from 'react-native';
+import { Linking } from 'react-native';
 import { useCameraPermission } from 'react-native-vision-camera';
-import { tid } from '../testIds';
-import { StyleSheet } from '../theme/unistyles';
+import { Button, icons } from '@/ui/primitives';
+import { tid } from '@/ui/testIds';
+import { ScannerMessage } from './ScannerOverlay';
 
-interface CameraPermissionGateProps {
-  children: React.ReactNode;
-}
+type Props = {
+  readonly children: ReactNode;
+};
 
-export function CameraPermissionGate({ children }: CameraPermissionGateProps): React.JSX.Element {
+export function CameraPermissionGate({ children }: Props): React.JSX.Element {
   const { t } = useTranslation();
-  const { hasPermission, requestPermission } = useCameraPermission();
-  const [wasRequested, setWasRequested] = useState(false);
+  const { hasPermission, canRequestPermission, requestPermission } = useCameraPermission();
 
-  const handleRequest = useCallback(async () => {
-    await requestPermission();
-    setWasRequested(true);
-  }, [requestPermission]);
-
-  const handleOpenSettings = useCallback(() => {
-    Linking.openSettings();
-  }, []);
-
-  if (hasPermission) {
-    return <>{children}</>;
-  }
-
-  const showSettingsButton = wasRequested && !hasPermission;
+  if (hasPermission) return <>{children}</>;
 
   return (
-    <View style={styles.container} {...tid('permissionRationale')}>
-      <Ionicons name="camera-outline" size={64} color={styles.icon.color as string} />
-      <Text style={styles.title}>{t('camera.permissionTitle')}</Text>
-      <Text style={styles.message}>{t('camera.permissionMessage')}</Text>
-
-      {showSettingsButton ? (
-        <Pressable
-          style={styles.button}
-          onPress={handleOpenSettings}
-          accessibilityLabel={t('camera.goToSettingsLabel')}
-          accessibilityRole="button"
-          {...tid('openSettingsButton')}
-        >
-          <Text style={styles.buttonText}>{t('camera.goToSettings')}</Text>
-        </Pressable>
-      ) : (
-        <Pressable
-          style={styles.button}
-          onPress={handleRequest}
-          accessibilityLabel={t('camera.grantLabel')}
-          accessibilityRole="button"
+    <ScannerMessage
+      icon={icons.camera}
+      title={t('camera.title')}
+      body={t('camera.body')}
+      detail={canRequestPermission ? undefined : t('camera.deniedBody')}
+      {...tid('permissionRationale')}
+    >
+      {canRequestPermission ? (
+        <Button
+          label={t('camera.allow')}
+          size="lg"
+          onPress={() => {
+            requestPermission().catch(() => undefined);
+          }}
           {...tid('permissionRequestButton')}
-        >
-          <Text style={styles.buttonText}>{t('camera.grantAccess')}</Text>
-        </Pressable>
+        />
+      ) : (
+        <Button
+          label={t('camera.openSettings')}
+          size="lg"
+          onPress={() => {
+            Linking.openSettings().catch(() => undefined);
+          }}
+          {...tid('openSettingsButton')}
+        />
       )}
-    </View>
+    </ScannerMessage>
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.colors.bg,
-    paddingHorizontal: theme.spacing.xl,
-  },
-  icon: {
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.lg,
-  },
-  title: {
-    fontFamily: theme.typography.fontFamily.semiBold,
-    fontSize: theme.typography.fontSize.xl,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.sm,
-    textAlign: 'center',
-  },
-  message: {
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: theme.typography.fontSize.md,
-    color: theme.colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: theme.spacing.xl,
-    lineHeight: 22,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 12,
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.md,
-    minWidth: 220,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontFamily: theme.typography.fontFamily.semiBold,
-    fontSize: theme.typography.fontSize.md,
-    color: '#FFFFFF',
-  },
-}));

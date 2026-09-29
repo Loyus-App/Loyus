@@ -1,28 +1,44 @@
 import type { Card, CardId } from '../../domain/card';
 import { searchCards } from '../../domain/search';
-import { sortCards } from '../../domain/sort';
+import { type SortMode, sortCards } from '../../domain/sort';
 
 interface CardStoreData {
   cards: Record<string, Card>;
+  manualOrder?: readonly string[] | undefined;
 }
 
-export const selectSortedCards = (state: CardStoreData): Card[] =>
-  sortCards(Object.values(state.cards));
+export const selectCardCount = (state: CardStoreData): number => Object.keys(state.cards).length;
 
 export const selectCardById =
   (id: CardId) =>
   (state: CardStoreData): Card | null =>
     state.cards[id] ?? null;
 
-export const selectFavorites = (state: CardStoreData): Card[] =>
-  Object.values(state.cards).filter((c) => c.isFavorite);
-
-export const selectRecentCards =
-  (limit = 3) =>
+export const selectPinnedCards =
+  (mode: SortMode) =>
   (state: CardStoreData): Card[] =>
-    Object.values(state.cards)
-      .sort((a, b) => b.updatedAt - a.updatedAt)
-      .slice(0, limit);
+    sortCards(
+      Object.values(state.cards).filter((card) => card.isPinned),
+      mode,
+      state.manualOrder,
+    );
+
+export const selectUnpinnedCards =
+  (mode: SortMode) =>
+  (state: CardStoreData): Card[] =>
+    sortCards(
+      Object.values(state.cards).filter((card) => !card.isPinned),
+      mode,
+      state.manualOrder,
+    );
+
+export const selectRecentlyOpened =
+  (limit = 6) =>
+  (state: CardStoreData): Card[] =>
+    sortCards(
+      Object.values(state.cards).filter((card) => card.lastOpenedAt !== undefined),
+      'recent',
+    ).slice(0, limit);
 
 export const selectSearchResults =
   (query: string) =>

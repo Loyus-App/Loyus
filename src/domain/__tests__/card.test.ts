@@ -1,4 +1,16 @@
-import { BarcodeFormat, type CardId, createCard, JSBARCODE_FORMAT } from '../card';
+import { makeCard } from '@/testing/makeCard';
+import {
+  BarcodeFormat,
+  type CardId,
+  cardInitials,
+  compactPhotos,
+  createCard,
+  FORMAT_LABEL,
+  findDuplicate,
+  formatCodeForDisplay,
+  JSBARCODE_FORMAT,
+  photoFileNames,
+} from '../card';
 
 describe('BarcodeFormat enum', () => {
   it('has exactly 15 values', () => {
@@ -100,9 +112,24 @@ describe('createCard', () => {
     expect(card.format).toBe(BarcodeFormat.EAN13);
   });
 
-  it('sets isFavorite to false', () => {
+  it('starts unpinned and never opened', () => {
     const card = createCard(baseInput);
-    expect(card.isFavorite).toBe(false);
+    expect(card.isPinned).toBe(false);
+    expect(card.openCount).toBe(0);
+    expect(card.lastOpenedAt).toBeUndefined();
+  });
+
+  it('trims text fields and drops blank optional ones', () => {
+    const card = createCard({ ...baseInput, name: '  Carrefour ', owner: '  ', note: ' Léa ' });
+    expect(card.name).toBe('Carrefour');
+    expect(card.owner).toBeUndefined();
+    expect(card.note).toBe('Léa');
+  });
+
+  it('keeps the owner and pinned flag when provided', () => {
+    const card = createCard({ ...baseInput, owner: 'Léa', isPinned: true });
+    expect(card.owner).toBe('Léa');
+    expect(card.isPinned).toBe(true);
   });
 
   it('sets timestamps as numbers > 0', () => {
@@ -136,5 +163,97 @@ describe('createCard', () => {
   it('omits note when not provided', () => {
     const card = createCard(baseInput);
     expect(card.note).toBeUndefined();
+  });
+
+  it('keeps photo file names and drops empty sides', () => {
+    const card = createCard({ ...baseInput, photos: { front: 'front.jpg', back: '' } });
+    expect(card.photos).toEqual({ front: 'front.jpg' });
+  });
+
+  it('omits photos when none are set', () => {
+    const card = createCard({ ...baseInput, photos: { front: undefined } });
+    expect(card).not.toHaveProperty('photos');
+  });
+});
+
+describe('compactPhotos', () => {
+  it('returns undefined without any photo', () => {
+    expect(compactPhotos(undefined)).toBeUndefined();
+    expect(compactPhotos({})).toBeUndefined();
+    expect(compactPhotos({ front: '', back: undefined })).toBeUndefined();
+  });
+
+  it('keeps only the sides that are set', () => {
+    expect(compactPhotos({ front: undefined, back: 'b.jpg' })).toEqual({ back: 'b.jpg' });
+    expect(compactPhotos({ front: 'a.jpg', back: 'b.jpg' })).toEqual({
+      front: 'a.jpg',
+      back: 'b.jpg',
+    });
+  });
+});
+
+describe('photoFileNames', () => {
+  it('lists the file names front first', () => {
+    expect(photoFileNames({ front: 'a.jpg', back: 'b.jpg' })).toEqual(['a.jpg', 'b.jpg']);
+    expect(photoFileNames({ back: 'b.jpg' })).toEqual(['b.jpg']);
+  });
+
+  it('is empty without photos', () => {
+    expect(photoFileNames(undefined)).toEqual([]);
+    expect(photoFileNames({ front: '' })).toEqual([]);
+  });
+});
+
+describe('FORMAT_LABEL', () => {
+  it('labels every format', () => {
+    for (const format of Object.values(BarcodeFormat)) {
+      expect(FORMAT_LABEL[format]).toEqual(expect.any(String));
+    }
+  });
+});
+
+describe('cardInitials', () => {
+  it.each([
+    ['Carrefour', 'CA'],
+    ['Leroy Merlin', 'LM'],
+    ['Petal & Stem', 'PS'],
+    ['H&M', 'HM'],
+    ['  décathlon  sport ', 'DS'],
+    ['Ö', 'Ö'],
+    ['', '?'],
+  ])('%s -> %s', (name, initials) => {
+    expect(cardInitials(name)).toBe(initials);
+  });
+});
+
+describe('formatCodeForDisplay', () => {
+  it.each([
+    ['2001234567893', BarcodeFormat.EAN13, '2 001234 567893'],
+    ['96385074', BarcodeFormat.EAN8, '9638 5074'],
+    ['036000291452', BarcodeFormat.UPC_A, '0 36000 29145 2'],
+    ['1234567890', BarcodeFormat.CODE128, '1234 5678 90'],
+    ['ABC-123', BarcodeFormat.CODE128, 'ABC-123'],
+    ['123', BarcodeFormat.EAN13, '123'],
+  ])('%s (%s) -> %s', (code, format, expected) => {
+    expect(formatCodeForDisplay(code, format)).toBe(expected);
+  });
+});
+
+describe('findDuplicate', () => {
+  const cards = [
+    makeCard({ id: 'a', name: 'A', code: '111' }),
+    makeCard({ id: 'b', name: 'B', code: '222' }),
+  ];
+
+  it('finds a card with the same code', () => {
+    expect(findDuplicate(cards, ' 222 ')?.id).toBe('b');
+  });
+
+  it('ignores the card being edited', () => {
+    expect(findDuplicate(cards, '222', 'b' as CardId)).toBeUndefined();
+  });
+
+  it('returns undefined for a blank code', () => {
+    expect(findDuplicate(cards, '  ')).toBeUndefined();
   });
 });

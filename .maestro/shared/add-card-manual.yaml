@@ -1,0 +1,46 @@
+appId: com.loyus.app
+---
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+- runFlow:
+    when:
+      visible:
+        id: "welcome-manual"
+    commands:
+      - tapOn:
+          id: "welcome-manual"
+- runFlow:
+    when:
+      visible:
+        id: "add-card-button"
+    commands:
+      - tapOn:
+          id: "add-card-button"
+      - extendedWaitUntil:
+          visible:
+            id: "manual-entry-button"
+          timeout: 8000
+      - tapOn:
+          id: "manual-entry-button"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "${CARD_NAME}"
+- tapOn:
+    id: "card-code-input"
+- inputText: "${CARD_CODE}"
+- tapOn:
+    id: "format-picker"
+- tapOn:
+    text: "${CARD_FORMAT_LABEL}"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000

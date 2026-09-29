@@ -10,41 +10,29 @@ disable-model-invocation: true
 
 Create a new screen named "$ARGUMENTS" with all required wiring:
 
-## 1. Route file (app/)
+## 1. Route file (src/app/)
 
-- Create the route file following Expo Router file-based conventions
-- For tabs: `app/(tabs)/screenname.tsx`
-- For stack screens: `app/screenname.tsx` or `app/feature/screenname.tsx`
-- Import `StyleSheet` from `src/ui/theme/unistyles` (NOT from `react-native`)
-- Import `useUnistyles` for theme access
-- Import `{ useTranslation }` from `react-i18next` for all user-facing strings
-- Keep the route file under ~40 lines — delegate complex content to components
+- Tab root: `src/app/(tabs)/<tab>/index.tsx` inside that tab's Stack (`tabStackOptions`); register the trigger in `src/app/(tabs)/_layout.tsx` (`NativeTabs.Trigger` with `sf` + `md` icons and an i18n label)
+- Pushed screen inside a tab: `src/app/(tabs)/<tab>/<screen>.tsx` + a `<Stack.Screen>` in that tab's `_layout.tsx`
+- Modal: `src/app/<feature>/<screen>.tsx` + a `<Stack.Screen>` in `src/app/_layout.tsx` with `modalOptions`
+- Header buttons and menus: `Stack.Toolbar` inside the screen
+- Scroll views under a transparent header: `contentInsetAdjustmentBehavior="automatic"`
 
-## 2. Component (src/ui/components/)
+## 2. UI
 
-- Create if the screen has non-trivial content: `src/ui/components/{ScreenName}.tsx`
-- Pure presentational — no business logic, no direct store access
-- Props typed with `readonly` interface
-- All user-visible strings wrapped in `t()`
-- `StyleSheet.create()` from `src/ui/theme/unistyles`
-- Keep under ~50 lines of TSX
+- Build from `src/ui/primitives` (`Text`, `ListSection`, `ListRow`, `Button`, `TextField`, `EmptyState`…) and `src/ui/components`
+- `import { StyleSheet } from 'react-native-unistyles'`; `StyleSheet.create((theme, rt) => …)` below the component; tokens only
+- Strings through `useTranslation()`; no comments except a rare one-line WHY
 
 ## 3. i18n (src/infra/i18n/locales/)
 
-- Add screen-related translation keys to ALL 6 locale files: en.ts, fr.ts, es.ts, pt.ts, ru.ts, de.ts
-- Namespace: `screens.screenName.title`, `screens.screenName.description`, etc.
+- Add keys to `en.ts` first (keys are typed), then to fr, es, pt, ru, de
 
-## 4. Navigation
+## 4. testIDs (src/ui/testIds.ts)
 
-- **Tab screen**: Add `<Tabs.Screen>` entry in `app/(tabs)/_layout.tsx` with icon and label
-- **Stack screen**: Add `<Stack.Screen>` entry in `app/_layout.tsx` with options (title, headerShown, presentation)
+- Add keys for interactive elements; use `tid('key')` in the screen
 
-## 5. testIDs (src/ui/testIds.ts)
-
-- Add testID constants for the new screen's interactive elements
-- Follow naming pattern: `screenName-element` (e.g., `settings-theme-toggle`)
-
-## 6. Verify
+## 5. Verify
 
 ```bash
 yarn check:fix && yarn typecheck && yarn test

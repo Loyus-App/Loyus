@@ -2,7 +2,7 @@ appId: com.loyus.app
 ---
 - runFlow: shared/launch-fresh.yaml
 - assertVisible:
-    id: "home-title"
+    id: "empty-state-cta"
 - assertVisible:
-    id: "theme-label"
+    text: "Your cards, ready at the till"
 - takeScreenshot: 01-cold-start

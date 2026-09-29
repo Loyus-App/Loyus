@@ -1,0 +1,50 @@
+import type { ReactNode } from 'react';
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Icon, type IconName } from './Icon';
+import { Text } from './Text';
+
+type Props = {
+  readonly icon?: IconName;
+  readonly visual?: ReactNode;
+  readonly title: string;
+  readonly body?: string | undefined;
+  readonly children?: ReactNode;
+  readonly testID?: string | undefined;
+};
+
+export function EmptyState({
+  icon,
+  visual,
+  title,
+  body,
+  children,
+  testID,
+}: Props): React.JSX.Element {
+  return (
+    <View testID={testID} style={styles.container}>
+      {visual ?? (icon && <Icon name={icon} size={44} tone="muted" />)}
+      <Text variant="headline" style={styles.centered} accessibilityRole="header">
+        {title}
+      </Text>
+      {body ? (
+        <Text tone="muted" style={styles.centered}>
+          {body}
+        </Text>
+      ) : null}
+      {children}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    alignItems: 'center',
+    gap: theme.space(3),
+    paddingVertical: theme.space(12),
+    paddingHorizontal: theme.space(6),
+  },
+  centered: {
+    textAlign: 'center',
+  },
+}));

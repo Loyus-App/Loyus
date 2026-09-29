@@ -1,73 +1,57 @@
 appId: com.loyus.app
 ---
-- launchApp:
-    clearState: true
-# Dismiss any lingering "Open in App?" system dialog
-- tapOn:
-    text: "Open"
-    optional: true
-- extendedWaitUntil:
-    visible:
-      id: "home-screen"
-    timeout: 15000
-# Add two cards
-- tapOn:
-    id: "empty-state-cta"
-- extendedWaitUntil:
-    visible:
-      id: "card-name-input"
-    timeout: 8000
-- tapOn:
-    id: "card-name-input"
-- inputText: "Carrefour"
-- tapOn:
-    id: "card-code-input"
-- inputText: "1111111"
-- tapOn:
-    id: "format-picker"
-- tapOn:
-    text: "Code 128"
-- tapOn:
-    id: "save-card-button"
-- extendedWaitUntil:
-    visible:
-      id: "home-screen"
-    timeout: 5000
-- tapOn:
-    id: "add-card-button"
-- tapOn:
-    id: "card-name-input"
-- inputText: "Leclerc"
-- tapOn:
-    id: "card-code-input"
-- inputText: "2222222"
-- tapOn:
-    id: "format-picker"
-- tapOn:
-    text: "Code 128"
-- tapOn:
-    id: "save-card-button"
-- extendedWaitUntil:
-    visible:
-      id: "home-screen"
-    timeout: 5000
-# Both visible
+- runFlow: shared/launch-fresh.yaml
+- runFlow:
+    file: shared/add-card-manual.yaml
+    env:
+      CARD_NAME: "Carrefour"
+      CARD_CODE: "1111111"
+      CARD_FORMAT_LABEL: "Code 128"
+- runFlow:
+    file: shared/add-card-manual.yaml
+    env:
+      CARD_NAME: "Leclerc"
+      CARD_CODE: "2222222"
+      CARD_FORMAT_LABEL: "Code 128"
 - assertVisible:
     text: "Carrefour"
 - assertVisible:
     text: "Leclerc"
-# Navigate to search via home trigger
 - tapOn:
-    text: "Find a card..."
+    text: "Carrefour"
+- extendedWaitUntil:
+    visible:
+      id: "card-detail-name"
+    timeout: 8000
+- tapOn:
+    text: "Close card"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- tapOn:
+    text: "Search"
 - extendedWaitUntil:
     visible:
       id: "search-screen"
-    timeout: 5000
-- tapOn:
-    id: "search-input"
-- inputText: "Carr"
-# Carrefour visible, Leclerc hidden
+    timeout: 8000
+- assertVisible:
+    text: "RECENTLY USED"
 - assertVisible:
     text: "Carrefour"
-- assertNotVisible:
+- tapOn:
+    text: "Store, owner or number"
+- inputText: "Leclerc"
+- extendedWaitUntil:
+    visible:
+      id: "search-result"
+    timeout: 5000
+- assertVisible:
     text: "Leclerc"
+- assertNotVisible:
+    text: "Carrefour"
+- eraseText:
+    charactersToErase: 20
+- inputText: "Zzz"
+- assertVisible:
+    text: "No card matches"

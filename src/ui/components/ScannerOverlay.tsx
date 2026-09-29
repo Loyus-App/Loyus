@@ -1,113 +1,181 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
-import { tid } from '../testIds';
-import { StyleSheet, useUnistyles } from '../theme/unistyles';
+import { ActivityIndicator, View } from 'react-native';
+import { StyleSheet, useUnistyles, withUnistyles } from 'react-native-unistyles';
+import { Icon, type IconName, PressableScale, Text } from '@/ui/primitives';
+import { tid } from '@/ui/testIds';
+import { withAlpha } from '@/ui/theme';
+import { CARD_ASPECT_RATIO } from './CardTile';
 
-const SCAN_WIDTH = 280;
-const SCAN_HEIGHT = 180;
-const CORNER_SIZE = 28;
-const CORNER_WIDTH = 3;
+const MutedIcon = withUnistyles(Icon, (theme) => ({ color: theme.scanner.textMuted }));
+const Spinner = withUnistyles(ActivityIndicator, (theme) => ({ color: theme.scanner.text }));
 
 export function ScannerOverlay(): React.JSX.Element {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
-  const tealColor = theme.colors.primary;
-
   return (
-    <View style={styles.root} pointerEvents="none" {...tid('scannerOverlay')}>
-      <View style={styles.darkBand} />
-
-      <View style={styles.middleRow}>
-        <View style={styles.darkBand} />
-
-        <View style={styles.cutout}>
-          <View style={[styles.corner, styles.cornerTL, { borderColor: tealColor }]} />
-          <View style={[styles.corner, styles.cornerTR, { borderColor: tealColor }]} />
-          <View style={[styles.corner, styles.cornerBL, { borderColor: tealColor }]} />
-          <View style={[styles.corner, styles.cornerBR, { borderColor: tealColor }]} />
-
-          <View style={styles.centerLabel}>
-            <Text style={styles.alignText}>{t('scanner.alignText')}</Text>
-          </View>
-        </View>
-
-        <View style={styles.darkBand} />
-      </View>
-
-      <View style={styles.bottomBand} />
+    <View style={styles.overlay} {...tid('scannerOverlay')}>
+      <View style={styles.frame} />
+      <Text variant="callout" weight="semibold" style={styles.hint}>
+        {t('scan.hint')}
+      </Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create(() => ({
-  root: {
+type ControlProps = {
+  readonly icon: IconName;
+  readonly label: string;
+  readonly onPress: () => void;
+  readonly showLabel?: boolean;
+  readonly active?: boolean;
+  readonly loading?: boolean;
+  readonly accessibilityHint?: string | undefined;
+  readonly testID?: string | undefined;
+};
+
+export function ScannerControl({
+  icon,
+  label,
+  onPress,
+  showLabel = false,
+  active = false,
+  loading = false,
+  accessibilityHint,
+  testID,
+}: ControlProps): React.JSX.Element {
+  const { theme } = useUnistyles();
+  styles.useVariants({ shape: showLabel ? 'pill' : 'round', active });
+  return (
+    <PressableScale
+      testID={testID}
+      onPress={onPress}
+      disabled={loading}
+      hitSlop={4}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ busy: loading, disabled: loading }}
+      style={styles.control}
+    >
+      {loading ? (
+        <Spinner size="small" />
+      ) : (
+        <Icon
+          name={icon}
+          size={showLabel ? 18 : 20}
+          color={active ? theme.scanner.background : theme.scanner.text}
+        />
+      )}
+      {showLabel ? (
+        <Text variant="callout" weight="semibold" style={styles.controlLabel}>
+          {label}
+        </Text>
+      ) : null}
+    </PressableScale>
+  );
+}
+
+type MessageProps = {
+  readonly icon: IconName;
+  readonly title: string;
+  readonly body: string;
+  readonly detail?: string | undefined;
+  readonly children?: ReactNode;
+  readonly testID?: string | undefined;
+};
+
+export function ScannerMessage({
+  icon,
+  title,
+  body,
+  detail,
+  children,
+  testID,
+}: MessageProps): React.JSX.Element {
+  return (
+    <View style={styles.message} testID={testID}>
+      <MutedIcon name={icon} size={44} />
+      <Text variant="headline" style={styles.title} accessibilityRole="header">
+        {title}
+      </Text>
+      <Text style={styles.body}>{body}</Text>
+      {detail ? <Text style={styles.body}>{detail}</Text> : null}
+      {children ? <View style={styles.actions}>{children}</View> : null}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create((theme, rt) => ({
+  overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-  },
-  darkBand: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
-  },
-  middleRow: {
-    flexDirection: 'row',
-    height: SCAN_HEIGHT,
-  },
-  cutout: {
-    width: SCAN_WIDTH,
-    height: SCAN_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: theme.space(5),
+    pointerEvents: 'none',
   },
-  corner: {
-    position: 'absolute',
-    width: CORNER_SIZE,
-    height: CORNER_SIZE,
+  frame: {
+    width: '80%',
+    maxWidth: 420,
+    aspectRatio: CARD_ASPECT_RATIO,
+    borderRadius: theme.radius.lg,
+    borderCurve: 'continuous',
+    borderWidth: 2,
+    borderColor: theme.scanner.frame,
+    boxShadow: `0 0 0 ${Math.max(rt.screen.width, rt.screen.height)}px ${withAlpha(theme.scanner.background, 0.5)}`,
   },
-  cornerTL: {
-    top: 0,
-    left: 0,
-    borderTopWidth: CORNER_WIDTH,
-    borderLeftWidth: CORNER_WIDTH,
-    borderTopLeftRadius: 4,
+  hint: {
+    color: theme.scanner.text,
+    textAlign: 'center',
+    paddingHorizontal: theme.space(8),
   },
-  cornerTR: {
-    top: 0,
-    right: 0,
-    borderTopWidth: CORNER_WIDTH,
-    borderRightWidth: CORNER_WIDTH,
-    borderTopRightRadius: 4,
+  control: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.space(2),
+    minHeight: theme.size.touch,
+    minWidth: 44,
+    borderRadius: theme.radius.pill,
+    borderWidth: 1,
+    borderColor: withAlpha(theme.scanner.frame, 0.24),
+    variants: {
+      shape: {
+        round: { width: theme.size.touch, height: theme.size.touch },
+        pill: { minHeight: 48, paddingHorizontal: theme.space(5) },
+      },
+      active: {
+        true: { backgroundColor: theme.scanner.text },
+        false: { backgroundColor: theme.scanner.control },
+      },
+    },
   },
-  cornerBL: {
-    bottom: 0,
-    left: 0,
-    borderBottomWidth: CORNER_WIDTH,
-    borderLeftWidth: CORNER_WIDTH,
-    borderBottomLeftRadius: 4,
+  controlLabel: {
+    color: theme.scanner.text,
   },
-  cornerBR: {
-    bottom: 0,
-    right: 0,
-    borderBottomWidth: CORNER_WIDTH,
-    borderRightWidth: CORNER_WIDTH,
-    borderBottomRightRadius: 4,
-  },
-  centerLabel: {
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-  },
-  alignText: {
-    fontFamily: 'Manrope-Medium',
-    fontSize: 12,
-    color: '#FFFFFF',
-    letterSpacing: 0.3,
-  },
-  bottomBand: {
+  message: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.space(3),
+    paddingTop: rt.insets.top + theme.space(16),
+    paddingBottom: rt.insets.bottom + theme.space(24),
+    paddingHorizontal: theme.space(8),
+    backgroundColor: theme.scanner.background,
+  },
+  title: {
+    color: theme.scanner.text,
+    textAlign: 'center',
+  },
+  body: {
+    color: theme.scanner.textMuted,
+    textAlign: 'center',
+  },
+  actions: {
+    alignSelf: 'stretch',
+    marginTop: theme.space(3),
   },
 }));

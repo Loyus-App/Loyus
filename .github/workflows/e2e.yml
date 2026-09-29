@@ -24,7 +24,6 @@ jobs:
     timeout-minutes: 90
 
     env:
-      # Part of cache keys so Pods/DerivedData from another Xcode are never restored.
       XCODE_VERSION: "26.2"
 
     steps:
@@ -36,7 +35,6 @@ jobs:
           node-version: 24
           cache: yarn
 
-      # Maestro 2.x needs Java 17+ (GraalJS).
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

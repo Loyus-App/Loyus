@@ -1,33 +1,10 @@
-import { BarcodeFormat, type Card, type CardId } from '../card';
-import { deserializeCards, SERIALIZER_VERSION, serializeCards } from '../serializer';
-
-function makeCard(overrides: {
-  id: string;
-  name: string;
-  code?: string;
-  format?: BarcodeFormat;
-  color?: string;
-  note?: string;
-  isFavorite?: boolean;
-  createdAt?: number;
-  updatedAt?: number;
-}): Card {
-  return {
-    id: overrides.id as CardId,
-    name: overrides.name,
-    code: overrides.code ?? '1234567890128',
-    format: overrides.format ?? BarcodeFormat.EAN13,
-    isFavorite: overrides.isFavorite ?? false,
-    createdAt: overrides.createdAt ?? 1000,
-    updatedAt: overrides.updatedAt ?? 1000,
-    ...(overrides.color === undefined ? {} : { color: overrides.color }),
-    ...(overrides.note === undefined ? {} : { note: overrides.note }),
-  };
-}
+import { makeCard } from '@/testing/makeCard';
+import type { Card } from '../card';
+import { deserializeCards, portableCard, SERIALIZER_VERSION, serializeCards } from '../serializer';
 
 describe('SERIALIZER_VERSION', () => {
-  it('is 1', () => {
-    expect(SERIALIZER_VERSION).toBe(1);
+  it('is 2', () => {
+    expect(SERIALIZER_VERSION).toBe(2);
   });
 });
 
@@ -50,13 +27,49 @@ describe('serializeCards', () => {
 });
 
 describe('deserializeCards', () => {
+  it('imports version 1 backups, mapping isFavorite to isPinned', () => {
+    const legacy = JSON.stringify({
+      version: 1,
+      cards: [
+        {
+          id: 'c1',
+          name: 'Old',
+          code: '1',
+          format: 'EAN13',
+          isFavorite: true,
+          createdAt: 1,
+          updatedAt: 2,
+        },
+      ],
+    });
+    const [card] = deserializeCards(legacy);
+    expect(card).toEqual({
+      id: 'c1',
+      name: 'Old',
+      code: '1',
+      format: 'EAN13',
+      isPinned: true,
+      openCount: 0,
+      createdAt: 1,
+      updatedAt: 2,
+    });
+  });
+
   it('round-trips cards losslessly', () => {
     const cards = [
       makeCard({ id: 'c1', name: 'Alpha', color: '#ff0000', note: 'hello' }),
-      makeCard({ id: 'c2', name: 'Beta', isFavorite: true, updatedAt: 9999 }),
+      makeCard({ id: 'c2', name: 'Beta', isPinned: true, updatedAt: 9999 }),
     ];
     const result = deserializeCards(serializeCards(cards));
     expect(result).toEqual(cards);
+  });
+
+  it('keeps a linked brand and drops a malformed one', () => {
+    const linked = makeCard({ id: 'c1', name: 'Carrefour', brandId: 'carrefour' });
+    expect(deserializeCards(serializeCards([linked]))[0]?.brandId).toBe('carrefour');
+
+    const json = JSON.stringify({ version: 2, cards: [{ ...linked, brandId: 42 }] });
+    expect(deserializeCards(json)[0]).not.toHaveProperty('brandId');
   });
 
   it('throws on invalid JSON', () => {
@@ -131,5 +144,32 @@ describe('deserializeCards', () => {
 
   it('throws on null parsed JSON', () => {
     expect(() => deserializeCards('null')).toThrow(/version/i);
+  });
+});
+
+describe('photos', () => {
+  const photos = { front: 'a.jpg', back: 'b.jpg' };
+
+  it('are left out of a backup', () => {
+    const json = serializeCards([makeCard({ id: 'c1', name: 'Alpha', photos })]);
+    const parsed = JSON.parse(json) as { cards: Record<string, unknown>[] };
+    expect(parsed.cards[0]).not.toHaveProperty('photos');
+    expect(parsed.cards[0]?.name).toBe('Alpha');
+  });
+
+  it('are never read from a backup file', () => {
+    const json = JSON.stringify({
+      version: 2,
+      cards: [{ ...makeCard({ id: 'c1', name: 'Alpha' }), photos: { front: '../mmkv' } }],
+    });
+    const [card] = deserializeCards(json);
+    expect(card).not.toHaveProperty('photos');
+    expect(card?.name).toBe('Alpha');
+  });
+
+  it('portableCard keeps every other field', () => {
+    const card = makeCard({ id: 'c1', name: 'Alpha', note: 'PIN 1234', photos });
+    const { photos: _photos, ...rest } = card;
+    expect(portableCard(card)).toEqual(rest);
   });
 });

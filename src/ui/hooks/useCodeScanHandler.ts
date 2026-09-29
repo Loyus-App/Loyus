@@ -9,7 +9,6 @@ export interface DetectedCode {
   format: BarcodeFormat;
 }
 
-/** Confirms a code only after repeated reads, filtering out scanner misreads. */
 export function useCodeScanHandler(
   onConfirm: (code: string, format: BarcodeFormat) => void,
 ): (codes: DetectedCode[]) => void {

@@ -8,7 +8,8 @@ const sampleCard: Card = {
   name: 'Test Store',
   code: '1234567890128',
   format: BarcodeFormat.EAN13,
-  isFavorite: false,
+  isPinned: false,
+  openCount: 0,
   createdAt: 1700000000000,
   updatedAt: 1700000000000,
 };
@@ -53,13 +54,13 @@ describe('buildExportJson', () => {
       ...sampleCard,
       color: '#FF0000',
       note: 'A note',
-      isFavorite: true,
+      isPinned: true,
     };
     const json = buildExportJson([fullCard]);
     const parsed = JSON.parse(json);
 
     expect(parsed.cards[0].color).toBe('#FF0000');
     expect(parsed.cards[0].note).toBe('A note');
-    expect(parsed.cards[0].isFavorite).toBe(true);
+    expect(parsed.cards[0].isPinned).toBe(true);
   });
 });

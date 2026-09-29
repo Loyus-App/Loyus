@@ -1,77 +1,84 @@
-import { BarcodeFormat, type Card, type CardId } from '../card';
-import { sortCards } from '../sort';
+import { makeCard } from '@/testing/makeCard';
+import { isSortMode, SORT_MODES, sortCards } from '../sort';
 
-function makeCard(overrides: {
-  id: string;
-  name: string;
-  code?: string;
-  format?: BarcodeFormat;
-  color?: string;
-  note?: string;
-  isFavorite?: boolean;
-  createdAt?: number;
-  updatedAt?: number;
-}): Card {
-  return {
-    id: overrides.id as CardId,
-    name: overrides.name,
-    code: overrides.code ?? '1234567890128',
-    format: overrides.format ?? BarcodeFormat.EAN13,
-    isFavorite: overrides.isFavorite ?? false,
-    createdAt: overrides.createdAt ?? 1000,
-    updatedAt: overrides.updatedAt ?? 1000,
-    ...(overrides.color === undefined ? {} : { color: overrides.color }),
-    ...(overrides.note === undefined ? {} : { note: overrides.note }),
-  };
-}
+const names = (cards: readonly { name: string }[]): string[] => cards.map((card) => card.name);
 
 describe('sortCards', () => {
-  const favNew = makeCard({ id: 'fav-new', name: 'Alpha', isFavorite: true, updatedAt: 2000 });
-  const favOld = makeCard({ id: 'fav-old', name: 'Beta', isFavorite: true, updatedAt: 1000 });
-  const nonFavNew = makeCard({ id: 'nf-new', name: 'Gamma', isFavorite: false, updatedAt: 2000 });
-  const nonFavOld = makeCard({ id: 'nf-old', name: 'Delta', isFavorite: false, updatedAt: 1000 });
+  const rarelyUsed = makeCard({ id: 'a', name: 'Aldi', openCount: 1, lastOpenedAt: 5000 });
+  const oftenUsed = makeCard({ id: 'b', name: 'Boulanger', openCount: 9, lastOpenedAt: 2000 });
+  const neverUsed = makeCard({ id: 'c', name: 'carrefour', createdAt: 3000 });
+  const tiedRecent = makeCard({ id: 'd', name: 'Darty', openCount: 1, lastOpenedAt: 6000 });
 
-  it('places favorites before non-favorites', () => {
-    const result = sortCards([nonFavNew, favOld, nonFavOld, favNew]);
-    expect(result[0]?.isFavorite).toBe(true);
-    expect(result[1]?.isFavorite).toBe(true);
-    expect(result[2]?.isFavorite).toBe(false);
-    expect(result[3]?.isFavorite).toBe(false);
+  it('puts the most opened cards first, then the most recently used', () => {
+    expect(names(sortCards([rarelyUsed, neverUsed, oftenUsed, tiedRecent], 'mostUsed'))).toEqual([
+      'Boulanger',
+      'Darty',
+      'Aldi',
+      'carrefour',
+    ]);
   });
 
-  it('sorts favorites by updatedAt descending', () => {
-    const result = sortCards([favOld, favNew]);
-    expect(result[0]?.id).toBe(favNew.id);
-    expect(result[1]?.id).toBe(favOld.id);
+  it('orders by last use, falling back to creation date for never-opened cards', () => {
+    expect(names(sortCards([oftenUsed, neverUsed, rarelyUsed, tiedRecent], 'recent'))).toEqual([
+      'Darty',
+      'Aldi',
+      'carrefour',
+      'Boulanger',
+    ]);
   });
 
-  it('sorts non-favorites by updatedAt descending', () => {
-    const result = sortCards([nonFavOld, nonFavNew]);
-    expect(result[0]?.id).toBe(nonFavNew.id);
-    expect(result[1]?.id).toBe(nonFavOld.id);
+  it('sorts alphabetically without regard to case', () => {
+    expect(
+      names(sortCards([tiedRecent, neverUsed, oftenUsed, rarelyUsed], 'alphabetical')),
+    ).toEqual(['Aldi', 'Boulanger', 'carrefour', 'Darty']);
   });
 
-  it('breaks ties by name ascending', () => {
-    const a = makeCard({ id: 'a', name: 'Zebra', isFavorite: false, updatedAt: 1000 });
-    const b = makeCard({ id: 'b', name: 'Apple', isFavorite: false, updatedAt: 1000 });
-    const result = sortCards([a, b]);
-    expect(result[0]?.name).toBe('Apple');
-    expect(result[1]?.name).toBe('Zebra');
+  it('breaks ties by name', () => {
+    const first = makeCard({ id: 'x', name: 'Zara', openCount: 2, lastOpenedAt: 100 });
+    const second = makeCard({ id: 'y', name: 'Auchan', openCount: 2, lastOpenedAt: 100 });
+    expect(names(sortCards([first, second], 'mostUsed'))).toEqual(['Auchan', 'Zara']);
+    expect(names(sortCards([first, second], 'recent'))).toEqual(['Auchan', 'Zara']);
   });
 
-  it('returns empty array for empty input', () => {
-    expect(sortCards([])).toEqual([]);
+  it('follows the manual order', () => {
+    expect(
+      names(
+        sortCards([rarelyUsed, oftenUsed, neverUsed, tiedRecent], 'manual', ['c', 'a', 'd', 'b']),
+      ),
+    ).toEqual(['carrefour', 'Aldi', 'Darty', 'Boulanger']);
   });
 
-  it('returns single-element array unchanged', () => {
-    const result = sortCards([favNew]);
-    expect(result).toEqual([favNew]);
+  it('puts cards missing from the manual order last, oldest first', () => {
+    const older = makeCard({ id: 'o', name: 'Older', createdAt: 100 });
+    const newer = makeCard({ id: 'n', name: 'Newer', createdAt: 200 });
+    const sameAge = makeCard({ id: 's', name: 'Anchor', createdAt: 200 });
+    expect(names(sortCards([newer, sameAge, oftenUsed, older], 'manual', ['b', 'gone']))).toEqual([
+      'Boulanger',
+      'Older',
+      'Anchor',
+      'Newer',
+    ]);
   });
 
-  it('does not mutate the original array', () => {
-    const original = [nonFavNew, favOld];
-    const copy = [...original];
-    sortCards(original);
-    expect(original).toEqual(copy);
+  it('falls back to creation order when there is no manual order yet', () => {
+    const first = makeCard({ id: 'f', name: 'Zeeman', createdAt: 1 });
+    const second = makeCard({ id: 's', name: 'Auchan', createdAt: 2 });
+    expect(names(sortCards([second, first], 'manual'))).toEqual(['Zeeman', 'Auchan']);
+  });
+
+  it('does not mutate its input', () => {
+    const input = [neverUsed, oftenUsed];
+    sortCards(input, 'alphabetical');
+    expect(names(input)).toEqual(['carrefour', 'Boulanger']);
+  });
+});
+
+describe('isSortMode', () => {
+  it.each(SORT_MODES)('accepts %s', (mode) => {
+    expect(isSortMode(mode)).toBe(true);
+  });
+
+  it.each([undefined, 'custom', 42])('rejects %s', (value) => {
+    expect(isSortMode(value)).toBe(false);
   });
 });

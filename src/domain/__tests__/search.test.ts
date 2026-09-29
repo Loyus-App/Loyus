@@ -1,29 +1,5 @@
-import { BarcodeFormat, type Card, type CardId } from '../card';
+import { makeCard } from '@/testing/makeCard';
 import { normalizeForSearch, searchCards } from '../search';
-
-function makeCard(overrides: {
-  id: string;
-  name: string;
-  code?: string;
-  format?: BarcodeFormat;
-  color?: string;
-  note?: string;
-  isFavorite?: boolean;
-  createdAt?: number;
-  updatedAt?: number;
-}): Card {
-  return {
-    id: overrides.id as CardId,
-    name: overrides.name,
-    code: overrides.code ?? '0000000000000',
-    format: overrides.format ?? BarcodeFormat.EAN13,
-    isFavorite: overrides.isFavorite ?? false,
-    createdAt: overrides.createdAt ?? 1000,
-    updatedAt: overrides.updatedAt ?? 1000,
-    ...(overrides.color === undefined ? {} : { color: overrides.color }),
-    ...(overrides.note === undefined ? {} : { note: overrides.note }),
-  };
-}
 
 describe('normalizeForSearch', () => {
   it('lowercases and strips diacritics from "Café"', () => {
@@ -107,5 +83,15 @@ describe('searchCards', () => {
     const result = searchCards([z, a], 'store');
     expect(result[0]?.name).toBe('Alpha Store');
     expect(result[1]?.name).toBe('Zebra Store');
+  });
+});
+
+describe('searchCards by owner', () => {
+  it('matches the owner name, ignoring accents', () => {
+    const cards = [
+      makeCard({ id: 'a', name: 'Carrefour', owner: 'Léa' }),
+      makeCard({ id: 'b', name: 'Carrefour' }),
+    ];
+    expect(searchCards(cards, 'lea').map((card) => card.id)).toEqual(['a']);
   });
 });
