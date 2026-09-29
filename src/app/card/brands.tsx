@@ -7,9 +7,9 @@ import { allBrands, type Brand, popularBrands, suggestBrands } from '@/domain/br
 import { deviceRegion } from '@/infra/platform/region';
 import { useUiStore } from '@/state/stores/uiStore';
 import { CardThumb } from '@/ui/components/CardThumb';
+import { CARD_ASPECT_RATIO } from '@/ui/components/CardTile';
 import { Icon, icons, Text } from '@/ui/primitives';
 import { testId, tid } from '@/ui/testIds';
-import { haptics } from '@/ui/utils/haptics';
 
 type Section = {
   readonly key: string;
@@ -27,7 +27,6 @@ const SearchInput = withUnistyles(TextInput, (theme) => ({
 }));
 
 function choose(brandId: string | null): void {
-  haptics.selection();
   useUiStore.getState().pickBrand(brandId);
   router.back();
 }
@@ -255,8 +254,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   otherIcon: {
     width: THUMB_WIDTH,
-    height: Math.round(THUMB_WIDTH / 1.586),
-    borderRadius: theme.radius.sm - 3,
+    height: Math.round(THUMB_WIDTH / CARD_ASPECT_RATIO),
+    borderRadius: theme.radius.thumb,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.surfaceMuted,

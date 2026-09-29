@@ -17,6 +17,7 @@ export const IOS_TYPE_TO_FORMAT: Partial<Record<ScannedObjectType, BarcodeFormat
   aztec: BarcodeFormat.AZTEC,
   codabar: BarcodeFormat.CODABAR,
   'itf-14': BarcodeFormat.ITF14,
+  'interleaved-2-of-5': BarcodeFormat.ITF,
   'gs1-data-bar': BarcodeFormat.GS1_DATABAR,
 } as const;
 
@@ -34,7 +35,7 @@ export const ANDROID_FORMAT_TO_FORMAT: Partial<Record<MlKitBarcodeFormat, Barcod
   'data-matrix': BarcodeFormat.DATA_MATRIX,
   aztec: BarcodeFormat.AZTEC,
   codabar: BarcodeFormat.CODABAR,
-  itf: BarcodeFormat.ITF14,
+  itf: BarcodeFormat.ITF,
 } as const;
 
 export const ANDROID_SCAN_FORMATS = Object.keys(ANDROID_FORMAT_TO_FORMAT) as TargetBarcodeFormat[];

@@ -237,6 +237,7 @@ const de: Translation = {
     restoreDoneBody: '{{added}} hinzugefügt · {{skipped}} schon auf diesem Handy',
     restoreFailedTitle: 'Wiederherstellen fehlgeschlagen',
     restoreFailedBody: 'Diese Datei ist kein Loyus-Backup.',
+    exportDialogTitle: 'Loyus-Karten exportieren',
     exportFailedTitle: 'Export fehlgeschlagen',
     exportFailedBody: 'Die Backup-Datei konnte nicht erstellt werden.',
     privacy: 'Datenschutz',

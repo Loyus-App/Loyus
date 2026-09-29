@@ -233,6 +233,7 @@ const ru: Translation = {
     restoreDoneBody: 'Добавлено: {{added}} · Уже на телефоне: {{skipped}}',
     restoreFailedTitle: 'Не удалось восстановить',
     restoreFailedBody: 'Этот файл не является резервной копией Loyus.',
+    exportDialogTitle: 'Экспорт карт Loyus',
     exportFailedTitle: 'Не удалось экспортировать',
     exportFailedBody: 'Не удалось создать файл резервной копии.',
     privacy: 'Конфиденциальность',

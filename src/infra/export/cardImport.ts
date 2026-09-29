@@ -12,7 +12,9 @@ export async function pickBackupCards(): Promise<Card[] | null> {
   const asset = result.canceled ? undefined : result.assets[0];
   if (!asset) return null;
   const file = new File(asset.uri);
-  const cards = deserializeCards(await file.text());
-  deleteQuietly(file);
-  return cards;
+  try {
+    return deserializeCards(await file.text());
+  } finally {
+    deleteQuietly(file);
+  }
 }

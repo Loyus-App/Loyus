@@ -1,5 +1,4 @@
-import React from 'react';
-import TestRenderer from 'react-test-renderer';
+import { act, renderHook } from '@/testing/renderHook';
 import { BarcodeFormat } from '../../../domain/card';
 import { type DetectedCode, useCodeScanHandler } from '../useCodeScanHandler';
 
@@ -7,145 +6,81 @@ function makeCode(value: string, format = BarcodeFormat.QR_CODE): DetectedCode {
   return { value, format };
 }
 
-function renderHook<T>(hookFn: () => T): { result: { current: T }; rerender: () => void } {
-  const result: { current: T } = {} as { current: T };
-  function TestComponent(): null {
-    result.current = hookFn();
-    return null;
-  }
-  let renderer: TestRenderer.ReactTestRenderer;
-  TestRenderer.act(() => {
-    renderer = TestRenderer.create(React.createElement(TestComponent));
-  });
-  return {
-    result,
-    rerender: () =>
-      TestRenderer.act(() => {
-        renderer?.update(React.createElement(TestComponent));
-      }),
-  };
-}
-
 describe('useCodeScanHandler', () => {
   let onConfirm: jest.Mock;
-  let realDateNow: () => number;
+  let now: number;
+  let scan: (codes: DetectedCode[], at: number) => void;
 
   beforeEach(() => {
     onConfirm = jest.fn();
-    realDateNow = Date.now;
+    now = 0;
+    jest.spyOn(Date, 'now').mockImplementation(() => now);
+    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
+    scan = (codes, at) => {
+      now = at;
+      act(() => result.current(codes));
+    };
   });
 
   afterEach(() => {
-    Date.now = realDateNow;
+    jest.restoreAllMocks();
   });
 
-  it('does NOT trigger onConfirm for a single scan', () => {
-    const now = 1000;
-    Date.now = () => now;
-
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+  it('does not confirm a single sighting', () => {
+    scan([makeCode('ABC123')], 1000);
     expect(onConfirm).not.toHaveBeenCalled();
   });
 
-  it('triggers onConfirm after 2 consecutive identical scans outside debounce window', () => {
-    let now = 1000;
-    Date.now = () => now;
-
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+  it('confirms a code seen steadily for half a second', () => {
+    scan([makeCode('ABC123')], 1000);
+    scan([makeCode('ABC123')], 1300);
     expect(onConfirm).not.toHaveBeenCalled();
 
-    now = 1600;
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+    scan([makeCode('ABC123')], 1600);
     expect(onConfirm).toHaveBeenCalledWith('ABC123', BarcodeFormat.QR_CODE);
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
-  it('does NOT trigger onConfirm for 2 identical scans within debounce window', () => {
-    let now = 1000;
-    Date.now = () => now;
-
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
-
-    now = 1300;
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+  it('does not confirm a code that changed', () => {
+    scan([makeCode('ABC123')], 1000);
+    scan([makeCode('XYZ789')], 1600);
     expect(onConfirm).not.toHaveBeenCalled();
   });
 
-  it('resets consecutive count when a different code is scanned', () => {
-    let now = 1000;
-    Date.now = () => now;
-
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
-
-    now = 1600;
-    TestRenderer.act(() => {
-      result.current([makeCode('XYZ789')]);
-    });
-
-    expect(onConfirm).not.toHaveBeenCalled();
-  });
-
-  it('resets after confirmation so the same code needs 2x again', () => {
-    let now = 1000;
-    Date.now = () => now;
-
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
-
-    now = 1600;
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+  it('starts over after a confirmation', () => {
+    scan([makeCode('ABC123')], 1000);
+    scan([makeCode('ABC123')], 1600);
+    scan([makeCode('ABC123')], 2200);
     expect(onConfirm).toHaveBeenCalledTimes(1);
 
-    now = 2200;
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
-    expect(onConfirm).toHaveBeenCalledTimes(1);
-
-    now = 2800;
-    TestRenderer.act(() => {
-      result.current([makeCode('ABC123')]);
-    });
+    scan([makeCode('ABC123')], 2800);
     expect(onConfirm).toHaveBeenCalledTimes(2);
   });
 
-  it('ignores empty codes array', () => {
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-    TestRenderer.act(() => {
-      result.current([]);
-    });
-    expect(onConfirm).not.toHaveBeenCalled();
+  it('confirms a card with two symbols whose order changes between frames', () => {
+    const qr = makeCode('QR-1');
+    const bars = makeCode('4006381333931', BarcodeFormat.EAN13);
+    scan([qr, bars], 1000);
+    scan([bars, qr], 1200);
+    scan([qr, bars], 1400);
+    scan([bars, qr], 1600);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onConfirm).toHaveBeenCalledWith('4006381333931', BarcodeFormat.EAN13);
   });
 
-  it('ignores codes with falsy value', () => {
-    const { result } = renderHook(() => useCodeScanHandler(onConfirm));
-    TestRenderer.act(() => {
-      result.current([{ value: undefined, format: BarcodeFormat.QR_CODE }]);
-    });
+  it('forgets a code that left the frame for more than a second', () => {
+    scan([makeCode('ABC123')], 1000);
+    scan([], 1500);
+    scan([makeCode('ABC123')], 11_000);
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    scan([makeCode('ABC123')], 11_600);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores an empty frame and codes without a value', () => {
+    scan([], 1000);
+    scan([{ value: undefined, format: BarcodeFormat.QR_CODE }], 2000);
     expect(onConfirm).not.toHaveBeenCalled();
   });
 });

@@ -2,8 +2,9 @@ import { randomUUID } from 'expo-crypto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { BarcodeFormat, Card, CardId, CardPhotos } from '../../domain/card';
-import { createCard } from '../../domain/card';
+import { createCard, droppedPhotos, photoFileNames } from '../../domain/card';
 import { runMigrations } from '../../domain/migration';
+import { deletePhotos } from '../../infra/persistence/cardPhotos';
 import { mmkvStateStorage } from '../../infra/persistence/mmkv';
 import { CARD_STORE_VERSION, cardMigrations } from '../migrations/cardMigrations';
 
@@ -67,17 +68,23 @@ export const useCardStore = create<CardStoreState>()(
         return card.id;
       },
 
-      updateCard: (id, patch) =>
+      updateCard: (id, patch) => {
+        const before = get().cards[id]?.photos;
         set((state) => {
           const cards = patchCard(state.cards, id, () => ({ ...patch, updatedAt: Date.now() }));
           return cards ? { cards } : state;
-        }),
+        });
+        if ('photos' in patch) deletePhotos(droppedPhotos(before, patch.photos));
+      },
 
-      removeCard: (id) =>
+      removeCard: (id) => {
+        const photos = get().cards[id]?.photos;
         set((state) => {
           const { [id]: _, ...rest } = state.cards;
           return { cards: rest, manualOrder: state.manualOrder.filter((known) => known !== id) };
-        }),
+        });
+        deletePhotos(photoFileNames(photos));
+      },
 
       togglePinned: (id) =>
         set((state) => {

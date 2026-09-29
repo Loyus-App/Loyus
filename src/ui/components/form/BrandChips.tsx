@@ -5,8 +5,8 @@ import { StyleSheet } from 'react-native-unistyles';
 import { type Brand, brandById, popularBrands } from '@/domain/brand';
 import { Icon, icons, PressableScale, Text } from '@/ui/primitives';
 import { testId, tid } from '@/ui/testIds';
-import { haptics } from '@/ui/utils/haptics';
 import { CardThumb } from '../CardThumb';
+import { CARD_ASPECT_RATIO } from '../CardTile';
 
 type Props = {
   readonly brandId: string | undefined;
@@ -71,10 +71,7 @@ export function BrandChips({
         </Text>
         {linked ? (
           <PressableScale
-            onPress={() => {
-              haptics.selection();
-              onRemove();
-            }}
+            onPress={onRemove}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={t('form.brandRemoveLabel', { name: linked.name })}
@@ -121,7 +118,7 @@ export function BrandChips({
   );
 }
 
-const CHIP_HEIGHT = Math.round(CHIP_WIDTH / 1.586);
+const CHIP_HEIGHT = Math.round(CHIP_WIDTH / CARD_ASPECT_RATIO);
 const RING = 3;
 
 const styles = StyleSheet.create((theme) => ({

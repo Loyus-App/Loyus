@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { isLanguageCode, type LanguageCode } from '../../domain/language';
 import type { MigrationRegistry } from '../../domain/migration';
 import { runMigrations } from '../../domain/migration';
-import type { SortMode } from '../../domain/sort';
-import type { LanguageCode } from '../../infra/i18n';
+import { isSortMode, type SortMode } from '../../domain/sort';
 import { mmkvStateStorage } from '../../infra/persistence/mmkv';
 
 const SETTINGS_STORE_VERSION = 5;
@@ -26,15 +26,53 @@ const settingsMigrations: MigrationRegistry = {
   5: (state: unknown) => ({ ...(state as object), accent: DEFAULT_ACCENT }),
 };
 
+export type ThemePreference = 'light' | 'dark' | 'system';
+
+export type CardViewMode = 'grid' | 'list';
+
+const THEMES: readonly ThemePreference[] = ['light', 'dark', 'system'];
+const VIEW_MODES: readonly CardViewMode[] = ['grid', 'list'];
+
+const isOneOf =
+  <T>(values: readonly T[]) =>
+  (value: unknown): value is T =>
+    values.some((known) => known === value);
+
+const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+
+type SettingsData = Pick<
+  SettingsState,
+  'theme' | 'cardViewMode' | 'language' | 'sortMode' | 'maxBrightness' | 'accent'
+>;
+
+const SETTINGS_GUARDS: { readonly [K in keyof SettingsData]: (value: unknown) => boolean } = {
+  theme: isOneOf(THEMES),
+  cardViewMode: isOneOf(VIEW_MODES),
+  language: isLanguageCode,
+  sortMode: isSortMode,
+  maxBrightness: isBoolean,
+  accent: isAccentName,
+};
+
+function validSettings(persisted: unknown): Partial<SettingsData> {
+  if (persisted === null || typeof persisted !== 'object') return {};
+  const fields = persisted as Readonly<Record<string, unknown>>;
+  return Object.fromEntries(
+    Object.entries(SETTINGS_GUARDS)
+      .filter(([key, valid]) => valid(fields[key]))
+      .map(([key]) => [key, fields[key]]),
+  ) as Partial<SettingsData>;
+}
+
 interface SettingsState {
-  theme: 'light' | 'dark' | 'system';
-  cardViewMode: 'grid' | 'list';
+  theme: ThemePreference;
+  cardViewMode: CardViewMode;
   language: LanguageCode;
   sortMode: SortMode;
   maxBrightness: boolean;
   accent: AccentName;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
-  setCardViewMode: (mode: 'grid' | 'list') => void;
+  setTheme: (theme: ThemePreference) => void;
+  setCardViewMode: (mode: CardViewMode) => void;
   setLanguage: (lang: LanguageCode) => void;
   setSortMode: (mode: SortMode) => void;
   setMaxBrightness: (enabled: boolean) => void;
@@ -46,8 +84,8 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       theme: 'system',
       cardViewMode: 'grid',
-      language: 'auto' as LanguageCode,
-      sortMode: 'mostUsed' as SortMode,
+      language: 'auto',
+      sortMode: 'mostUsed',
       maxBrightness: true,
       accent: DEFAULT_ACCENT,
       setTheme: (theme) => set({ theme }),
@@ -68,6 +106,7 @@ export const useSettingsStore = create<SettingsState>()(
           SETTINGS_STORE_VERSION,
           settingsMigrations,
         ) as SettingsState,
+      merge: (persisted, current) => ({ ...current, ...validSettings(persisted) }),
       partialize: (state) => ({
         theme: state.theme,
         cardViewMode: state.cardViewMode,

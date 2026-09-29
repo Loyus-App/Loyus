@@ -229,6 +229,7 @@ const en = {
     restoreDoneBody: '{{added}} added · {{skipped}} already on this phone',
     restoreFailedTitle: 'Restore failed',
     restoreFailedBody: 'This file is not a Loyus backup.',
+    exportDialogTitle: 'Export Loyus cards',
     exportFailedTitle: 'Export failed',
     exportFailedBody: 'The backup file could not be created.',
     privacy: 'Privacy',

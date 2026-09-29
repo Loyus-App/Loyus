@@ -233,6 +233,7 @@ const pt: Translation = {
     restoreDoneBody: 'Adicionados: {{added}} · Já neste celular: {{skipped}}',
     restoreFailedTitle: 'Falha ao restaurar',
     restoreFailedBody: 'Este arquivo não é um backup do Loyus.',
+    exportDialogTitle: 'Exportar cartões do Loyus',
     exportFailedTitle: 'Falha ao exportar',
     exportFailedBody: 'Não foi possível criar o arquivo de backup.',
     privacy: 'Privacidade',

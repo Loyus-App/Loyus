@@ -1,6 +1,6 @@
 import barcodes from 'jsbarcode/bin/barcodes';
 import { create } from 'qrcode';
-import { validateBarcode } from '@/domain/barcode';
+import { code39Symbols, validateBarcode } from '@/domain/barcode';
 import type { SymbolKind } from '@/domain/barcodeLayout';
 import { BarcodeFormat, JSBARCODE_FORMAT } from '@/domain/card';
 
@@ -19,6 +19,7 @@ const LINEAR_FORMATS: ReadonlySet<BarcodeFormat> = new Set([
   BarcodeFormat.UPC_A,
   BarcodeFormat.UPC_E,
   BarcodeFormat.ITF14,
+  BarcodeFormat.ITF,
   BarcodeFormat.CODABAR,
   BarcodeFormat.MSI,
   BarcodeFormat.PHARMACODE,
@@ -41,7 +42,8 @@ function rowPath(isDark: (column: number) => boolean, width: number, row: number
 function encodeLinear(code: string, format: BarcodeFormat): EncodedSymbol | null {
   const Encoder = barcodes[JSBARCODE_FORMAT[format]];
   if (!Encoder) return null;
-  const encoder = new Encoder(code, { flat: true });
+  const data = format === BarcodeFormat.CODE39 ? code39Symbols(code) : code;
+  const encoder = new Encoder(data, { flat: true });
   if (!encoder.valid()) return null;
   const encoded = encoder.encode();
   const bars = 'data' in encoded ? encoded.data : encoded.map((part) => part.data).join('');

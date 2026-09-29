@@ -3,23 +3,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, type ImageLoadEvent, ScrollView, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import type { Card, CardId, CardPhotos } from '@/domain/card';
-import { photoUri } from '@/infra/photos/cardPhotos';
+import type { Card, CardId } from '@/domain/card';
+import { photoUri } from '@/infra/persistence/cardPhotos';
 import { selectCardById } from '@/state/selectors';
 import { useCardStore } from '@/state/stores/cardStore';
 import { CARD_ASPECT_RATIO } from '@/ui/components/CardTile';
+import { PHOTO_SIDE_TEXT, PHOTO_SIDES, type PhotoSide } from '@/ui/constants/photoSides';
 import { useToolbarIcon } from '@/ui/hooks/useToolbarIcon';
 import { modalOptions } from '@/ui/navigation/stackOptions';
 import { EmptyState, icons, Text } from '@/ui/primitives';
-
-type Side = keyof CardPhotos;
-
-const SIDES: readonly Side[] = ['front', 'back'];
-
-const SIDE_TEXT = {
-  front: { name: 'photos.front', label: 'photos.frontLabel' },
-  back: { name: 'photos.back', label: 'photos.backLabel' },
-} as const satisfies Record<Side, { name: string; label: string }>;
 
 function close(): void {
   router.back();
@@ -44,7 +36,7 @@ function Photo({
   side,
   fileName,
 }: {
-  readonly side: Side;
+  readonly side: PhotoSide;
   readonly fileName: string;
 }): React.JSX.Element {
   const { t } = useTranslation();
@@ -60,7 +52,7 @@ function Photo({
   return (
     <View style={styles.block}>
       <Text variant="label" tone="muted" style={styles.label} accessibilityRole="header">
-        {t(SIDE_TEXT[side].name)}
+        {t(PHOTO_SIDE_TEXT[side].name)}
       </Text>
       {uri && !failed ? (
         <Image
@@ -69,7 +61,7 @@ function Photo({
           resizeMode="contain"
           accessible
           accessibilityRole="image"
-          accessibilityLabel={t(SIDE_TEXT[side].label)}
+          accessibilityLabel={t(PHOTO_SIDE_TEXT[side].label)}
           onLoad={onLoad}
           onError={() => setFailed(true)}
         />
@@ -86,7 +78,7 @@ function Photo({
 
 function Photos({ card }: { readonly card: Card }): React.JSX.Element {
   const { t } = useTranslation();
-  const shown = SIDES.flatMap((side) => {
+  const shown = PHOTO_SIDES.flatMap((side) => {
     const fileName = card.photos?.[side];
     return fileName ? [{ side, fileName }] : [];
   });

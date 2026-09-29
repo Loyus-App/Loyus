@@ -10,6 +10,7 @@ export enum BarcodeFormat {
   UPC_A = 'UPC_A',
   UPC_E = 'UPC_E',
   ITF14 = 'ITF14',
+  ITF = 'ITF',
   CODABAR = 'CODABAR',
   MSI = 'MSI',
   PHARMACODE = 'PHARMACODE',
@@ -28,6 +29,7 @@ export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.UPC_A]: 'UPC',
   [BarcodeFormat.UPC_E]: 'UPCE',
   [BarcodeFormat.ITF14]: 'ITF14',
+  [BarcodeFormat.ITF]: 'ITF',
   [BarcodeFormat.CODABAR]: 'codabar',
   [BarcodeFormat.MSI]: 'MSI',
   [BarcodeFormat.PHARMACODE]: 'pharmacode',
@@ -44,6 +46,7 @@ export const FORMAT_LABEL: Record<BarcodeFormat, string> = {
   [BarcodeFormat.UPC_A]: 'UPC-A',
   [BarcodeFormat.UPC_E]: 'UPC-E',
   [BarcodeFormat.ITF14]: 'ITF-14',
+  [BarcodeFormat.ITF]: 'ITF',
   [BarcodeFormat.CODE128]: 'Code 128',
   [BarcodeFormat.CODE39]: 'Code 39',
   [BarcodeFormat.CODABAR]: 'Codabar',
@@ -55,6 +58,12 @@ export const FORMAT_LABEL: Record<BarcodeFormat, string> = {
   [BarcodeFormat.AZTEC]: 'Aztec',
   [BarcodeFormat.GS1_DATABAR]: 'GS1 DataBar',
 };
+
+const BARCODE_FORMATS: ReadonlySet<string> = new Set(Object.values(BarcodeFormat));
+
+export function isBarcodeFormat(value: unknown): value is BarcodeFormat {
+  return typeof value === 'string' && BARCODE_FORMATS.has(value);
+}
 
 export interface CardPhotos {
   readonly front?: string | undefined;
@@ -108,6 +117,14 @@ export function photoFileNames(photos: CardPhotos | undefined): string[] {
   return [photos?.front, photos?.back].filter((name): name is string => Boolean(name));
 }
 
+export function droppedPhotos(
+  before: CardPhotos | undefined,
+  after: CardPhotos | undefined,
+): string[] {
+  const kept = new Set(photoFileNames(after));
+  return photoFileNames(before).filter((name) => !kept.has(name));
+}
+
 export function createCard(input: CreateCardInput, now: number = Date.now()): Card {
   const owner = optionalText(input.owner);
   const note = optionalText(input.note);
@@ -127,6 +144,11 @@ export function createCard(input: CreateCardInput, now: number = Date.now()): Ca
     createdAt: now,
     updatedAt: now,
   };
+}
+
+export function cardSubtitle(card: Pick<Card, 'owner' | 'format'>): string {
+  const format = FORMAT_LABEL[card.format];
+  return card.owner ? `${card.owner} · ${format}` : format;
 }
 
 const WORD_SEPARATOR = /[^\p{L}\p{N}]+/u;

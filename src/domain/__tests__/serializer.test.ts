@@ -1,6 +1,6 @@
 import { makeCard } from '@/testing/makeCard';
 import type { Card } from '../card';
-import { deserializeCards, portableCard, SERIALIZER_VERSION, serializeCards } from '../serializer';
+import { deserializeCards, SERIALIZER_VERSION, serializeCards } from '../serializer';
 
 describe('SERIALIZER_VERSION', () => {
   it('is 2', () => {
@@ -16,6 +16,12 @@ describe('serializeCards', () => {
     expect(parsed.version).toBe(SERIALIZER_VERSION);
     expect(parsed.cards).toHaveLength(1);
     expect(parsed.cards[0]?.name).toBe('Test');
+  });
+
+  it('stamps the export date and indents the file', () => {
+    const json = serializeCards([], new Date('2026-04-14T12:00:00Z'));
+    expect(JSON.parse(json).exportedAt).toBe('2026-04-14T12:00:00.000Z');
+    expect(json).toContain('\n  "version"');
   });
 
   it('serializes empty array', () => {
@@ -70,6 +76,35 @@ describe('deserializeCards', () => {
 
     const json = JSON.stringify({ version: 2, cards: [{ ...linked, brandId: 42 }] });
     expect(deserializeCards(json)[0]).not.toHaveProperty('brandId');
+  });
+
+  it.each([
+    ['name', null],
+    ['name', 42],
+    ['name', '   '],
+    ['code', 123],
+    ['format', 'ITF-6'],
+    ['createdAt', '2026-01-01'],
+    ['updatedAt', Number.NaN],
+  ])('rejects a card whose %s is %p', (field, value) => {
+    const card = { ...makeCard({ id: 'c1', name: 'Alpha' }), [field]: value };
+    const json = JSON.stringify({ version: 2, cards: [card] });
+    expect(() => deserializeCards(json)).toThrow(new RegExp(field));
+  });
+
+  it('drops malformed optional fields and unknown keys', () => {
+    const card = {
+      ...makeCard({ id: 'c1', name: 'Alpha' }),
+      color: '#F00',
+      owner: 7,
+      note: { text: 'x' },
+      barcodeRotated: 'yes',
+      openCount: -3,
+      lastOpenedAt: 'today',
+      injected: true,
+    };
+    const [restored] = deserializeCards(JSON.stringify({ version: 2, cards: [card] }));
+    expect(restored).toEqual(makeCard({ id: 'c1', name: 'Alpha' }));
   });
 
   it('throws on invalid JSON', () => {
@@ -167,9 +202,9 @@ describe('photos', () => {
     expect(card?.name).toBe('Alpha');
   });
 
-  it('portableCard keeps every other field', () => {
+  it('keep every other field in the backup', () => {
     const card = makeCard({ id: 'c1', name: 'Alpha', note: 'PIN 1234', photos });
     const { photos: _photos, ...rest } = card;
-    expect(portableCard(card)).toEqual(rest);
+    expect(JSON.parse(serializeCards([card])).cards[0]).toEqual(rest);
   });
 });

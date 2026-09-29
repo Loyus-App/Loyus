@@ -17,6 +17,22 @@ describe('encodeSymbol', () => {
     expect(long?.modules).toBeGreaterThan(short?.modules ?? 0);
   });
 
+  it('encodes generic ITF values of any even length', () => {
+    const symbol = encodeSymbol('1234567890', BarcodeFormat.ITF);
+
+    expect(symbol).toMatchObject({ kind: 'linear', rows: 1 });
+    expect(encodeSymbol('123', BarcodeFormat.ITF)).toBeNull();
+  });
+
+  it('keeps lowercase Code 39 values by drawing their Full ASCII pairs', () => {
+    const lower = encodeSymbol('loyus', BarcodeFormat.CODE39);
+    const upper = encodeSymbol('LOYUS', BarcodeFormat.CODE39);
+    const spelled = encodeSymbol('+L+O+Y+U+S', BarcodeFormat.CODE39);
+
+    expect(lower?.path).toBe(spelled?.path);
+    expect(lower?.path).not.toBe(upper?.path);
+  });
+
   it('encodes QR codes as a square grid', () => {
     const symbol = encodeSymbol('hello', BarcodeFormat.QR_CODE);
 

@@ -19,7 +19,8 @@ enum BarcodeImageReader {
     case .dataMatrix: return "DATA_MATRIX"
     case .aztec: return "AZTEC"
     case .codabar: return "CODABAR"
-    case .itf14, .i2of5, .i2of5Checksum: return "ITF14"
+    case .itf14: return "ITF14"
+    case .i2of5, .i2of5Checksum: return "ITF"
     case .gs1DataBar, .gs1DataBarExpanded, .gs1DataBarLimited: return "GS1_DATABAR"
     default: return nil
     }

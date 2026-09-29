@@ -42,6 +42,7 @@ export function ActionSheetHost(): React.JSX.Element {
                 key={action.label}
                 title={action.label}
                 destructive={action.destructive ?? false}
+                haptic={false}
                 onPress={() => runAfterClose(action)}
               />
             ))}

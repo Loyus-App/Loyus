@@ -30,6 +30,7 @@ type Props = {
   readonly selected?: boolean | undefined;
   readonly loading?: boolean;
   readonly disabled?: boolean;
+  readonly haptic?: boolean;
   readonly accessibilityLabel?: string | undefined;
   readonly accessibilityHint?: string | undefined;
   readonly accessibilityActions?: AccessibilityActionInfo[] | undefined;
@@ -102,6 +103,7 @@ export function ListRow({
   onLongPress,
   loading = false,
   disabled = false,
+  haptic = true,
   accessibilityLabel,
   accessibilityHint,
   accessibilityActions,
@@ -128,7 +130,7 @@ export function ListRow({
     <Pressable
       testID={testID}
       onPress={() => {
-        haptics.selection();
+        if (haptic) haptics.selection();
         onPress?.();
       }}
       onLongPress={onLongPress}

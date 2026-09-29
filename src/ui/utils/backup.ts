@@ -7,7 +7,7 @@ import { haptics } from './haptics';
 
 export async function exportBackup(): Promise<void> {
   try {
-    await exportCards();
+    await exportCards(Object.values(useCardStore.getState().cards));
   } catch {
     Alert.alert(i18n.t('settings.exportFailedTitle'), i18n.t('settings.exportFailedBody'));
   }

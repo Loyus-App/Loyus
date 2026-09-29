@@ -15,8 +15,10 @@ const RE_DIGITS_12_13 = /^\d{12,13}$/;
 const RE_DIGITS_7_8 = /^\d{7,8}$/;
 const RE_DIGITS_11_12 = /^\d{11,12}$/;
 const RE_DIGITS_6_8 = /^\d{6,8}$/;
-const RE_CODE39 = /^[0-9A-Z\-.$/+%\s]+$/;
+const RE_CODE39 = /^[0-9A-Z\-. $/+%]+$/;
 const RE_DIGITS_13_14 = /^\d{13,14}$/;
+const RE_DIGIT_PAIRS = /^(\d{2})+$/;
+const RE_PRINTABLE_ASCII = /^[\x20-\x7e]+$/;
 const RE_CODABAR = /^[0-9\-$:/.+]+$/;
 const RE_DIGITS_ONLY = /^\d+$/;
 const RE_DIGITS_1_6 = /^\d{1,6}$/;
@@ -75,15 +77,53 @@ function validateCode128(code: string): BarcodeValidationResult {
 
 function validateCode39(code: string): BarcodeValidationResult {
   if (code.length === 0) return invalid('CODE39 must not be empty');
-  if (!RE_CODE39.test(code)) {
-    return invalid('CODE39 must contain only uppercase letters, digits, and - . $ / + % space');
-  }
+  if (!isAsciiOnly(code)) return invalid('CODE39 must contain only ASCII characters');
   return VALID;
+}
+
+const RE_FULL_ASCII_SAME = /^[0-9A-Z. -]$/;
+
+const FULL_ASCII_SINGLES: Readonly<Record<number, string>> = {
+  0: '%U',
+  47: '/O',
+  58: '/Z',
+  64: '%V',
+  96: '%W',
+};
+
+const FULL_ASCII_RANGES = [
+  { from: 1, to: 26, shift: '$', first: 'A' },
+  { from: 27, to: 31, shift: '%', first: 'A' },
+  { from: 33, to: 44, shift: '/', first: 'A' },
+  { from: 59, to: 63, shift: '%', first: 'F' },
+  { from: 91, to: 95, shift: '%', first: 'K' },
+  { from: 97, to: 122, shift: '+', first: 'A' },
+  { from: 123, to: 127, shift: '%', first: 'P' },
+] as const;
+
+function fullAsciiPair(char: string): string {
+  if (RE_FULL_ASCII_SAME.test(char)) return char;
+  const code = char.charCodeAt(0);
+  const single = FULL_ASCII_SINGLES[code];
+  if (single) return single;
+  const range = FULL_ASCII_RANGES.find(({ from, to }) => code >= from && code <= to);
+  if (!range) return char;
+  return `${range.shift}${String.fromCharCode(range.first.charCodeAt(0) + code - range.from)}`;
+}
+
+export function code39Symbols(code: string): string {
+  if (RE_CODE39.test(code)) return code;
+  return [...code].map(fullAsciiPair).join('');
 }
 
 function validateItf14(code: string): BarcodeValidationResult {
   if (!RE_DIGITS_13_14.test(code)) return invalid('ITF-14 must be 13 or 14 digits');
   return verifyCheckDigit(code, 14);
+}
+
+function validateItf(code: string): BarcodeValidationResult {
+  if (!RE_DIGIT_PAIRS.test(code)) return invalid('ITF must be an even number of digits');
+  return VALID;
 }
 
 function validateCodabar(code: string): BarcodeValidationResult {
@@ -116,7 +156,9 @@ function validateNonEmpty(label: string): (code: string) => BarcodeValidationRes
 
 function validateGs1Databar(code: string): BarcodeValidationResult {
   if (code.length === 0) return invalid('GS1 DataBar must not be empty');
-  if (!RE_DIGITS_ONLY.test(code)) return invalid('GS1 DataBar must contain only digits');
+  if (!RE_PRINTABLE_ASCII.test(code)) {
+    return invalid('GS1 DataBar must contain only printable ASCII characters');
+  }
   return VALID;
 }
 
@@ -130,6 +172,7 @@ const VALIDATORS: Record<BarcodeFormat, Validator> = {
   [BarcodeFormat.CODE128]: validateCode128,
   [BarcodeFormat.CODE39]: validateCode39,
   [BarcodeFormat.ITF14]: validateItf14,
+  [BarcodeFormat.ITF]: validateItf,
   [BarcodeFormat.CODABAR]: validateCodabar,
   [BarcodeFormat.MSI]: validateMsi,
   [BarcodeFormat.PHARMACODE]: validatePharmacode,
@@ -142,13 +185,4 @@ const VALIDATORS: Record<BarcodeFormat, Validator> = {
 
 export function validateBarcode(code: string, format: BarcodeFormat): BarcodeValidationResult {
   return VALIDATORS[format](code);
-}
-
-export function parseBarcodeFormat(code: string): BarcodeFormat | null {
-  if (code.length === 0) return null;
-  if (!RE_DIGITS_ONLY.test(code)) return null;
-  if (code.length === 8 && code.startsWith('0')) return BarcodeFormat.UPC_E;
-  if (code.length === 12 || code.length === 13) return BarcodeFormat.EAN13;
-  if (code.length === 7 || code.length === 8) return BarcodeFormat.EAN8;
-  return null;
 }

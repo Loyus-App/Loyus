@@ -45,6 +45,7 @@ export const palette = {
 } as const;
 
 export const radius = {
+  thumb: 6,
   sm: 9,
   card: 12,
   md: 14,

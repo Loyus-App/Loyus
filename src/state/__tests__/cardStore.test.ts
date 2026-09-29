@@ -1,10 +1,16 @@
 import { makeCard } from '@/testing/makeCard';
 import type { CardId } from '../../domain/card';
 import { BarcodeFormat } from '../../domain/card';
+import { deletePhotos } from '../../infra/persistence/cardPhotos';
 import { useCardStore } from '../stores/cardStore';
+
+jest.mock('../../infra/persistence/cardPhotos', () => ({ deletePhotos: jest.fn() }));
+
+const mockDeletePhotos = jest.mocked(deletePhotos);
 
 beforeEach(() => {
   useCardStore.setState({ cards: {}, manualOrder: [], manualOrderCustomized: false });
+  mockDeletePhotos.mockClear();
 });
 
 function firstId(): CardId {
@@ -66,6 +72,38 @@ describe('cardStore', () => {
     useCardStore.getState().removeCard(id);
 
     expect(Object.keys(useCardStore.getState().cards)).toHaveLength(0);
+  });
+
+  it('removeCard deletes the photos of the card', () => {
+    useCardStore.getState().addCard({
+      name: 'Photos',
+      code: '42',
+      format: BarcodeFormat.QR_CODE,
+      photos: { front: 'front.jpg', back: 'back.jpg' },
+    });
+
+    useCardStore.getState().removeCard(firstId());
+
+    expect(mockDeletePhotos).toHaveBeenCalledWith(['front.jpg', 'back.jpg']);
+  });
+
+  it('updateCard deletes only the photos the edit dropped', () => {
+    useCardStore.getState().addCard({
+      name: 'Photos',
+      code: '42',
+      format: BarcodeFormat.QR_CODE,
+      photos: { front: 'front.jpg', back: 'back.jpg' },
+    });
+    const id = firstId();
+
+    useCardStore.getState().updateCard(id, { name: 'Renamed' });
+    expect(mockDeletePhotos).not.toHaveBeenCalled();
+
+    useCardStore.getState().updateCard(id, { photos: { front: 'new.jpg', back: 'back.jpg' } });
+    expect(mockDeletePhotos).toHaveBeenLastCalledWith(['front.jpg']);
+
+    useCardStore.getState().updateCard(id, { photos: undefined });
+    expect(mockDeletePhotos).toHaveBeenLastCalledWith(['new.jpg', 'back.jpg']);
   });
 
   it('togglePinned flips isPinned without touching updatedAt', () => {

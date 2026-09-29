@@ -1,16 +1,9 @@
 import { File, Paths } from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
-
 import type { Card } from '../../domain/card';
-import { portableCard, SERIALIZER_VERSION } from '../../domain/serializer';
-import { useCardStore } from '../../state/stores/cardStore';
+import { serializeCards } from '../../domain/serializer';
 import { deleteQuietly } from '../files';
-
-interface ExportData {
-  readonly version: number;
-  readonly exportedAt: string;
-  readonly cards: Card[];
-}
+import { i18n } from '../i18n';
 
 export function buildExportFileName(date: Date = new Date()): string {
   const y = date.getUTCFullYear();
@@ -19,29 +12,18 @@ export function buildExportFileName(date: Date = new Date()): string {
   return `loyus-cards-${y}-${m}-${d}.json`;
 }
 
-export function buildExportJson(cards: readonly Card[]): string {
-  const data: ExportData = {
-    version: SERIALIZER_VERSION,
-    exportedAt: new Date().toISOString(),
-    cards: cards.map(portableCard),
-  };
-  return JSON.stringify(data, null, 2);
-}
-
-export async function exportCards(): Promise<void> {
-  const cards = Object.values(useCardStore.getState().cards);
-  const json = buildExportJson(cards);
-  const filename = buildExportFileName();
-  const file = new File(Paths.cache, filename);
-
-  await file.write(json);
-
-  await shareAsync(file.uri, {
-    mimeType: 'application/json',
-    dialogTitle: 'Export Loyus Cards',
-    // biome-ignore lint/style/useNamingConvention: Apple UTI API requires this exact key name
-    UTI: 'public.json',
-  });
-
-  deleteQuietly(file);
+export async function exportCards(cards: readonly Card[]): Promise<void> {
+  const now = new Date();
+  const file = new File(Paths.cache, buildExportFileName(now));
+  try {
+    await file.write(serializeCards(cards, now));
+    await shareAsync(file.uri, {
+      mimeType: 'application/json',
+      dialogTitle: i18n.t('settings.exportDialogTitle'),
+      // biome-ignore lint/style/useNamingConvention: Apple UTI API requires this exact key name
+      UTI: 'public.json',
+    });
+  } finally {
+    deleteQuietly(file);
+  }
 }

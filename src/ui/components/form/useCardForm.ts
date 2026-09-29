@@ -78,6 +78,7 @@ export function useCardForm(
   const [region] = useState(deviceRegion);
   const [isPinned, setPinned] = useState(initial?.isPinned ?? false);
   const [attempted, setAttempted] = useState(false);
+  const submitting = useRef(false);
   const photoDraft = usePhotoDraft(initial?.photos);
 
   const change = (field: TextField) => (value: string) => {
@@ -113,21 +114,18 @@ export function useCardForm(
 
   const onPick = useRef({ pickBrand, chooseOtherStore });
   onPick.current = { pickBrand, chooseOtherStore };
+  const brandPick = useUiStore((state) => state.brandPick);
 
-  useEffect(
-    () =>
-      useUiStore.subscribe((state) => {
-        if (!state.brandPick) return;
-        const pick = useUiStore.getState().takeBrandPick();
-        const brand = brandById(pick?.brandId ?? undefined);
-        if (brand) {
-          onPick.current.pickBrand(brand);
-          return;
-        }
-        onPick.current.chooseOtherStore();
-      }),
-    [],
-  );
+  useEffect(() => {
+    if (!brandPick) return;
+    const pick = useUiStore.getState().takeBrandPick();
+    const brand = brandById(pick?.brandId ?? undefined);
+    if (brand) {
+      onPick.current.pickBrand(brand);
+      return;
+    }
+    onPick.current.chooseOtherStore();
+  }, [brandPick]);
 
   const linkedBrand = (name: string): string | undefined => {
     if (brandId || !autoLinkBrand || brandDismissed) return brandId;
@@ -137,6 +135,7 @@ export function useCardForm(
   const issues: FormIssues = attempted ? findIssues(draft.name, draft.code, format) : {};
 
   const submit = (onValid: (values: CardFormValues) => void): void => {
+    if (submitting.current) return;
     const current = text.current;
     const found = findIssues(current.name, current.code, format);
     setDraft(current);
@@ -146,16 +145,17 @@ export function useCardForm(
       (found.name ? nameRef : codeRef).current?.focus();
       return;
     }
-    onValid(
-      valuesOf(current, {
-        format,
-        color,
-        brandId: linkedBrand(current.name),
-        photos: photoDraft.result(),
-        isPinned,
-      }),
-    );
-    photoDraft.commit();
+    submitting.current = true;
+    const choices = { format, color, brandId: linkedBrand(current.name), isPinned };
+    photoDraft
+      .settled()
+      .then((photos) => {
+        onValid(valuesOf(current, { ...choices, photos }));
+        photoDraft.commit();
+      })
+      .finally(() => {
+        submitting.current = false;
+      });
   };
 
   return {
@@ -163,7 +163,7 @@ export function useCardForm(
     draft,
     format,
     color,
-    brandId,
+    brandId: linkedBrand(draft.name),
     region,
     nameField,
     isPinned,

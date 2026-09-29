@@ -2,17 +2,23 @@ import { router } from 'expo-router';
 import {
   type AccessibilityActionEvent,
   type AccessibilityActionInfo,
-  ActionSheetIOS,
   Alert,
-  Platform,
   Share,
 } from 'react-native';
-import { type Card, FORMAT_LABEL, photoFileNames } from '@/domain/card';
+import { type Card, FORMAT_LABEL } from '@/domain/card';
 import { i18n } from '@/infra/i18n';
-import { deletePhotos } from '@/infra/photos/cardPhotos';
 import { useCardStore } from '@/state/stores/cardStore';
-import { type SheetAction, useUiStore } from '@/state/stores/uiStore';
+import type { SheetAction } from '@/state/stores/uiStore';
+import type { CardFormValues } from '@/ui/components/form/useCardForm';
+import { showActionSheet } from './actionSheet';
 import { haptics } from './haptics';
+import { ignore } from './ignore';
+
+export function saveNewCard(values: CardFormValues): void {
+  useCardStore.getState().addCard(values);
+  haptics.success();
+  router.dismissTo('/');
+}
 
 export function editCard(card: Card): void {
   router.push(`/card/edit/${card.id}`);
@@ -30,7 +36,7 @@ export function shareCard(card: Card): void {
       code: card.code,
       format: FORMAT_LABEL[card.format],
     }),
-  }).catch(() => undefined);
+  }).catch(ignore);
 }
 
 export function confirmDeleteCard(card: Card, onDeleted?: () => void): void {
@@ -44,10 +50,7 @@ export function confirmDeleteCard(card: Card, onDeleted?: () => void): void {
         style: 'destructive',
         onPress: () => {
           haptics.warning();
-          const { cards, removeCard } = useCardStore.getState();
-          const photos = cards[card.id]?.photos ?? card.photos;
-          removeCard(card.id);
-          deletePhotos(photoFileNames(photos));
+          useCardStore.getState().removeCard(card.id);
           onDeleted?.();
         },
       },
@@ -77,20 +80,7 @@ function cardActionList(card: Card): CardAction[] {
 
 export function showCardActions(card: Card): void {
   haptics.impact();
-  const actions = cardActionList(card);
-  if (Platform.OS !== 'ios') {
-    useUiStore.getState().showActionSheet({ title: card.name, actions });
-    return;
-  }
-  ActionSheetIOS.showActionSheetWithOptions(
-    {
-      title: card.name,
-      options: [...actions.map((action) => action.label), i18n.t('common.cancel')],
-      destructiveButtonIndex: actions.findIndex((action) => action.destructive),
-      cancelButtonIndex: actions.length,
-    },
-    (index) => actions[index]?.run(),
-  );
+  showActionSheet(card.name, cardActionList(card));
 }
 
 export function cardAccessibilityActions(card: Card): {

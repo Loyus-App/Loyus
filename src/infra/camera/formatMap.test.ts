@@ -10,7 +10,7 @@ describe('formatMap', () => {
   const allFormats = Object.values(BarcodeFormat);
 
   describe('iOS (VisionCamera object output)', () => {
-    it('scans all 12 supported object types', () => {
+    it('scans all 13 supported object types', () => {
       const expected = [
         'ean-13',
         'ean-8',
@@ -23,9 +23,10 @@ describe('formatMap', () => {
         'aztec',
         'codabar',
         'itf-14',
+        'interleaved-2-of-5',
         'gs1-data-bar',
       ];
-      expect(IOS_SCAN_TYPES).toHaveLength(12);
+      expect(IOS_SCAN_TYPES).toHaveLength(13);
       for (const type of expected) {
         expect(IOS_SCAN_TYPES).toContain(type);
       }
@@ -49,6 +50,7 @@ describe('formatMap', () => {
       expect(IOS_TYPE_TO_FORMAT.aztec).toBe(BarcodeFormat.AZTEC);
       expect(IOS_TYPE_TO_FORMAT.codabar).toBe(BarcodeFormat.CODABAR);
       expect(IOS_TYPE_TO_FORMAT['itf-14']).toBe(BarcodeFormat.ITF14);
+      expect(IOS_TYPE_TO_FORMAT['interleaved-2-of-5']).toBe(BarcodeFormat.ITF);
       expect(IOS_TYPE_TO_FORMAT['gs1-data-bar']).toBe(BarcodeFormat.GS1_DATABAR);
     });
 
@@ -98,7 +100,7 @@ describe('formatMap', () => {
       expect(ANDROID_FORMAT_TO_FORMAT['data-matrix']).toBe(BarcodeFormat.DATA_MATRIX);
       expect(ANDROID_FORMAT_TO_FORMAT.aztec).toBe(BarcodeFormat.AZTEC);
       expect(ANDROID_FORMAT_TO_FORMAT.codabar).toBe(BarcodeFormat.CODABAR);
-      expect(ANDROID_FORMAT_TO_FORMAT.itf).toBe(BarcodeFormat.ITF14);
+      expect(ANDROID_FORMAT_TO_FORMAT.itf).toBe(BarcodeFormat.ITF);
     });
 
     it('returns undefined for unknown formats (no crash)', () => {

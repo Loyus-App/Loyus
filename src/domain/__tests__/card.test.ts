@@ -3,19 +3,22 @@ import {
   BarcodeFormat,
   type CardId,
   cardInitials,
+  cardSubtitle,
   compactPhotos,
   createCard,
+  droppedPhotos,
   FORMAT_LABEL,
   findDuplicate,
   formatCodeForDisplay,
+  isBarcodeFormat,
   JSBARCODE_FORMAT,
   photoFileNames,
 } from '../card';
 
 describe('BarcodeFormat enum', () => {
-  it('has exactly 15 values', () => {
+  it('has exactly 16 values', () => {
     const values = Object.values(BarcodeFormat);
-    expect(values).toHaveLength(15);
+    expect(values).toHaveLength(16);
   });
 
   it.each([
@@ -201,6 +204,30 @@ describe('photoFileNames', () => {
   it('is empty without photos', () => {
     expect(photoFileNames(undefined)).toEqual([]);
     expect(photoFileNames({ front: '' })).toEqual([]);
+  });
+});
+
+describe('droppedPhotos', () => {
+  it('lists the files an edit no longer keeps', () => {
+    const before = { front: 'a.jpg', back: 'b.jpg' };
+    expect(droppedPhotos(before, { front: 'c.jpg', back: 'b.jpg' })).toEqual(['a.jpg']);
+    expect(droppedPhotos(before, undefined)).toEqual(['a.jpg', 'b.jpg']);
+    expect(droppedPhotos(undefined, before)).toEqual([]);
+  });
+});
+
+describe('isBarcodeFormat', () => {
+  it('accepts only known format names', () => {
+    expect(isBarcodeFormat('ITF')).toBe(true);
+    expect(isBarcodeFormat('EAN-13')).toBe(false);
+    expect(isBarcodeFormat(42)).toBe(false);
+  });
+});
+
+describe('cardSubtitle', () => {
+  it('shows the owner before the format when there is one', () => {
+    expect(cardSubtitle({ owner: 'Sam', format: BarcodeFormat.EAN13 })).toBe('Sam · EAN-13');
+    expect(cardSubtitle({ format: BarcodeFormat.ITF })).toBe('ITF');
   });
 });
 

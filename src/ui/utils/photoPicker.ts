@@ -5,9 +5,9 @@ import {
   launchImageLibraryAsync,
   requestCameraPermissionsAsync,
 } from 'expo-image-picker';
-import { ActionSheetIOS, Alert, Linking, Platform } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { i18n } from '@/infra/i18n';
-import { type SheetAction, useUiStore } from '@/state/stores/uiStore';
+import { ignore } from './ignore';
 
 const PICKER_OPTIONS: ImagePickerOptions = {
   mediaTypes: ['images'],
@@ -25,7 +25,7 @@ function explainCameraDenied(): void {
     {
       text: i18n.t('camera.openSettings'),
       onPress: () => {
-        Linking.openSettings().catch(() => undefined);
+        Linking.openSettings().catch(ignore);
       },
     },
   ]);
@@ -40,27 +40,12 @@ export async function takePhoto(): Promise<string | null> {
   return firstUri(await launchCameraAsync(PICKER_OPTIONS));
 }
 
-export async function choosePhoto(): Promise<string | null> {
-  return firstUri(await launchImageLibraryAsync(PICKER_OPTIONS));
+export async function choosePhoto(
+  options: ImagePickerOptions = PICKER_OPTIONS,
+): Promise<string | null> {
+  return firstUri(await launchImageLibraryAsync(options));
 }
 
 export function showPhotoFailed(): void {
   Alert.alert(i18n.t('photos.failedTitle'), i18n.t('photos.failedBody'));
-}
-
-export function showPhotoSheet(title: string, actions: readonly SheetAction[]): void {
-  if (Platform.OS !== 'ios') {
-    useUiStore.getState().showActionSheet({ title, actions });
-    return;
-  }
-  const destructive = actions.findIndex((action) => action.destructive);
-  ActionSheetIOS.showActionSheetWithOptions(
-    {
-      title,
-      options: [...actions.map((action) => action.label), i18n.t('common.cancel')],
-      ...(destructive >= 0 ? { destructiveButtonIndex: destructive } : {}),
-      cancelButtonIndex: actions.length,
-    },
-    (index) => actions[index]?.run(),
-  );
 }

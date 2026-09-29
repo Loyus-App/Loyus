@@ -234,6 +234,7 @@ const es: Translation = {
     restoreDoneBody: 'Añadidas: {{added}} · Ya en este teléfono: {{skipped}}',
     restoreFailedTitle: 'No se pudo restaurar',
     restoreFailedBody: 'Este archivo no es una copia de seguridad de Loyus.',
+    exportDialogTitle: 'Exportar tarjetas de Loyus',
     exportFailedTitle: 'No se pudo exportar',
     exportFailedBody: 'No se pudo crear el archivo de copia de seguridad.',
     privacy: 'Privacidad',

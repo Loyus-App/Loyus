@@ -235,6 +235,7 @@ const fr: Translation = {
     restoreDoneBody: 'Ajoutées : {{added}} · Déjà sur ce téléphone : {{skipped}}',
     restoreFailedTitle: 'Échec de la restauration',
     restoreFailedBody: 'Ce fichier n’est pas une sauvegarde Loyus.',
+    exportDialogTitle: 'Exporter les cartes Loyus',
     exportFailedTitle: 'Échec de l’exportation',
     exportFailedBody: 'Impossible de créer le fichier de sauvegarde.',
     privacy: 'Confidentialité',

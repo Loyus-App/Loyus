@@ -3,23 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Image, Keyboard, View } from 'react-native';
 import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 import type { CardPhotos } from '@/domain/card';
-import { photoUri } from '@/infra/photos/cardPhotos';
+import { photoUri } from '@/infra/persistence/cardPhotos';
 import type { SheetAction } from '@/state/stores/uiStore';
+import { PHOTO_SIDE_TEXT, PHOTO_SIDES, type PhotoSide } from '@/ui/constants/photoSides';
 import { Icon, icons, PressableScale, Text } from '@/ui/primitives';
 import { testId } from '@/ui/testIds';
+import { showActionSheet } from '@/ui/utils/actionSheet';
 import { haptics } from '@/ui/utils/haptics';
+import { choosePhoto, showPhotoFailed, takePhoto } from '@/ui/utils/photoPicker';
 import { CARD_ASPECT_RATIO } from '../CardTile';
-import { choosePhoto, showPhotoFailed, showPhotoSheet, takePhoto } from './photoPicker';
-import type { PhotoSide } from './usePhotoDraft';
 
 const Spinner = withUnistyles(ActivityIndicator, (theme) => ({ color: theme.colors.textMuted }));
-
-const SIDES: readonly PhotoSide[] = ['front', 'back'];
-
-const SIDE_TEXT = {
-  front: { name: 'photos.front', label: 'photos.frontLabel' },
-  back: { name: 'photos.back', label: 'photos.backLabel' },
-} as const satisfies Record<PhotoSide, { name: string; label: string }>;
 
 type Props = {
   readonly photos: CardPhotos;
@@ -64,7 +58,7 @@ function PhotoTile({ side, fileName, busy, onPress }: TileProps): React.JSX.Elem
       onPress={onPress}
       disabled={busy}
       accessibilityRole="button"
-      accessibilityLabel={t(SIDE_TEXT[side].label)}
+      accessibilityLabel={t(PHOTO_SIDE_TEXT[side].label)}
       accessibilityHint={t(uri ? 'photos.changeHint' : 'photos.addHint')}
       accessibilityState={{ busy, disabled: busy }}
       containerStyle={styles.slot}
@@ -74,7 +68,7 @@ function PhotoTile({ side, fileName, busy, onPress }: TileProps): React.JSX.Elem
         <TileFace uri={uri} busy={busy} />
       </View>
       <Text variant="caption" tone="muted" style={styles.caption}>
-        {t(SIDE_TEXT[side].name)}
+        {t(PHOTO_SIDE_TEXT[side].name)}
       </Text>
     </PressableScale>
   );
@@ -105,7 +99,7 @@ export function PhotoSection({ photos, onAdd, onRemove }: Props): React.JSX.Elem
     if (photos[side]) {
       actions.push({ label: t('photos.remove'), destructive: true, run: () => onRemove(side) });
     }
-    showPhotoSheet(t(SIDE_TEXT[side].label), actions);
+    showActionSheet(t(PHOTO_SIDE_TEXT[side].label), actions);
   };
 
   return (
@@ -114,7 +108,7 @@ export function PhotoSection({ photos, onAdd, onRemove }: Props): React.JSX.Elem
         {t('form.photos')}
       </Text>
       <View style={styles.row}>
-        {SIDES.map((side) => (
+        {PHOTO_SIDES.map((side) => (
           <PhotoTile
             key={side}
             side={side}

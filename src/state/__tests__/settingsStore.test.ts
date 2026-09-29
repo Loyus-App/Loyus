@@ -86,4 +86,35 @@ describe('settingsStore', () => {
     expect(stored.state.accent).toBe('green');
     expect(stored.version).toBe(5);
   });
+
+  it('ignores unknown values stored on disk', async () => {
+    useSettingsStore.setState({
+      sortMode: 'recent',
+      language: 'auto',
+      cardViewMode: 'grid',
+      maxBrightness: true,
+    });
+    const stored = {
+      state: {
+        theme: 'sepia',
+        cardViewMode: 'list',
+        language: 'klingon',
+        sortMode: 'byColor',
+        maxBrightness: 'yes',
+        accent: 'purple',
+      },
+      version: 5,
+    };
+    mmkvStateStorage.setItem('settings', JSON.stringify(stored));
+
+    await useSettingsStore.persist.rehydrate();
+
+    const state = useSettingsStore.getState();
+    expect(state.cardViewMode).toBe('list');
+    expect(state.theme).toBe('system');
+    expect(state.language).toBe('auto');
+    expect(state.sortMode).toBe('recent');
+    expect(state.maxBrightness).toBe(true);
+    expect(state.accent).toBe(DEFAULT_ACCENT);
+  });
 });

@@ -23,7 +23,7 @@ private val FORMATS = mapOf(
   Barcode.FORMAT_DATA_MATRIX to "DATA_MATRIX",
   Barcode.FORMAT_AZTEC to "AZTEC",
   Barcode.FORMAT_CODABAR to "CODABAR",
-  Barcode.FORMAT_ITF to "ITF14"
+  Barcode.FORMAT_ITF to "ITF"
 )
 
 private val SCANNER_OPTIONS = BarcodeScannerOptions.Builder()
