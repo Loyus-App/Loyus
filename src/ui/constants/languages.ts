@@ -1,16 +1,17 @@
-import type { LanguageCode } from '@/infra/i18n';
+import { APP_LANGUAGES, type AppLanguage } from '@/domain/language';
 
-export type AppLanguage = Exclude<LanguageCode, 'auto'>;
+const NATIVE_NAMES = {
+  en: 'English',
+  fr: 'Français',
+  es: 'Español',
+  pt: 'Português',
+  ru: 'Русский',
+  de: 'Deutsch',
+} as const satisfies Record<AppLanguage, string>;
 
-export const LANGUAGES: readonly { readonly code: AppLanguage; readonly nativeName: string }[] = [
-  { code: 'en', nativeName: 'English' },
-  { code: 'fr', nativeName: 'Français' },
-  { code: 'es', nativeName: 'Español' },
-  { code: 'pt', nativeName: 'Português' },
-  { code: 'ru', nativeName: 'Русский' },
-  { code: 'de', nativeName: 'Deutsch' },
-];
+export const LANGUAGES: readonly { readonly code: AppLanguage; readonly nativeName: string }[] =
+  APP_LANGUAGES.map((code) => ({ code, nativeName: NATIVE_NAMES[code] }));
 
 export function nativeLanguageName(code: AppLanguage): string {
-  return LANGUAGES.find((language) => language.code === code)?.nativeName ?? code;
+  return NATIVE_NAMES[code];
 }

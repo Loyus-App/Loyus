@@ -1,21 +1,22 @@
 import { makeCard } from '@/testing/makeCard';
-import { normalizeForSearch, searchCards } from '../search';
+import { searchCards } from '../search';
+import { foldText } from '../text';
 
-describe('normalizeForSearch', () => {
+describe('foldText', () => {
   it('lowercases and strips diacritics from "Café"', () => {
-    expect(normalizeForSearch('Café')).toBe('cafe');
+    expect(foldText('Café')).toBe('cafe');
   });
 
   it('lowercases "Carrefour"', () => {
-    expect(normalizeForSearch('Carrefour')).toBe('carrefour');
+    expect(foldText('Carrefour')).toBe('carrefour');
   });
 
   it('lowercases "HELLO"', () => {
-    expect(normalizeForSearch('HELLO')).toBe('hello');
+    expect(foldText('HELLO')).toBe('hello');
   });
 
   it('handles empty string', () => {
-    expect(normalizeForSearch('')).toBe('');
+    expect(foldText('')).toBe('');
   });
 });
 

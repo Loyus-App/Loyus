@@ -1,22 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { AccessibilityInfo } from 'react-native';
+import { ignore } from '@/ui/utils/ignore';
+
+let reduceMotion = false;
+let watching = false;
+const listeners = new Set<() => void>();
+
+function update(enabled: boolean): void {
+  if (enabled === reduceMotion) return;
+  reduceMotion = enabled;
+  for (const listener of listeners) listener();
+}
+
+function subscribe(listener: () => void): () => void {
+  if (!watching) {
+    watching = true;
+    AccessibilityInfo.isReduceMotionEnabled().then(update).catch(ignore);
+    AccessibilityInfo.addEventListener('reduceMotionChanged', update);
+  }
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function snapshot(): boolean {
+  return reduceMotion;
+}
 
 export function useReduceMotion(): boolean {
-  const [reduceMotion, setReduceMotion] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    AccessibilityInfo.isReduceMotionEnabled()
-      .then((enabled) => {
-        if (isMounted) setReduceMotion(enabled);
-      })
-      .catch(() => undefined);
-    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
-    return () => {
-      isMounted = false;
-      subscription.remove();
-    };
-  }, []);
-
-  return reduceMotion;
+  return useSyncExternalStore(subscribe, snapshot);
 }

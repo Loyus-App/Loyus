@@ -16,10 +16,8 @@ export interface BrandPick {
 }
 
 interface UiStoreState {
-  searchQuery: string;
   actionSheet: ActionSheetRequest | null;
   brandPick: BrandPick | null;
-  setSearchQuery: (query: string) => void;
   showActionSheet: (request: ActionSheetRequest) => void;
   hideActionSheet: () => void;
   pickBrand: (brandId: string | null) => void;
@@ -27,10 +25,8 @@ interface UiStoreState {
 }
 
 export const useUiStore = create<UiStoreState>()((set, get) => ({
-  searchQuery: '',
   actionSheet: null,
   brandPick: null,
-  setSearchQuery: (query) => set({ searchQuery: query }),
   showActionSheet: (request) => set({ actionSheet: request }),
   hideActionSheet: () => set({ actionSheet: null }),
   pickBrand: (brandId) => set({ brandPick: { brandId } }),

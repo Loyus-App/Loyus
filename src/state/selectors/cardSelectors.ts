@@ -7,8 +7,6 @@ interface CardStoreData {
   manualOrder?: readonly string[] | undefined;
 }
 
-export const selectCardCount = (state: CardStoreData): number => Object.keys(state.cards).length;
-
 export const selectCardById =
   (id: CardId) =>
   (state: CardStoreData): Card | null =>

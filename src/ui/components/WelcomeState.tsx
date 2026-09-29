@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
+import { ignore } from '@/ui/utils/ignore';
 import { Button, EmptyState, GradientLayer, Icon, type IconName, icons, Text } from '../primitives';
 import { testId } from '../testIds';
 import { CARD_COLORS, textOnCard } from '../theme/cardColors';
@@ -84,7 +85,7 @@ export function WelcomeState({ onScan, onManual, onRestore }: Props): React.JSX.
   const restore = (): void => {
     setIsRestoring(true);
     onRestore()
-      .catch(() => undefined)
+      .catch(ignore)
       .finally(() => setIsRestoring(false));
   };
 

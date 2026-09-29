@@ -46,5 +46,3 @@ export const icons = {
   photo: { ios: 'photo.on.rectangle', android: 'photo_library' },
   reorder: { ios: 'line.3.horizontal', android: 'drag_handle' },
 } as const satisfies Record<string, IconName>;
-
-export type IconKey = keyof typeof icons;

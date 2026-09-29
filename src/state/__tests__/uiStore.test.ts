@@ -1,19 +1,10 @@
 import { useUiStore } from '../stores/uiStore';
 
 beforeEach(() => {
-  useUiStore.setState({ searchQuery: '', actionSheet: null, brandPick: null });
+  useUiStore.setState({ actionSheet: null, brandPick: null });
 });
 
 describe('uiStore', () => {
-  it('default searchQuery is empty string', () => {
-    expect(useUiStore.getState().searchQuery).toBe('');
-  });
-
-  it('setSearchQuery updates searchQuery', () => {
-    useUiStore.getState().setSearchQuery('cafe');
-    expect(useUiStore.getState().searchQuery).toBe('cafe');
-  });
-
   it('shows and hides an action sheet request', () => {
     const request = { title: 'Carrefour', actions: [{ label: 'Edit', run: jest.fn() }] };
     useUiStore.getState().showActionSheet(request);

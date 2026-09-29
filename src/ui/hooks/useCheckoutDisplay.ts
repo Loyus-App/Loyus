@@ -3,11 +3,10 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState, Platform } from 'react-native';
+import { ignore } from '@/ui/utils/ignore';
 
 const KEEP_AWAKE_TAG = 'loyus-checkout';
 const FULL_BRIGHTNESS = 1;
-
-const ignore = (): undefined => undefined;
 
 function isForeground(state: string | null | undefined): boolean {
   return state !== 'background' && state !== 'inactive';

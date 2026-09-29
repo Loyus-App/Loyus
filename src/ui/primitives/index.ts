@@ -5,7 +5,7 @@ export { GradientLayer } from './GradientLayer';
 export { Icon, type IconName } from './Icon';
 export { type BadgeTint, IconBadge } from './IconBadge';
 export { IconButton } from './IconButton';
-export { type IconKey, icons } from './icons';
+export { icons } from './icons';
 export { ListRow } from './ListRow';
 export { ListSection } from './ListSection';
 export { PressableScale } from './PressableScale';

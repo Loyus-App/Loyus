@@ -4,6 +4,7 @@ import { useWindowDimensions, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
 import { type Card, FORMAT_LABEL } from '@/domain/card';
+import type { CardViewMode } from '@/state/stores/settingsStore';
 import { ListSection, Text } from '../../primitives';
 import { testId } from '../../testIds';
 import { breakpoints } from '../../theme/breakpoints';
@@ -11,7 +12,7 @@ import { transitions } from '../../theme/motion';
 import { cardAccessibilityActions } from '../../utils/cardActions';
 import { CardRow } from '../CardRow';
 import { CardTile } from '../CardTile';
-import type { CardViewMode } from './SortBar';
+import { useSectionTitles } from './sectionTitles';
 
 type CardHandlers = {
   readonly onOpen: (card: Card) => void;
@@ -162,20 +163,17 @@ export function CardSections({
   onOpen,
   onActions,
 }: Props): React.JSX.Element {
-  const { t } = useTranslation();
   const animateEntry = useIsFirstMount();
   const hasPinned = pinned.length > 0;
   const shared = { viewMode, animateEntry, onOpen, onActions };
-  const othersTitle = hasPinned
-    ? t('home.sectionOthers', { count: others.length })
-    : t('home.sectionAll', { count: others.length });
+  const titles = useSectionTitles(hasPinned, others.length);
 
   return (
     <>
       {hasPinned ? (
         <CardSection
           key="pinned"
-          title={t('home.sectionPinned')}
+          title={titles.pinned}
           cards={pinned}
           firstIndex={0}
           testID={testId('pinnedSection')}
@@ -185,7 +183,7 @@ export function CardSections({
       {others.length > 0 ? (
         <CardSection
           key="others"
-          title={othersTitle}
+          title={titles.others}
           cards={others}
           firstIndex={pinned.length}
           {...shared}

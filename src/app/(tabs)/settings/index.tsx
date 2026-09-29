@@ -18,6 +18,7 @@ import {
   type ThemePreference,
 } from '@/ui/theme';
 import { exportBackup, restoreBackup } from '@/ui/utils/backup';
+import { ignore } from '@/ui/utils/ignore';
 
 const APP_VERSION = Constants.expoConfig?.version;
 
@@ -41,7 +42,7 @@ const BACKUP_TASKS: Record<BackupTask, () => Promise<void>> = {
 };
 
 function openLink(url: string): void {
-  WebBrowser.openBrowserAsync(url).catch(() => undefined);
+  WebBrowser.openBrowserAsync(url).catch(ignore);
 }
 
 export default function SettingsScreen(): React.JSX.Element {
@@ -151,7 +152,7 @@ function DataSection(): React.JSX.Element {
   const run = (task: BackupTask) => {
     setPending(task);
     BACKUP_TASKS[task]()
-      .catch(() => undefined)
+      .catch(ignore)
       .finally(() => setPending(null));
   };
 

@@ -7,7 +7,7 @@ import Animated, {
   useAnimatedStyle,
   useScrollOffset,
 } from 'react-native-reanimated';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 import { GradientLayer } from '../primitives/GradientLayer';
 import { Text } from '../primitives/Text';
 
@@ -21,6 +21,10 @@ type Props = {
 
 const EDGE_FADE_RANGE = [0, 24];
 
+const Sky = withUnistyles(GradientLayer, (theme) => ({ image: theme.gradients.sky }));
+
+const SkyEdge = withUnistyles(GradientLayer, (theme) => ({ image: theme.gradients.skyEdge }));
+
 export function TabScreen({
   title,
   action,
@@ -28,7 +32,6 @@ export function TabScreen({
   pinnedTitle = false,
   testID,
 }: Props): React.JSX.Element {
-  const { theme } = useUnistyles();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(scrollRef);
 
@@ -47,7 +50,7 @@ export function TabScreen({
 
   return (
     <View style={styles.root}>
-      <GradientLayer image={theme.gradients.sky} />
+      <Sky />
       {pinnedTitle ? <View style={styles.pinnedHeader}>{header}</View> : null}
       <Animated.ScrollView
         ref={scrollRef}
@@ -64,7 +67,7 @@ export function TabScreen({
       </Animated.ScrollView>
       {pinnedTitle ? null : (
         <Animated.View pointerEvents="none" style={[styles.statusEdge, edgeStyle]}>
-          <GradientLayer image={theme.gradients.skyEdge} />
+          <SkyEdge />
         </Animated.View>
       )}
     </View>

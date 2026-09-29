@@ -1,6 +1,5 @@
 import * as Haptics from 'expo-haptics';
-
-const ignore = (): undefined => undefined;
+import { ignore } from './ignore';
 
 export const haptics = {
   selection: () => Haptics.selectionAsync().catch(ignore),

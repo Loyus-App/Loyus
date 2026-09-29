@@ -1,6 +1,5 @@
 export {
   selectCardById,
-  selectCardCount,
   selectPinnedCards,
   selectRecentlyOpened,
   selectSearchResults,

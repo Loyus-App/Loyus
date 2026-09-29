@@ -2,7 +2,6 @@ import type { CardId } from '@/domain/card';
 import { makeCard } from '@/testing/makeCard';
 import {
   selectCardById,
-  selectCardCount,
   selectPinnedCards,
   selectRecentlyOpened,
   selectSearchResults,
@@ -34,10 +33,6 @@ const state = {
 const ids = (cards: readonly { id: string }[]): string[] => cards.map((card) => card.id);
 
 describe('card selectors', () => {
-  it('counts cards', () => {
-    expect(selectCardCount(state)).toBe(4);
-  });
-
   it('finds a card by id, or null', () => {
     expect(selectCardById('c1' as CardId)(state)?.name).toBe('Gamma');
     expect(selectCardById('missing' as CardId)(state)).toBeNull();

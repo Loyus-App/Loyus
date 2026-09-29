@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { Card } from '@/domain/card';
 import { selectPinnedCards, selectUnpinnedCards } from '@/state/selectors';
 import { useCardStore } from '@/state/stores/cardStore';
+import { useSectionTitles } from '@/ui/components/home/sectionTitles';
 import { ReorderSection } from '@/ui/components/reorder/ReorderSection';
 import { Text } from '@/ui/primitives';
 
@@ -21,6 +22,7 @@ export default function ReorderScreen(): React.JSX.Element {
   const pinned = useCardStore(useShallow(selectPinnedCards('manual')));
   const others = useCardStore(useShallow(selectUnpinnedCards('manual')));
   const hasPinned = pinned.length > 0;
+  const titles = useSectionTitles(hasPinned, others.length);
 
   return (
     <>
@@ -43,18 +45,14 @@ export default function ReorderScreen(): React.JSX.Element {
         </Text>
         {hasPinned ? (
           <ReorderSection
-            title={t('home.sectionPinned')}
+            title={titles.pinned}
             cards={pinned}
             onMove={(from, to) => saveOrder(reorderItems(pinned, from, to), others)}
           />
         ) : null}
         {others.length > 0 ? (
           <ReorderSection
-            title={
-              hasPinned
-                ? t('home.sectionOthers', { count: others.length })
-                : t('home.sectionAll', { count: others.length })
-            }
+            title={titles.others}
             cards={others}
             onMove={(from, to) => saveOrder(pinned, reorderItems(others, from, to))}
           />

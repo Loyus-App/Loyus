@@ -42,7 +42,7 @@ const styles = StyleSheet.create((theme) => ({
   thumb: (fill: string, width: number) => ({
     width,
     height: Math.round(width / CARD_ASPECT_RATIO),
-    borderRadius: theme.radius.sm - 3,
+    borderRadius: theme.radius.thumb,
     borderCurve: 'continuous',
     overflow: 'hidden',
     alignItems: 'center',

@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 import { ActionSheetHost } from '@/ui/components/ActionSheetHost';
 import { modalOptions } from '@/ui/navigation/stackOptions';
+import { ignore } from '@/ui/utils/ignore';
 
 export { ErrorBoundary } from '@/ui/components/ErrorBoundary';
 
@@ -16,7 +17,7 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-SplashScreen.preventAutoHideAsync().catch(() => undefined);
+SplashScreen.preventAutoHideAsync().catch(ignore);
 
 export default function RootLayout(): React.JSX.Element {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export default function RootLayout(): React.JSX.Element {
   }, [theme.colors.background]);
 
   useEffect(() => {
-    SplashScreen.hideAsync().catch(() => undefined);
+    SplashScreen.hideAsync().catch(ignore);
   }, []);
 
   return (

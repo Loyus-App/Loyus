@@ -2,34 +2,25 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { BarcodeFormat } from '@/domain/card';
+import { type BarcodeFormat, isBarcodeFormat } from '@/domain/card';
 import { isE2E } from '@/infra/env';
 import { useCaptureStore } from '@/state/stores/captureStore';
-import { useCardStore } from '@/state/stores/cardStore';
 import { CardForm, type CardFormValues } from '@/ui/components/CardForm';
 import { CancelToolbar } from '@/ui/components/form/CancelToolbar';
 import { Button, EmptyState, icons } from '@/ui/primitives';
 import { tid } from '@/ui/testIds';
-import { haptics } from '@/ui/utils/haptics';
+import { saveNewCard } from '@/ui/utils/cardActions';
 
 type Scan = { readonly code: string; readonly format: BarcodeFormat };
-
-const FORMATS: readonly string[] = Object.values(BarcodeFormat);
-
-function isBarcodeFormat(value: string | undefined): value is BarcodeFormat {
-  return value !== undefined && FORMATS.includes(value);
-}
 
 function e2eScan(code: string | undefined, format: string | undefined): Scan | null {
   if (!(isE2E && code && isBarcodeFormat(format))) return null;
   return { code, format };
 }
 
-function saveCard(values: CardFormValues): void {
-  useCardStore.getState().addCard(values);
+function saveScannedCard(values: CardFormValues): void {
   useCaptureStore.getState().clearScan();
-  haptics.success();
-  router.dismissTo('/');
+  saveNewCard(values);
 }
 
 export default function ConfirmScreen(): React.JSX.Element {
@@ -51,7 +42,7 @@ export default function ConfirmScreen(): React.JSX.Element {
           submitLabel={t('form.save')}
           autoFocus
           warnRotating
-          onSubmit={saveCard}
+          onSubmit={saveScannedCard}
         />
       ) : (
         <View style={styles.center}>

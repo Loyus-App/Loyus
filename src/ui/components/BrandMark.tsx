@@ -100,7 +100,7 @@ const styles = StyleSheet.create((theme) => ({
     width,
     height,
     padding: inset,
-    borderRadius: theme.radius.sm - 3,
+    borderRadius: theme.radius.thumb,
     borderCurve: 'continuous',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: theme.colors.border,

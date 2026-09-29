@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useIsActive, useReorderableDrag } from 'react-native-reorderable-list';
 import { StyleSheet } from 'react-native-unistyles';
-import { type Card, FORMAT_LABEL } from '@/domain/card';
+import { type Card, cardSubtitle } from '@/domain/card';
 import { Icon, icons, Text } from '../../primitives';
 import { haptics } from '../../utils/haptics';
 import { CardThumb } from '../CardThumb';
@@ -22,11 +22,6 @@ type Props = {
 
 const HOLD_ROW_MS = 300;
 const HOLD_HANDLE_MS = 120;
-
-function subtitleOf(card: Card): string {
-  const format = FORMAT_LABEL[card.format];
-  return card.owner ? `${card.owner} · ${format}` : format;
-}
 
 function useMoveActions(
   index: number,
@@ -54,7 +49,7 @@ export function ReorderRow({ card, index, count, onMove }: Props): React.JSX.Ele
   const drag = useReorderableDrag();
   const isActive = useIsActive();
   const moveActions = useMoveActions(index, count, onMove);
-  const subtitle = subtitleOf(card);
+  const subtitle = cardSubtitle(card);
   styles.useVariants({ active: isActive });
 
   const startDrag = (): void => {

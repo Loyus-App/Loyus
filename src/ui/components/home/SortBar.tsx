@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import type { SortMode } from '@/domain/sort';
+import type { CardViewMode } from '@/state/stores/settingsStore';
 import { Icon, IconButton, icons, PressableScale, Text } from '../../primitives';
 import { testId } from '../../testIds';
-
-export type CardViewMode = 'grid' | 'list';
 
 type Props = {
   readonly sortMode: SortMode;

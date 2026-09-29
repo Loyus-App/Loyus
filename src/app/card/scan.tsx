@@ -1,4 +1,4 @@
-import { launchImageLibraryAsync } from 'expo-image-picker';
+import type { ImagePickerOptions } from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -19,11 +19,9 @@ import { useTorch } from '@/ui/hooks/useTorch';
 import { Button, icons } from '@/ui/primitives';
 import { testId, tid } from '@/ui/testIds';
 import { haptics } from '@/ui/utils/haptics';
+import { choosePhoto } from '@/ui/utils/photoPicker';
 
-async function pickImageUri(): Promise<string | null> {
-  const result = await launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: false });
-  return result.canceled ? null : (result.assets[0]?.uri ?? null);
-}
+const SCAN_PICKER_OPTIONS: ImagePickerOptions = { mediaTypes: ['images'], allowsEditing: false };
 
 async function readBarcode(uri: string): Promise<ImageBarcode | null> {
   try {
@@ -35,7 +33,7 @@ async function readBarcode(uri: string): Promise<ImageBarcode | null> {
 }
 
 async function importFromPhoto(setBusy: (busy: boolean) => void): Promise<boolean> {
-  const uri = await pickImageUri();
+  const uri = await choosePhoto(SCAN_PICKER_OPTIONS);
   if (!uri) return false;
   setBusy(true);
   const barcode = await readBarcode(uri);

@@ -2,14 +2,16 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { i18n, type LanguageCode, resolveLanguage } from '@/infra/i18n';
+import type { LanguageCode } from '@/domain/language';
+import { i18n, resolveLanguage } from '@/infra/i18n';
 import { useSettingsStore } from '@/state/stores/settingsStore';
 import { LANGUAGES, nativeLanguageName } from '@/ui/constants/languages';
 import { ListRow, ListSection } from '@/ui/primitives';
+import { ignore } from '@/ui/utils/ignore';
 
 function chooseLanguage(code: LanguageCode): void {
   useSettingsStore.getState().setLanguage(code);
-  i18n.changeLanguage(resolveLanguage(code)).catch(() => undefined);
+  i18n.changeLanguage(resolveLanguage(code)).catch(ignore);
   router.back();
 }
 

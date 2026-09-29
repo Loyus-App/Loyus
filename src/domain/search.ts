@@ -1,11 +1,5 @@
 import type { Card } from './card';
-
-export function normalizeForSearch(input: string): string {
-  return input
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-}
+import { foldText } from './text';
 
 interface ScoredCard {
   readonly card: Card;
@@ -14,7 +8,7 @@ interface ScoredCard {
 
 function scoreCard(card: Card, normalizedQuery: string): number {
   const matches = (text: string | undefined): boolean =>
-    text !== undefined && normalizeForSearch(text).includes(normalizedQuery);
+    text !== undefined && foldText(text).includes(normalizedQuery);
   return (
     (matches(card.name) ? 2 : 0) +
     (card.code.toLowerCase().includes(normalizedQuery) ? 1 : 0) +
@@ -28,7 +22,7 @@ export function searchCards(cards: readonly Card[], query: string): Card[] {
     return [];
   }
 
-  const normalizedQuery = normalizeForSearch(trimmed);
+  const normalizedQuery = foldText(trimmed);
   const scored: ScoredCard[] = [];
 
   for (const card of cards) {

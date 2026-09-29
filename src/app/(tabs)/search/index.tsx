@@ -1,11 +1,10 @@
 import { router, Stack } from 'expo-router';
-import { useDeferredValue, useEffect } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import type { Card } from '@/domain/card';
 import { selectRecentlyOpened, selectSearchResults } from '@/state/selectors';
 import { useCardStore } from '@/state/stores/cardStore';
-import { useUiStore } from '@/state/stores/uiStore';
 import { CardRow } from '@/ui/components/CardRow';
 import { TabScreen } from '@/ui/components/TabScreen';
 import { EmptyState, icons, ListSection } from '@/ui/primitives';
@@ -16,11 +15,8 @@ const selectRecent = selectRecentlyOpened(6);
 
 export default function SearchScreen(): React.JSX.Element {
   const { t } = useTranslation();
-  const query = useUiStore((state) => state.searchQuery);
-  const setSearchQuery = useUiStore((state) => state.setSearchQuery);
+  const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query.trim());
-
-  useEffect(() => () => setSearchQuery(''), [setSearchQuery]);
 
   return (
     <TabScreen title={t('search.title')} pinnedTitle testID={testId('searchScreen')}>
@@ -31,8 +27,8 @@ export default function SearchScreen(): React.JSX.Element {
         hideWhenScrolling={false}
         // iOS 27 keeps the field in the header; without this it slides over the pinned title while searching.
         hideNavigationBar={false}
-        onChangeText={(event) => setSearchQuery(event.nativeEvent.text)}
-        onCancelButtonPress={() => setSearchQuery('')}
+        onChangeText={(event) => setQuery(event.nativeEvent.text)}
+        onCancelButtonPress={() => setQuery('')}
       />
       {deferredQuery ? <SearchResults query={deferredQuery} /> : <RecentCards />}
     </TabScreen>

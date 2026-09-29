@@ -1,6 +1,7 @@
 import { type SFSymbol, unstable_getMaterialSymbolSourceAsync } from 'expo-symbols';
 import { useEffect, useState } from 'react';
 import { type ImageSourcePropType, Platform } from 'react-native';
+import { ignore } from '@/ui/utils/ignore';
 import type { IconName } from '../primitives';
 
 export type ToolbarIcon = SFSymbol | ImageSourcePropType;
@@ -17,7 +18,7 @@ export function useToolbarIcon(icon: IconName, color: string): ToolbarIcon | und
       .then((result) => {
         if (isActive) setSource(result);
       })
-      .catch(() => undefined);
+      .catch(ignore);
     return () => {
       isActive = false;
     };

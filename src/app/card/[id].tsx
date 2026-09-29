@@ -19,6 +19,7 @@ import { tid } from '@/ui/testIds';
 import { brandWash, cardColorOf } from '@/ui/theme';
 import { confirmDeleteCard, editCard, shareCard, togglePin } from '@/ui/utils/cardActions';
 import { haptics } from '@/ui/utils/haptics';
+import { ignore } from '@/ui/utils/ignore';
 
 const COPIED_FEEDBACK_MS = 1500;
 const NO_NOTE: Size = { width: 0, height: 0 };
@@ -86,7 +87,7 @@ function useCopyCode(code: string, announcement: string): { copied: boolean; cop
         if (timer.current) clearTimeout(timer.current);
         timer.current = setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS);
       })
-      .catch(() => undefined);
+      .catch(ignore);
   }, [code, announcement]);
 
   return { copied, copy };

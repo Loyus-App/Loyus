@@ -1,4 +1,5 @@
 import { BRAND_CATALOG } from './brandCatalog';
+import { foldText } from './text';
 
 export type BrandLogoTone = 'light' | 'dark';
 
@@ -25,7 +26,6 @@ export interface BrandQueryOptions {
   readonly limit?: number | undefined;
 }
 
-const MARKS = /\p{M}+/gu;
 const SEPARATORS = /[^\p{L}\p{N}]+/gu;
 const SPACES = / /g;
 const MIN_CONTAINS_LENGTH = 3;
@@ -45,7 +45,25 @@ const SCORE = {
 } as const;
 
 export function normalizeBrandName(value: string): string {
-  return value.normalize('NFD').replace(MARKS, '').toLowerCase().replace(SEPARATORS, ' ').trim();
+  return foldText(value).replace(SEPARATORS, ' ').trim();
+}
+
+interface BrandTerms {
+  readonly name: string;
+  readonly aliases: readonly string[];
+}
+
+const TERMS = new WeakMap<Brand, BrandTerms>();
+
+function termsOf(brand: Brand): BrandTerms {
+  const cached = TERMS.get(brand);
+  if (cached) return cached;
+  const terms = {
+    name: normalizeBrandName(brand.name),
+    aliases: brand.aliases.map(normalizeBrandName),
+  };
+  TERMS.set(brand, terms);
+  return terms;
 }
 
 function compact(normalized: string): string {
@@ -74,11 +92,9 @@ function queryScore(term: string, query: string): number {
 }
 
 function brandScore(brand: Brand, query: string): number {
-  const name = queryScore(normalizeBrandName(brand.name), query);
-  const alias = Math.max(
-    0,
-    ...brand.aliases.map((value) => queryScore(normalizeBrandName(value), query)),
-  );
+  const terms = termsOf(brand);
+  const name = queryScore(terms.name, query);
+  const alias = Math.max(0, ...terms.aliases.map((term) => queryScore(term, query)));
   return Math.max(name, alias * SCORE.alias);
 }
 
@@ -118,11 +134,10 @@ export function findBrandByName(
 ): Brand | undefined {
   const query = normalizeBrandName(name);
   if (!query) return undefined;
-  const matches = catalog.filter((brand) =>
-    [brand.name, ...brand.aliases].some(
-      (term) => termScore(normalizeBrandName(term), query) === SCORE.exact,
-    ),
-  );
+  const matches = catalog.filter((brand) => {
+    const terms = termsOf(brand);
+    return [terms.name, ...terms.aliases].some((term) => termScore(term, query) === SCORE.exact);
+  });
   return searchBrands(matches, name, { region, limit: 1 })[0];
 }
 

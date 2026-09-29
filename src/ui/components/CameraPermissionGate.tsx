@@ -4,6 +4,7 @@ import { Linking } from 'react-native';
 import { useCameraPermission } from 'react-native-vision-camera';
 import { Button, icons } from '@/ui/primitives';
 import { tid } from '@/ui/testIds';
+import { ignore } from '@/ui/utils/ignore';
 import { ScannerMessage } from './ScannerOverlay';
 
 type Props = {
@@ -29,7 +30,7 @@ export function CameraPermissionGate({ children }: Props): React.JSX.Element {
           label={t('camera.allow')}
           size="lg"
           onPress={() => {
-            requestPermission().catch(() => undefined);
+            requestPermission().catch(ignore);
           }}
           {...tid('permissionRequestButton')}
         />
@@ -38,7 +39,7 @@ export function CameraPermissionGate({ children }: Props): React.JSX.Element {
           label={t('camera.openSettings')}
           size="lg"
           onPress={() => {
-            Linking.openSettings().catch(() => undefined);
+            Linking.openSettings().catch(ignore);
           }}
           {...tid('openSettingsButton')}
         />
