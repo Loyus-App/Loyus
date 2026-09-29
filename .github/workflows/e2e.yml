@@ -20,11 +20,12 @@ concurrency:
 
 jobs:
   e2e-ios:
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 90
 
     env:
-      XCODE_VERSION: "26.2"
+      XCODE_VERSION: "27"
+      SIMULATOR: "iPhone 17"
 
     steps:
       - uses: actions/checkout@v4
@@ -63,8 +64,8 @@ jobs:
 
       - name: Boot simulator
         run: |
-          xcrun simctl boot "iPhone 16" 2>/dev/null || true
-          xcrun simctl bootstatus "iPhone 16" -b
+          xcrun simctl boot "$SIMULATOR" 2>/dev/null || true
+          xcrun simctl bootstatus "$SIMULATOR" -b
 
       - name: Install Maestro
         run: |
@@ -73,7 +74,7 @@ jobs:
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Build E2E dev-client
-        run: npx expo run:ios --device "iPhone 16" --configuration Release
+        run: npx expo run:ios --device "$SIMULATOR" --configuration Release
         env:
           EXPO_PUBLIC_E2E: "true"
           CI: "true"

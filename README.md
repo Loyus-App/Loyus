@@ -97,7 +97,7 @@ The bakery, the bookshop and the gym still hand out loyalty cards, and most of t
 ### Prerequisites
 
 - **Node 24** (or 22.13 and later) with Corepack enabled. The repository pins **Yarn 4**.
-- **Xcode 26.2** or later for iOS, and/or **Android Studio** for Android.
+- **Xcode 27** for iOS (the Expo SDK 58 preview no longer builds with Xcode 26.2), and/or **Android Studio** for Android.
 - A **physical phone** to scan real cards. Simulators have no camera, but you can type a number or read a barcode from a photo there.
 
 ### Install and run
