@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@expo/ui": "~58.0.7",
-    "@react-native-community/netinfo": "^12.0.1",
     "expo": "~58.0.0-preview.7",
     "expo-brightness": "~58.0.0",
     "expo-build-properties": "~58.0.7",

@@ -12,9 +12,8 @@ Bridge between domain logic and platform capabilities. May import domain types a
 ## Environment Variables
 
 - All `EXPO_PUBLIC_*` reads centralized in `src/infra/env.ts` -- no direct `process.env` reads elsewhere
-- `EXPO_PUBLIC_E2E` build flag for E2E test mocking (NetInfo, Appearance)
+- `EXPO_PUBLIC_E2E` build flag for E2E test mocking (Appearance)
 - `EXPO_PUBLIC_E2E_THEME` forces color scheme in E2E builds
-- `EXPO_PUBLIC_E2E_OFFLINE` forces offline NetInfo in E2E builds
 
 ## Camera
 

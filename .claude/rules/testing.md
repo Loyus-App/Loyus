@@ -15,7 +15,7 @@ paths:
 
 ## Mocks
 
-- Official Unistyles and Reanimated mocks in `jest.setup.ts`; `__mocks__/` for mmkv, expo-crypto, nitro-modules, netinfo, vision-camera
+- Official Unistyles and Reanimated mocks in `jest.setup.ts`; `__mocks__/` for mmkv, expo-crypto, nitro-modules, vision-camera
 - Unistyles mock matches 3.2.x `StyleSheet` API
 - MMKV mock uses in-memory Map for synchronous get/set
 
@@ -33,7 +33,6 @@ paths:
 
 - One test per public action and selector
 - `simulateColdRestart` pattern: snapshot MMKV before clearing Zustand state to verify persistence
-- `as unknown as NetInfoState` for E2E fake objects (strict TS compatibility)
 
 ## Coverage
 

@@ -9,8 +9,6 @@ const config = {
       '<rootDir>/__mocks__/react-native-nitro-modules.js',
     '^react-native-mmkv$': '<rootDir>/__mocks__/react-native-mmkv.js',
     '^expo-crypto$': '<rootDir>/__mocks__/expo-crypto.js',
-    '^@react-native-community/netinfo$':
-      '<rootDir>/__mocks__/@react-native-community/netinfo.js',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',

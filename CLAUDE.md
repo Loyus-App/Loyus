@@ -83,7 +83,7 @@ yarn test:e2e         # Maestro E2E flows
 - `jest.config.js` (not .ts, avoids ts-node dependency)
 - No snapshot tests -- use RNTL assertions
 - Domain: >= 80% coverage, zero RN imports
-- Unistyles and Reanimated use their official mocks (`jest.setup.ts`); `__mocks__/` covers mmkv, expo-crypto, nitro-modules, netinfo, vision-camera
+- Unistyles and Reanimated use their official mocks (`jest.setup.ts`); `__mocks__/` covers mmkv, expo-crypto, nitro-modules, vision-camera
 - Shared test fixture: `makeCard` in `src/testing/makeCard.ts`
 - Maestro E2E in `.maestro/` (shared flows in `.maestro/shared/`)
 

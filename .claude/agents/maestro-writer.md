@@ -24,7 +24,6 @@ You are a Maestro E2E flow specialist for Loyus, an Expo/React Native loyalty-ca
 ## E2E build flag
 
 `EXPO_PUBLIC_E2E=true` enables mocks:
-- `NetInfo` always returns connected (airplane mode simulation)
 - `Appearance` can be forced to light or dark
 - `tid()` helper in `src/ui/testIds.ts` returns `{ testID }` spread attributes
 
