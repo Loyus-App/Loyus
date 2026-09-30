@@ -74,7 +74,7 @@ jobs:
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Build E2E dev-client
-        run: npx expo run:ios --device "$SIMULATOR" --configuration Release --no-bundler
+        run: npx expo run:ios --configuration Release --no-bundler
         env:
           EXPO_PUBLIC_E2E: "true"
           CI: "true"
