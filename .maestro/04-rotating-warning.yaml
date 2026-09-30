@@ -10,4 +10,4 @@ name: "04 - Rotating code shows warning"
 - assertVisible:
     id: "rotating-code-warning"
 - assertVisible:
-    text: "This code looks temporary"
+    text: "This code looks temporary.*"

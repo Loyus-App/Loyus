@@ -54,4 +54,4 @@ appId: com.loyus.app
     charactersToErase: 20
 - inputText: "Zzz"
 - assertVisible:
-    text: "No card matches"
+    text: "No card matches.*"

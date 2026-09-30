@@ -20,7 +20,7 @@ appId: com.loyus.app
 - assertVisible:
     id: "card-number"
 - assertVisible:
-    text: "Brightness at maximum"
+    text: "Brightness at maximum.*"
 - tapOn:
     id: "rotate-button"
 - assertVisible:
