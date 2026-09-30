@@ -22,36 +22,21 @@ You are a design system auditor for Loyus.
 | xl | 32 |
 | xxl | 48 |
 
-### Border radius
-| Token | Value |
-|-------|-------|
-| xs | 4 |
-| sm | 8 |
-| md | 12 |
-| lg | 16 |
-| xl | 24 |
-| full | 9999 |
-
-### Typography
-- Font family: Manrope (Regular, Medium, SemiBold, Bold, ExtraBold)
-- Font sizes: xs(10), sm(12), md(13), base(14), lg(15), xl(16), xxl(20), display(24), hero(32)
-
-### Colors
-- Light primary: `#00535b` (teal)
-- Dark primary: `#4dd8e6`
-- Light bg: `#fbf9f4` (ivory)
-- Dark bg: `#0d1415`
-- Card colors: teal, navy, burgundy, forest, blue, red, gold, orange, purple, slate
+### Tokens (`src/ui/theme/tokens.ts`, `themes.ts`)
+- Radius: sm 9, card 12, md 14, lg 24, pill 999
+- Spacing: `theme.space(n)` = n × 4
+- Typography (system font): display 34, title 28, headline 20, body 16, callout 15, caption 13, label 12, code 22 (monospace, for card numbers)
+- Colours: neutral `background` / `surface` / `surfaceMuted`, teal `accent` for controls only; card fills from `CARD_COLORS` with `textOnCard()` for AA text
+- Barcode panel: `theme.barcode.paper` (#FFFFFF) and `theme.barcode.ink` (#000000) in both themes
 
 ## Rules
 
-- All colors from `theme.colors`, never hardcoded — exception: `#2D4739` in barcode detail background (intentional)
-- All spacing from `theme.spacing` — no raw numeric margins/paddings
-- Import `StyleSheet` from `src/ui/theme/unistyles` (re-export), NOT from `react-native` or `react-native-unistyles` directly
-- `BarcodeErrorBoundary` uses plain RN `StyleSheet` (intentional exception for theme-independent error display)
-- Check both light AND dark theme rendering
-- Font: Manrope family only — no system fonts or other families
-- No inline styles with raw numbers — use theme tokens
+- Colour comes only from card tiles; no tinted page backgrounds, no decorative colour blocks
+- All colours from the theme; no hex values in components
+- Import `StyleSheet` from `react-native-unistyles` directly (never re-exported, never from `react-native`)
+- Check both light AND dark themes; text AA against its background
+- System font only; no custom font families in components
+- Touch targets ≥ 44 pt
 
 ## Audit checklist
 

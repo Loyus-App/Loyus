@@ -4,10 +4,10 @@ import { join } from 'node:path';
 const REPO_ROOT = join(__dirname, '..', '..', '..');
 
 const CRITICAL_PATH_FILES = [
-  'app/_layout.tsx',
-  'app/(tabs)/_layout.tsx',
-  'app/(tabs)/index.tsx',
-  'app/card/[id].tsx',
+  'src/app/_layout.tsx',
+  'src/app/(tabs)/_layout.tsx',
+  'src/app/(tabs)/(cards)/index.tsx',
+  'src/app/card/[id].tsx',
   'src/state/stores/cardStore.ts',
   'src/state/stores/uiStore.ts',
   'src/state/stores/settingsStore.ts',
@@ -51,17 +51,22 @@ describe('critical path: no network calls (PERF-04)', () => {
     expect(allScannedFiles.length).toBeGreaterThanOrEqual(10);
   });
 
-  it.each(
-    allScannedFiles.map((f) => [f.replace(`${REPO_ROOT}/`, ''), f]),
-  )('%s has no network calls', (_rel, fullPath) => {
-    expect(statSync(fullPath as string).isFile()).toBe(true);
-    const content = readFileSync(fullPath as string, 'utf-8');
-    for (const [label, pattern] of FORBIDDEN_NETWORK_PATTERNS) {
-      expect({ file: _rel, forbidden: label, match: content.match(pattern)?.[0] ?? null }).toEqual({
-        file: _rel,
-        forbidden: label,
-        match: null,
-      });
-    }
-  });
+  it.each(allScannedFiles.map((f) => [f.replace(`${REPO_ROOT}/`, ''), f]))(
+    '%s has no network calls',
+    (_rel, fullPath) => {
+      expect(statSync(fullPath as string).isFile()).toBe(true);
+      const content = readFileSync(fullPath as string, 'utf-8');
+      for (const [label, pattern] of FORBIDDEN_NETWORK_PATTERNS) {
+        expect({
+          file: _rel,
+          forbidden: label,
+          match: content.match(pattern)?.[0] ?? null,
+        }).toEqual({
+          file: _rel,
+          forbidden: label,
+          match: null,
+        });
+      }
+    },
+  );
 });

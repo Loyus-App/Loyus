@@ -1,13 +1,5 @@
-// Domain migration registry — zero react-native / expo imports
-
-/** Maps version numbers to migration functions. */
 export type MigrationRegistry = Record<number, (state: unknown) => unknown>;
 
-/**
- * Applies migrations sequentially from fromVersion+1 to toVersion.
- * Throws if a migration function is missing for any version in the range.
- * Returns state unchanged if fromVersion === toVersion.
- */
 export function runMigrations(
   persisted: unknown,
   fromVersion: number,

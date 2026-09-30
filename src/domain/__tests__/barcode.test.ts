@@ -1,4 +1,4 @@
-import { parseBarcodeFormat, validateBarcode } from '../barcode';
+import { code39Symbols, validateBarcode } from '../barcode';
 import { BarcodeFormat } from '../card';
 
 describe('validateBarcode', () => {
@@ -129,9 +129,12 @@ describe('validateBarcode', () => {
       expect(result).toEqual({ valid: true });
     });
 
-    it('rejects lowercase letters', () => {
-      const result = validateBarcode('hello', BarcodeFormat.CODE39);
-      expect(result.valid).toBe(false);
+    it('accepts Full ASCII values read from the card', () => {
+      expect(validateBarcode('Loyus-42', BarcodeFormat.CODE39)).toEqual({ valid: true });
+    });
+
+    it('rejects characters outside ASCII', () => {
+      expect(validateBarcode('Café', BarcodeFormat.CODE39).valid).toBe(false);
     });
 
     it('rejects empty string', () => {
@@ -142,7 +145,6 @@ describe('validateBarcode', () => {
 
   describe('ITF14', () => {
     it('accepts valid 14-digit ITF14', () => {
-      // ITF14 check digit: same mod-10 algorithm
       const result = validateBarcode('00012345678905', BarcodeFormat.ITF14);
       expect(result).toEqual({ valid: true });
     });
@@ -155,6 +157,19 @@ describe('validateBarcode', () => {
     it('rejects wrong length', () => {
       const result = validateBarcode('12345', BarcodeFormat.ITF14);
       expect(result.valid).toBe(false);
+    });
+  });
+
+  describe('ITF', () => {
+    it('accepts any even number of digits', () => {
+      expect(validateBarcode('1234567890', BarcodeFormat.ITF)).toEqual({ valid: true });
+      expect(validateBarcode('12', BarcodeFormat.ITF)).toEqual({ valid: true });
+    });
+
+    it('rejects an odd length or letters', () => {
+      expect(validateBarcode('123', BarcodeFormat.ITF).valid).toBe(false);
+      expect(validateBarcode('12AB', BarcodeFormat.ITF).valid).toBe(false);
+      expect(validateBarcode('', BarcodeFormat.ITF).valid).toBe(false);
     });
   });
 
@@ -288,9 +303,13 @@ describe('validateBarcode', () => {
       expect(result).toEqual({ valid: true });
     });
 
-    it('rejects non-digit characters', () => {
-      const result = validateBarcode('ABC123', BarcodeFormat.GS1_DATABAR);
-      expect(result.valid).toBe(false);
+    it('accepts DataBar Expanded payloads with application identifiers', () => {
+      const result = validateBarcode('(01)09501101530003(10)AB-123', BarcodeFormat.GS1_DATABAR);
+      expect(result).toEqual({ valid: true });
+    });
+
+    it('rejects control characters', () => {
+      expect(validateBarcode('0123\n456', BarcodeFormat.GS1_DATABAR).valid).toBe(false);
     });
 
     it('rejects empty string', () => {
@@ -316,40 +335,15 @@ describe('validateBarcode', () => {
   });
 });
 
-describe('parseBarcodeFormat', () => {
-  it('detects EAN13 for 13-digit string', () => {
-    expect(parseBarcodeFormat('4006381333931')).toBe(BarcodeFormat.EAN13);
+describe('code39Symbols', () => {
+  it('keeps values that standard Code 39 can draw', () => {
+    expect(code39Symbols('A-B.C $D/E+F%G')).toBe('A-B.C $D/E+F%G');
   });
 
-  it('detects EAN13 for 12-digit string', () => {
-    expect(parseBarcodeFormat('400638133393')).toBe(BarcodeFormat.EAN13);
-  });
-
-  it('detects EAN8 for 8-digit string', () => {
-    expect(parseBarcodeFormat('96385074')).toBe(BarcodeFormat.EAN8);
-  });
-
-  it('detects EAN8 for 7-digit string', () => {
-    expect(parseBarcodeFormat('9638507')).toBe(BarcodeFormat.EAN8);
-  });
-
-  it('detects UPC_E for 0-prefixed 8-digit string', () => {
-    expect(parseBarcodeFormat('01234567')).toBe(BarcodeFormat.UPC_E);
-  });
-
-  it('returns null for non-numeric string', () => {
-    expect(parseBarcodeFormat('ABCD1234')).toBeNull();
-  });
-
-  it('returns null for empty string', () => {
-    expect(parseBarcodeFormat('')).toBeNull();
-  });
-
-  it('returns null for unrecognized digit length (e.g. 5 digits)', () => {
-    expect(parseBarcodeFormat('12345')).toBeNull();
-  });
-
-  it('returns null for very long digit string', () => {
-    expect(parseBarcodeFormat('12345678901234567890')).toBeNull();
+  it('spells other characters as Full ASCII pairs', () => {
+    expect(code39Symbols('Ab1')).toBe('A+B1');
+    expect(code39Symbols('a$z')).toBe('+A/D+Z');
+    expect(code39Symbols('x@[~')).toBe('+X%V%K%S');
+    expect(code39Symbols('\u0000\u0001\u001b!:;`{\u007f')).toBe('%U$A%A/A/Z%F%W%P%T');
   });
 });

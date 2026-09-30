@@ -9,13 +9,16 @@
       "distribution": "internal",
       "ios": {
         "simulator": true
-      }
+      },
+      "corepack": true
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "corepack": true
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "corepack": true
     }
   }
 }

@@ -1,11 +1,7 @@
-// Domain types — zero react-native / expo imports
-
 declare const CardIdBrand: unique symbol;
 
-/** Branded string type for card identifiers (UUID v4). */
 export type CardId = string & { readonly [CardIdBrand]: typeof CardIdBrand };
 
-/** All barcode/QR formats supported in v0.1. */
 export enum BarcodeFormat {
   CODE128 = 'CODE128',
   CODE39 = 'CODE39',
@@ -14,6 +10,7 @@ export enum BarcodeFormat {
   UPC_A = 'UPC_A',
   UPC_E = 'UPC_E',
   ITF14 = 'ITF14',
+  ITF = 'ITF',
   CODABAR = 'CODABAR',
   MSI = 'MSI',
   PHARMACODE = 'PHARMACODE',
@@ -24,10 +21,6 @@ export enum BarcodeFormat {
   GS1_DATABAR = 'GS1_DATABAR',
 }
 
-/**
- * Maps BarcodeFormat enum values to the format strings expected by JsBarcode.
- * Note: codabar and pharmacode are lowercase; UPC_A -> "UPC", UPC_E -> "UPCE".
- */
 export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.CODE128]: 'CODE128',
   [BarcodeFormat.CODE39]: 'CODE39',
@@ -36,6 +29,7 @@ export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.UPC_A]: 'UPC',
   [BarcodeFormat.UPC_E]: 'UPCE',
   [BarcodeFormat.ITF14]: 'ITF14',
+  [BarcodeFormat.ITF]: 'ITF',
   [BarcodeFormat.CODABAR]: 'codabar',
   [BarcodeFormat.MSI]: 'MSI',
   [BarcodeFormat.PHARMACODE]: 'pharmacode',
@@ -46,42 +40,155 @@ export const JSBARCODE_FORMAT: Record<BarcodeFormat, string> = {
   [BarcodeFormat.GS1_DATABAR]: 'GS1_DATABAR',
 };
 
-/** Core loyalty card entity. */
+export const FORMAT_LABEL: Record<BarcodeFormat, string> = {
+  [BarcodeFormat.EAN13]: 'EAN-13',
+  [BarcodeFormat.EAN8]: 'EAN-8',
+  [BarcodeFormat.UPC_A]: 'UPC-A',
+  [BarcodeFormat.UPC_E]: 'UPC-E',
+  [BarcodeFormat.ITF14]: 'ITF-14',
+  [BarcodeFormat.ITF]: 'ITF',
+  [BarcodeFormat.CODE128]: 'Code 128',
+  [BarcodeFormat.CODE39]: 'Code 39',
+  [BarcodeFormat.CODABAR]: 'Codabar',
+  [BarcodeFormat.MSI]: 'MSI',
+  [BarcodeFormat.PHARMACODE]: 'Pharmacode',
+  [BarcodeFormat.QR_CODE]: 'QR code',
+  [BarcodeFormat.DATA_MATRIX]: 'Data Matrix',
+  [BarcodeFormat.PDF417]: 'PDF417',
+  [BarcodeFormat.AZTEC]: 'Aztec',
+  [BarcodeFormat.GS1_DATABAR]: 'GS1 DataBar',
+};
+
+const BARCODE_FORMATS: ReadonlySet<string> = new Set(Object.values(BarcodeFormat));
+
+export function isBarcodeFormat(value: unknown): value is BarcodeFormat {
+  return typeof value === 'string' && BARCODE_FORMATS.has(value);
+}
+
+export interface CardPhotos {
+  readonly front?: string | undefined;
+  readonly back?: string | undefined;
+}
+
 export interface Card {
   readonly id: CardId;
   readonly name: string;
   readonly code: string;
   readonly format: BarcodeFormat;
   readonly color?: string | undefined;
+  readonly brandId?: string | undefined;
+  readonly owner?: string | undefined;
   readonly note?: string | undefined;
-  readonly isFavorite: boolean;
+  readonly photos?: CardPhotos | undefined;
+  readonly isPinned: boolean;
   readonly barcodeRotated?: boolean | undefined;
+  readonly openCount: number;
+  readonly lastOpenedAt?: number | undefined;
   readonly createdAt: number;
   readonly updatedAt: number;
 }
 
-/** Input for the card factory. `id` is passed in (generated externally). */
 export interface CreateCardInput {
   readonly id: CardId;
   readonly name: string;
   readonly code: string;
   readonly format: BarcodeFormat;
   readonly color?: string | undefined;
+  readonly brandId?: string | undefined;
+  readonly owner?: string | undefined;
   readonly note?: string | undefined;
+  readonly photos?: CardPhotos | undefined;
+  readonly isPinned?: boolean | undefined;
 }
 
-/** Creates a new Card with default values (isFavorite=false, timestamps=now). */
-export function createCard(input: CreateCardInput): Card {
-  const now = Date.now();
+function optionalText(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+export function compactPhotos(photos: CardPhotos | undefined): CardPhotos | undefined {
+  const front = photos?.front || undefined;
+  const back = photos?.back || undefined;
+  if (!(front || back)) return undefined;
+  return { ...(front ? { front } : {}), ...(back ? { back } : {}) };
+}
+
+export function photoFileNames(photos: CardPhotos | undefined): string[] {
+  return [photos?.front, photos?.back].filter((name): name is string => Boolean(name));
+}
+
+export function droppedPhotos(
+  before: CardPhotos | undefined,
+  after: CardPhotos | undefined,
+): string[] {
+  const kept = new Set(photoFileNames(after));
+  return photoFileNames(before).filter((name) => !kept.has(name));
+}
+
+export function createCard(input: CreateCardInput, now: number = Date.now()): Card {
+  const owner = optionalText(input.owner);
+  const note = optionalText(input.note);
+  const photos = compactPhotos(input.photos);
   return {
     id: input.id,
-    name: input.name,
-    code: input.code,
+    name: input.name.trim(),
+    code: input.code.trim(),
     format: input.format,
     ...(input.color === undefined ? {} : { color: input.color }),
-    ...(input.note === undefined ? {} : { note: input.note }),
-    isFavorite: false,
+    ...(input.brandId === undefined ? {} : { brandId: input.brandId }),
+    ...(owner === undefined ? {} : { owner }),
+    ...(note === undefined ? {} : { note }),
+    ...(photos === undefined ? {} : { photos }),
+    isPinned: input.isPinned ?? false,
+    openCount: 0,
     createdAt: now,
     updatedAt: now,
   };
+}
+
+export function cardSubtitle(card: Pick<Card, 'owner' | 'format'>): string {
+  const format = FORMAT_LABEL[card.format];
+  return card.owner ? `${card.owner} · ${format}` : format;
+}
+
+const WORD_SEPARATOR = /[^\p{L}\p{N}]+/u;
+
+export function cardInitials(name: string): string {
+  const words = name.split(WORD_SEPARATOR).filter(Boolean);
+  const [first = '', second = ''] = words;
+  const initials = second
+    ? `${[...first][0] ?? ''}${[...second][0] ?? ''}`
+    : [...first].slice(0, 2).join('');
+  return initials.toUpperCase() || '?';
+}
+
+const DIGITS = /^\d+$/;
+const GROUPS_OF_FOUR = /(\d{4})(?=\d)/g;
+
+function splitBy(code: string, sizes: readonly number[]): string {
+  const parts: string[] = [];
+  let index = 0;
+  for (const size of sizes) {
+    parts.push(code.slice(index, index + size));
+    index += size;
+  }
+  return parts.filter(Boolean).join(' ');
+}
+
+export function formatCodeForDisplay(code: string, format: BarcodeFormat): string {
+  if (!DIGITS.test(code)) return code;
+  if (format === BarcodeFormat.EAN13 && code.length === 13) return splitBy(code, [1, 6, 6]);
+  if (format === BarcodeFormat.EAN8 && code.length === 8) return splitBy(code, [4, 4]);
+  if (format === BarcodeFormat.UPC_A && code.length === 12) return splitBy(code, [1, 5, 5, 1]);
+  return code.replace(GROUPS_OF_FOUR, '$1 ');
+}
+
+export function findDuplicate(
+  cards: readonly Card[],
+  code: string,
+  excludeId?: CardId,
+): Card | undefined {
+  const needle = code.trim();
+  if (!needle) return undefined;
+  return cards.find((card) => card.id !== excludeId && card.code === needle);
 }

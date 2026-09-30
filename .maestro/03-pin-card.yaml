@@ -1,0 +1,43 @@
+appId: com.loyus.app
+---
+- runFlow: shared/launch-fresh.yaml
+- tapOn:
+    id: "welcome-manual"
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "PinnedStore"
+- tapOn:
+    id: "card-code-input"
+- inputText: "PIN12345"
+- tapOn:
+    id: "pin-switch"
+- tapOn:
+    id: "save-card-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000
+- assertVisible:
+    id: "pinned-section"
+- assertVisible:
+    text: "PINNED"
+- assertVisible:
+    text: "PinnedStore"
+- longPressOn:
+    id: "card-grid-tile"
+- assertVisible:
+    text: "Unpin"
+- tapOn:
+    text: "Unpin"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 5000
+- assertNotVisible:
+    id: "pinned-section"
+- assertVisible:
+    text: "ALL CARDS · 1"

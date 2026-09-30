@@ -1,7 +1,7 @@
 export {
   selectCardById,
-  selectFavorites,
-  selectRecentCards,
+  selectPinnedCards,
+  selectRecentlyOpened,
   selectSearchResults,
-  selectSortedCards,
+  selectUnpinnedCards,
 } from './cardSelectors';

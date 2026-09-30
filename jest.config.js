@@ -3,13 +3,12 @@ const config = {
   preset: 'jest-expo',
   setupFilesAfterEnv: ['./jest.setup.ts'],
   moduleNameMapper: {
-    '^react-native-unistyles$': '<rootDir>/__mocks__/react-native-unistyles.js',
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.svg$': '<rootDir>/__mocks__/svgString.js',
     '^react-native-nitro-modules$':
       '<rootDir>/__mocks__/react-native-nitro-modules.js',
     '^react-native-mmkv$': '<rootDir>/__mocks__/react-native-mmkv.js',
     '^expo-crypto$': '<rootDir>/__mocks__/expo-crypto.js',
-    '^@react-native-community/netinfo$':
-      '<rootDir>/__mocks__/@react-native-community/netinfo.js',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -26,7 +25,7 @@ const config = {
   },
   snapshotSerializers: [],
   transformIgnorePatterns: [
-    'node_modules/(?!(.pnpm/[^/]+/node_modules/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|react-native-svg))',
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|react-native-svg))',
   ],
 };
 

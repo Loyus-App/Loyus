@@ -1,72 +1,61 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { i18n } from '../../infra/i18n';
+import { Component, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
+import { StyleSheet, withUnistyles } from 'react-native-unistyles';
+import { Icon } from '../primitives/Icon';
+import { icons } from '../primitives/icons';
+import { Text } from '../primitives/Text';
 
-interface BarcodeErrorBoundaryProps {
-  children: React.ReactNode;
+type Props = {
+  readonly children: ReactNode;
+};
+
+type State = {
+  readonly failed: boolean;
+};
+
+const InkIcon = withUnistyles(Icon, (theme) => ({ color: theme.barcode.inkMuted }));
+
+function RenderFailed(): React.JSX.Element {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.container} accessible accessibilityRole="alert">
+      <InkIcon name={icons.warning} size={28} />
+      <Text variant="callout" weight="semibold" style={styles.title}>
+        {t('checkout.renderFailedTitle')}
+      </Text>
+      <Text variant="caption" style={styles.body}>
+        {t('checkout.renderFailedBody')}
+      </Text>
+    </View>
+  );
 }
 
-interface BarcodeErrorBoundaryState {
-  hasError: boolean;
-  errorMessage: string;
-}
+export class BarcodeErrorBoundary extends Component<Props, State> {
+  override state: State = { failed: false };
 
-export class BarcodeErrorBoundary extends React.Component<
-  BarcodeErrorBoundaryProps,
-  BarcodeErrorBoundaryState
-> {
-  constructor(props: BarcodeErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false, errorMessage: '' };
+  static getDerivedStateFromError(): State {
+    return { failed: true };
   }
 
-  static getDerivedStateFromError(error: Error): BarcodeErrorBoundaryState {
-    return { hasError: true, errorMessage: error.message };
-  }
-
-  componentDidCatch(_error: Error): void {
-    // Error already captured in getDerivedStateFromError — no additional reporting needed.
-  }
-
-  render(): React.ReactNode {
-    if (this.state.hasError) {
-      return (
-        <View style={styles.container}>
-          <Ionicons name="alert-circle-outline" size={48} color="#666666" />
-          <Text style={styles.title}>{i18n.t('error.barcodeRenderFailed')}</Text>
-          <Text style={styles.message}>{this.state.errorMessage}</Text>
-          <Text style={styles.hint}>{i18n.t('error.barcodeRenderHint')}</Text>
-        </View>
-      );
-    }
-    return this.props.children;
+  override render(): ReactNode {
+    return this.state.failed ? <RenderFailed /> : this.props.children;
   }
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
+    alignSelf: 'stretch',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
+    gap: theme.space(2),
+    paddingVertical: theme.space(2),
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
-    marginTop: 12,
-  },
-  message: {
-    fontSize: 14,
-    color: '#666666',
-    marginTop: 4,
+    color: theme.barcode.ink,
     textAlign: 'center',
   },
-  hint: {
-    fontSize: 14,
-    color: '#666666',
-    marginTop: 8,
-    fontStyle: 'italic',
+  body: {
+    color: theme.barcode.inkMuted,
+    textAlign: 'center',
   },
-});
+}));

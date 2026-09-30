@@ -5,8 +5,6 @@ describe('Domain layer smoke test', () => {
   });
 
   it('can import domain-level constants without native deps', () => {
-    // This test verifies the domain layer has no transitive RN imports
-    // In Phase 2, this will import actual domain modules (parser, validator)
     expect(true).toBe(true);
   });
 });

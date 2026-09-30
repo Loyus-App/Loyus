@@ -1,3 +1,8 @@
-// Global test setup
-// Native module mocks are handled via moduleNameMapper in jest.config.ts
-// and __mocks__/ directory for auto-mocking
+import 'react-native-unistyles/mocks';
+import './src/ui/theme/unistyles';
+
+jest.mock('react-native-worklets', () => require('react-native-worklets/src/mock'));
+jest.mock('react-native-reanimated/src/initializers', () => ({
+  initializeReanimatedModule: jest.fn(),
+}));
+jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));

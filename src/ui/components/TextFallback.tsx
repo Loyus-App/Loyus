@@ -1,54 +1,55 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, Text, View } from 'react-native';
-import type { BarcodeFormat } from '../../domain/card';
-import { StyleSheet } from '../theme/unistyles';
-import { FORMAT_DISPLAY_NAME } from './FormatBadge';
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { type BarcodeFormat, formatCodeForDisplay } from '@/domain/card';
+import { Text } from '../primitives/Text';
+import { tid } from '../testIds';
 
-interface TextFallbackProps {
-  code: string;
-  format: BarcodeFormat;
-}
+type Props = {
+  readonly code: string;
+  readonly format: BarcodeFormat;
+};
 
-export function TextFallback({ code, format }: TextFallbackProps): React.JSX.Element {
+const MAX_CODE_LINES = 4;
+
+export function TextFallback({ code, format }: Props): React.JSX.Element {
   const { t } = useTranslation();
 
   return (
-    <View
-      style={styles.container}
-      accessible={true}
-      accessibilityRole="text"
-      accessibilityLabel={`Code: ${code}, Format: ${FORMAT_DISPLAY_NAME[format]}`}
-    >
-      <Text style={styles.code}>{code}</Text>
-      <Text style={styles.formatLabel}>
-        {t('error.formatLabel', { format: FORMAT_DISPLAY_NAME[format] })}
+    <View style={styles.container}>
+      <Text variant="callout" weight="semibold" style={styles.title}>
+        {t('checkout.textOnlyTitle')}
       </Text>
-      <Text style={styles.hint}>{t('error.visualNotAvailable')}</Text>
+      <Text
+        variant="code"
+        selectable
+        numberOfLines={MAX_CODE_LINES}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={1.3}
+        style={styles.code}
+        accessibilityLabel={t('checkout.numberLabel', { code })}
+        {...tid('cardNumber')}
+      >
+        {formatCodeForDisplay(code, format)}
+      </Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create(() => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
+    alignSelf: 'stretch',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
+    gap: theme.space(3),
+  },
+  title: {
+    color: theme.barcode.inkMuted,
+    textAlign: 'center',
   },
   code: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 24,
-    color: '#000000',
+    color: theme.barcode.ink,
+    fontSize: theme.typography.display.fontSize,
+    lineHeight: theme.typography.display.lineHeight,
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  formatLabel: {
-    fontSize: 14,
-    color: '#666666',
-    marginBottom: 4,
-  },
-  hint: {
-    fontSize: 12,
-    color: '#666666',
-    fontStyle: 'italic',
   },
 }));

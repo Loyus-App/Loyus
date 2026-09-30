@@ -1,45 +1,31 @@
 appId: com.loyus.app
 ---
-- launchApp:
-    clearState: true
-# Dismiss any lingering "Open in App?" system dialog
-- tapOn:
-    text: "Open"
-    optional: true
-- extendedWaitUntil:
-    visible:
-      id: "home-screen"
-    timeout: 15000
-# Add a card first
-- tapOn:
-    id: "empty-state-cta"
-- extendedWaitUntil:
-    visible:
-      id: "card-name-input"
-    timeout: 8000
-- tapOn:
-    id: "card-name-input"
-- inputText: "TestStore"
-- tapOn:
-    id: "card-code-input"
-- inputText: "12345678"
-- tapOn:
-    id: "format-picker"
-- tapOn:
-    text: "Code 128"
-- tapOn:
-    id: "save-card-button"
-- extendedWaitUntil:
-    visible:
-      text: "TestStore"
-    timeout: 5000
-# Tap the card to view detail
+- runFlow: shared/launch-fresh.yaml
+- runFlow:
+    file: shared/add-card-manual.yaml
+    env:
+      CARD_NAME: "TestStore"
+      CARD_CODE: "2001234567893"
+      CARD_FORMAT_LABEL: "EAN-13"
 - tapOn:
     text: "TestStore"
-# Verify barcode is displayed
 - extendedWaitUntil:
     visible:
       id: "barcode-display"
-    timeout: 5000
+    timeout: 8000
 - assertVisible:
     id: "card-detail-name"
+- assertVisible:
+    id: "barcode-card"
+- assertVisible:
+    id: "card-number"
+- assertVisible:
+    text: "Brightness at maximum.*"
+- tapOn:
+    id: "rotate-button"
+- assertVisible:
+    id: "barcode-card"
+- tapOn:
+    id: "copy-number-button"
+- assertVisible:
+    text: "Copied"

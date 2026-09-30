@@ -1,13 +1,13 @@
-// VisionCamera CodeType <-> domain BarcodeFormat mapping — zero react-native runtime imports
-
-import type { CodeType } from 'react-native-vision-camera';
+import type { ScannedObjectType } from 'react-native-vision-camera';
+import type {
+  BarcodeFormat as MlKitBarcodeFormat,
+  TargetBarcodeFormat,
+} from 'react-native-vision-camera-barcode-scanner';
 import { BarcodeFormat } from '../../domain/card';
 
-/** VisionCamera CodeType -> domain BarcodeFormat (direct mapping, no fallbacks). */
-export const CODE_TYPE_TO_FORMAT: Partial<Record<CodeType, BarcodeFormat>> = {
+export const IOS_TYPE_TO_FORMAT: Partial<Record<ScannedObjectType, BarcodeFormat>> = {
   'ean-13': BarcodeFormat.EAN13,
   'ean-8': BarcodeFormat.EAN8,
-  'upc-a': BarcodeFormat.UPC_A,
   'upc-e': BarcodeFormat.UPC_E,
   'code-128': BarcodeFormat.CODE128,
   'code-39': BarcodeFormat.CODE39,
@@ -17,22 +17,25 @@ export const CODE_TYPE_TO_FORMAT: Partial<Record<CodeType, BarcodeFormat>> = {
   aztec: BarcodeFormat.AZTEC,
   codabar: BarcodeFormat.CODABAR,
   'itf-14': BarcodeFormat.ITF14,
+  'interleaved-2-of-5': BarcodeFormat.ITF,
   'gs1-data-bar': BarcodeFormat.GS1_DATABAR,
 } as const;
 
-/** All VisionCamera CodeType values to pass to useCodeScanner codeTypes. */
-export const SCAN_CODE_TYPES: CodeType[] = [
-  'ean-13',
-  'ean-8',
-  'upc-a',
-  'upc-e',
-  'code-128',
-  'code-39',
-  'qr',
-  'pdf-417',
-  'data-matrix',
-  'aztec',
-  'codabar',
-  'itf-14',
-  'gs1-data-bar',
-];
+export const IOS_SCAN_TYPES = Object.keys(IOS_TYPE_TO_FORMAT) as ScannedObjectType[];
+
+export const ANDROID_FORMAT_TO_FORMAT: Partial<Record<MlKitBarcodeFormat, BarcodeFormat>> = {
+  'ean-13': BarcodeFormat.EAN13,
+  'ean-8': BarcodeFormat.EAN8,
+  'upc-a': BarcodeFormat.UPC_A,
+  'upc-e': BarcodeFormat.UPC_E,
+  'code-128': BarcodeFormat.CODE128,
+  'code-39': BarcodeFormat.CODE39,
+  'qr-code': BarcodeFormat.QR_CODE,
+  'pdf-417': BarcodeFormat.PDF417,
+  'data-matrix': BarcodeFormat.DATA_MATRIX,
+  aztec: BarcodeFormat.AZTEC,
+  codabar: BarcodeFormat.CODABAR,
+  itf: BarcodeFormat.ITF,
+} as const;
+
+export const ANDROID_SCAN_FORMATS = Object.keys(ANDROID_FORMAT_TO_FORMAT) as TargetBarcodeFormat[];

@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["ImageBarcodeScannerModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.imagebarcodescanner.ImageBarcodeScannerModule"]
+  }
+}

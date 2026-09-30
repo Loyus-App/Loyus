@@ -15,13 +15,13 @@ paths:
 
 ## Mocks
 
-- Mocks in `__mocks__/` for: unistyles, mmkv, expo-crypto, nitro-modules, netinfo
+- Official Unistyles and Reanimated mocks in `jest.setup.ts`; `__mocks__/` for mmkv, expo-crypto, nitro-modules, vision-camera
 - Unistyles mock matches 3.2.x `StyleSheet` API
 - MMKV mock uses in-memory Map for synchronous get/set
 
 ## Transform Patterns
 
-- pnpm `transformIgnorePatterns`: `node_modules/(?!(.pnpm/[^/]+/node_modules/)?(pkg))` handles both npm and pnpm layouts
+- `transformIgnorePatterns`: `node_modules/(?!(pkg))` — Yarn uses a flat `node_modules` layout (`nodeLinker: node-modules`)
 
 ## Domain Tests
 
@@ -33,7 +33,6 @@ paths:
 
 - One test per public action and selector
 - `simulateColdRestart` pattern: snapshot MMKV before clearing Zustand state to verify persistence
-- `as unknown as NetInfoState` for E2E fake objects (strict TS compatibility)
 
 ## Coverage
 

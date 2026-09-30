@@ -1,76 +1,48 @@
 appId: com.loyus.app
 ---
-# Haptics & performance verification flow
-
 - runFlow: shared/launch-fresh.yaml
-
-# --- Add a card ---
-- tapOn:
-    id: "empty-state-cta"
-- extendedWaitUntil:
-    visible:
-      id: "card-name-input"
-    timeout: 8000
-- tapOn:
-    id: "card-name-input"
-- inputText: "Perf Test"
-- tapOn:
-    id: "card-code-input"
-- inputText: "1234567890128"
-- tapOn:
-    id: "format-picker"
-- tapOn:
-    text: "EAN-13"
-- tapOn:
-    id: "save-card-button"
-
-# Verify back on home with card visible
-- extendedWaitUntil:
-    visible:
-      id: "home-screen"
-    timeout: 5000
+- runFlow:
+    file: shared/add-card-manual.yaml
+    env:
+      CARD_NAME: "Perf Test"
+      CARD_CODE: "1234567890128"
+      CARD_FORMAT_LABEL: "EAN-13"
 - assertVisible:
     text: "Perf Test"
-
-# --- Tap card to open detail ---
 - tapOn:
     id: "card-grid-tile"
 - extendedWaitUntil:
     visible:
       id: "barcode-display"
-    timeout: 5000
-
-# Close detail
+    timeout: 8000
 - tapOn:
-    id: "close-detail-button"
-
-# --- Switch to list view and toggle favorite ---
+    text: "Close card"
 - extendedWaitUntil:
     visible:
       id: "home-screen"
     timeout: 5000
 - tapOn:
-    id: "view-mode-toggle"
+    text: "List"
 - extendedWaitUntil:
     visible:
-      id: "favorite-toggle"
-    timeout: 3000
+      id: "card-list-item"
+    timeout: 5000
+- longPressOn:
+    id: "card-list-item"
 - tapOn:
-    id: "favorite-toggle"
-
-# --- Navigate to settings ---
-- tapOn: "Settings"
+    text: "Cancel"
+- tapOn:
+    text: "Grid"
+- tapOn:
+    text: "Settings"
 - extendedWaitUntil:
     visible:
       id: "settings-screen"
     timeout: 5000
-
-# Navigate back to cards
-- tapOn: "Cards"
+- tapOn:
+    text: "Cards"
 - extendedWaitUntil:
     visible:
       id: "home-screen"
     timeout: 5000
-
-# Take final screenshot
-- takeScreenshot: "perf-full-flow"
+- takeScreenshot: "05-haptics-perf-full-flow"

@@ -6,15 +6,18 @@ const DATA_EXTRACTION_RULES = `<?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
   <cloud-backup>
     <include domain="file" path="mmkv/" />
+    <include domain="file" path="card-photos/" />
   </cloud-backup>
   <device-transfer>
     <include domain="file" path="mmkv/" />
+    <include domain="file" path="card-photos/" />
   </device-transfer>
 </data-extraction-rules>`;
 
 const BACKUP_RULES = `<?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
   <include domain="file" path="mmkv/" />
+  <include domain="file" path="card-photos/" />
 </full-backup-content>`;
 
 /** @type {import('expo/config-plugins').ConfigPlugin} */
@@ -23,7 +26,6 @@ const withBackupRules = (config) => {
     const app = config.modResults.manifest.application?.[0];
     if (!app) return config;
 
-    // Write XML resource files
     const resXmlDir = resolve(
       config.modRequest.platformProjectRoot,
       'app/src/main/res/xml',
@@ -35,7 +37,6 @@ const withBackupRules = (config) => {
     );
     writeFileSync(resolve(resXmlDir, 'backup_rules.xml'), BACKUP_RULES);
 
-    // Set manifest attributes
     app.$['android:allowBackup'] = 'true';
     app.$['android:dataExtractionRules'] = '@xml/data_extraction_rules';
     app.$['android:fullBackupContent'] = '@xml/backup_rules';
