@@ -43,21 +43,21 @@ jobs:
 
       - run: yarn install --immutable
 
-      - uses: actions/cache@v4
+      - name: Restore CocoaPods cache
+        id: pods-cache
+        uses: actions/cache/restore@v4
         with:
-          path: |
-            ios/Pods
-            ~/Library/Caches/CocoaPods
-          key: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}
+          path: ~/Library/Caches/CocoaPods
+          key: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('yarn.lock') }}
           restore-keys: pods-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
-      - uses: actions/cache@v4
+      - name: Restore DerivedData cache
+        id: derived-data-cache
+        uses: actions/cache/restore@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('ios/Podfile.lock') }}-
-            derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
+          key: derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-${{ hashFiles('yarn.lock', 'app.config.ts', 'modules/**', 'src/**') }}
+          restore-keys: derived-data-${{ runner.os }}-xc${{ env.XCODE_VERSION }}-
 
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
@@ -78,6 +78,20 @@ jobs:
         env:
           EXPO_PUBLIC_E2E: "true"
           CI: "true"
+
+      - name: Save CocoaPods cache
+        if: always() && steps.pods-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/Library/Caches/CocoaPods
+          key: ${{ steps.pods-cache.outputs.cache-primary-key }}
+
+      - name: Save DerivedData cache
+        if: always() && steps.derived-data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ steps.derived-data-cache.outputs.cache-primary-key }}
 
       - name: Run Maestro tests
         run: |
