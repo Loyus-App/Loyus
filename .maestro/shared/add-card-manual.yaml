@@ -31,15 +31,19 @@ appId: com.loyus.app
 - tapOn:
     id: "card-name-input"
 - inputText: "${CARD_NAME}"
-- tapOn:
-    id: "card-code-input"
+- pressKey: Enter
 - inputText: "${CARD_CODE}"
+- pressKey: Enter
+- scrollUntilVisible:
+    element:
+      id: "format-picker"
 - tapOn:
     id: "format-picker"
 - tapOn:
     text: "${CARD_FORMAT_LABEL}"
+- waitForAnimationToEnd
 - tapOn:
-    id: "save-card-button"
+    text: "Save"
 - extendedWaitUntil:
     visible:
       id: "home-screen"

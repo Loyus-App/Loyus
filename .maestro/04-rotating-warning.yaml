@@ -3,6 +3,9 @@ name: "04 - Rotating code shows warning"
 ---
 - runFlow: shared/launch-fresh.yaml
 - openLink: "loyus:///card/confirm?code=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0&format=QR_CODE"
+- tapOn:
+    text: "Open"
+    optional: true
 - extendedWaitUntil:
     visible:
       id: "confirm-screen"

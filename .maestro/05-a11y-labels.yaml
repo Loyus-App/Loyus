@@ -10,7 +10,7 @@ appId: com.loyus.app
 - assertVisible:
     text: "A11yCard, Code 128"
 - tapOn:
-    text: "A11yCard"
+    text: "A11yCard.*"
 - extendedWaitUntil:
     visible:
       id: "card-detail-name"
