@@ -7,7 +7,7 @@ import {
 } from '../stores/settingsStore';
 
 beforeEach(() => {
-  useSettingsStore.setState({ theme: 'system', accent: DEFAULT_ACCENT });
+  useSettingsStore.setState({ theme: 'system', accent: DEFAULT_ACCENT, lastBackupAt: null });
 });
 
 describe('settingsStore', () => {
@@ -102,6 +102,7 @@ describe('settingsStore', () => {
         sortMode: 'byColor',
         maxBrightness: 'yes',
         accent: 'purple',
+        lastBackupAt: 'yesterday',
       },
       version: 5,
     };
@@ -116,5 +117,36 @@ describe('settingsStore', () => {
     expect(state.sortMode).toBe('recent');
     expect(state.maxBrightness).toBe(true);
     expect(state.accent).toBe(DEFAULT_ACCENT);
+    expect(state.lastBackupAt).toBeNull();
+  });
+
+  it('fills in defaults for settings stored before the backup date and app icon existed', async () => {
+    const v5 = {
+      state: {
+        theme: 'light',
+        cardViewMode: 'grid',
+        language: 'de',
+        sortMode: 'mostUsed',
+        maxBrightness: true,
+        accent: 'orange',
+      },
+      version: 5,
+    };
+    mmkvStateStorage.setItem('settings', JSON.stringify(v5));
+
+    await useSettingsStore.persist.rehydrate();
+
+    const state = useSettingsStore.getState();
+    expect(state.lastBackupAt).toBeNull();
+    expect(state.appIcon).toBe('night');
+    expect(state.accent).toBe('orange');
+    expect(state.language).toBe('de');
+  });
+
+  it('remembers when the last backup was exported', () => {
+    useSettingsStore.getState().setLastBackupAt(1_790_000_000_000);
+    expect(useSettingsStore.getState().lastBackupAt).toBe(1_790_000_000_000);
+    const stored = JSON.parse(String(mmkvStateStorage.getItem('settings')));
+    expect(stored.state.lastBackupAt).toBe(1_790_000_000_000);
   });
 });

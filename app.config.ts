@@ -1,4 +1,26 @@
 import type { ExpoConfig, ConfigContext } from 'expo/config';
+import { ALTERNATE_APP_ICONS, type AppIconName, DEFAULT_APP_ICON, nativeIconName } from './src/domain/appIcon.ts';
+
+const APP_ICONS_DIR = './assets/images/app-icons';
+
+const iosIconFiles = (name: AppIconName) => ({
+  light: `${APP_ICONS_DIR}/${name}/ios-light.png`,
+  dark: `${APP_ICONS_DIR}/${name}/ios-dark.png`,
+  tinted: `${APP_ICONS_DIR}/${name}/ios-tinted.png`,
+});
+
+const defaultIosIcon = iosIconFiles(DEFAULT_APP_ICON);
+
+const androidAdaptiveIcon = {
+  foregroundImage: `${APP_ICONS_DIR}/${DEFAULT_APP_ICON}/android-foreground.png`,
+  backgroundImage: `${APP_ICONS_DIR}/${DEFAULT_APP_ICON}/android-background.png`,
+  monochromeImage: `${APP_ICONS_DIR}/android-monochrome.png`,
+};
+
+const alternateAppIcons = ALTERNATE_APP_ICONS.map((name) => ({
+  name: nativeIconName(name),
+  ios: iosIconFiles(name),
+}));
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -8,11 +30,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'loyus',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
-  icon: './assets/images/icon.png',
+  icon: defaultIosIcon.light,
   updates: {
     checkAutomatically: 'NEVER' as const,
   },
   ios: {
+    icon: defaultIosIcon,
     supportsTablet: false,
     bundleIdentifier: 'com.loyus.app',
     infoPlist: {
@@ -51,10 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    adaptiveIcon: {
-      foregroundImage: './assets/images/adaptive-icon.png',
-      backgroundColor: '#FFFFFF',
-    },
+    adaptiveIcon: androidAdaptiveIcon,
     package: 'com.loyus.app',
     permissions: ['android.permission.CAMERA'],
   },
@@ -70,7 +90,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-localization',
-    'expo-sharing',
     'expo-status-bar',
     'expo-web-browser',
     [
@@ -86,8 +105,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-widgets',
       {
-        bundleIdentifier: 'com.loyus.app.widgets',
-        groupIdentifier: 'group.com.loyus.app',
+        bundleIdentifier: 'com.loyus.app.widget',
+        groupIdentifier: 'group.com.loyus.app.shared',
         widgets: [
           {
             name: 'LoyusCards',
@@ -115,6 +134,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    ['./plugins/withAlternateAppIconsIos', alternateAppIcons],
     './plugins/withBackupRules',
   ],
   experiments: {

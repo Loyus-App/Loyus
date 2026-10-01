@@ -1171,7 +1171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:^58.0.2, @expo/config-plugins@npm:~58.0.0, @expo/config-plugins@npm:~58.0.2":
+"@expo/config-plugins@npm:~58.0.0, @expo/config-plugins@npm:~58.0.2":
   version: 58.0.2
   resolution: "@expo/config-plugins@npm:58.0.2"
   dependencies:
@@ -4176,6 +4176,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-alternate-app-icons@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "expo-alternate-app-icons@npm:8.0.0"
+  peerDependencies:
+    expo: ">=53"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/20adba1870f395216e7ccf26a904819e045e070130529f132f4472d6053a9d0e59f0d950f6bd7a4cc65420069065862b6e650d4bed91d039079e685f719e0e76
+  languageName: node
+  linkType: hard
+
 "expo-asset@npm:~58.0.7":
   version: 58.0.7
   resolution: "expo-asset@npm:58.0.7"
@@ -4486,21 +4497,6 @@ __metadata:
   version: 58.0.1
   resolution: "expo-server@npm:58.0.1"
   checksum: 10c0/e6ecf714381d107af6e7af9ad4a323b367793851302ad7ca98f04845562bd03bdc4feb78f2eab381f086ac7e462b7e9db884a750bcf7c13d704c4c363179b2de
-  languageName: node
-  linkType: hard
-
-"expo-sharing@npm:~58.0.10":
-  version: 58.0.10
-  resolution: "expo-sharing@npm:58.0.10"
-  dependencies:
-    "@expo/config-plugins": "npm:^58.0.2"
-    "@expo/config-types": "npm:^58.0.1"
-    "@expo/plist": "npm:^0.10.0"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/a903aa7265cd3d0862108b3bd9815b6c6033a80ea3b3d399bb54da320cddc0cc73498e905ef6f70b13a26ea2dd07d47ab928089895ee61af80ee8108a5d630cd
   languageName: node
   linkType: hard
 
@@ -6222,6 +6218,7 @@ __metadata:
     "@types/node": "npm:^24.19.0"
     "@types/react": "npm:~19.3.0"
     expo: "npm:~58.0.0-preview.7"
+    expo-alternate-app-icons: "npm:^8.0.0"
     expo-brightness: "npm:~58.0.0"
     expo-build-properties: "npm:~58.0.7"
     expo-clipboard: "npm:~58.0.1"
@@ -6239,7 +6236,6 @@ __metadata:
     expo-localization: "npm:~58.0.1"
     expo-quick-actions: "npm:^6.0.2"
     expo-router: "npm:~58.0.8"
-    expo-sharing: "npm:~58.0.10"
     expo-splash-screen: "npm:~58.0.1"
     expo-status-bar: "npm:~58.0.1"
     expo-symbols: "npm:~58.0.2"
