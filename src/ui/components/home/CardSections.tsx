@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowDimensions, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { type Card, FORMAT_LABEL } from '@/domain/card';
 import type { CardViewMode } from '@/state/stores/settingsStore';
 import { ListSection, Text } from '../../primitives';
@@ -10,22 +10,18 @@ import { testId } from '../../testIds';
 import { breakpoints } from '../../theme/breakpoints';
 import { transitions } from '../../theme/motion';
 import { cardAccessibilityActions } from '../../utils/cardActions';
+import { CardLink } from '../CardLink';
 import { CardRow } from '../CardRow';
 import { CardTile } from '../CardTile';
 import { useSectionTitles } from './sectionTitles';
 
-type CardHandlers = {
-  readonly onOpen: (card: Card) => void;
-  readonly onActions: (card: Card) => void;
-};
-
-type Props = CardHandlers & {
+type Props = {
   readonly pinned: readonly Card[];
   readonly others: readonly Card[];
   readonly viewMode: CardViewMode;
 };
 
-type SectionProps = CardHandlers & {
+type SectionProps = {
   readonly title: string;
   readonly cards: readonly Card[];
   readonly firstIndex: number;
@@ -51,30 +47,47 @@ function useGridColumns(): number {
   return 2;
 }
 
+function useContentWidth(): number {
+  const { width } = useWindowDimensions();
+  const { theme } = useUnistyles();
+  return width - theme.space(4) * 2;
+}
+
+function useCellWidth(columns: number): number {
+  const { theme } = useUnistyles();
+  return (useContentWidth() - theme.space(3) * (columns - 1)) / columns;
+}
+
 function enteringFor(animateEntry: boolean, index: number) {
   return animateEntry ? transitions.enterItem(index) : transitions.crossfadeIn();
 }
 
 function HomeTile({
   card,
-  onOpen,
-  onActions,
-}: CardHandlers & { readonly card: Card }): React.JSX.Element {
+  width,
+}: {
+  readonly card: Card;
+  readonly width: number;
+}): React.JSX.Element {
   const { t } = useTranslation();
   const format = FORMAT_LABEL[card.format];
   const label = card.owner
     ? t('home.tileLabelOwner', { name: card.name, owner: card.owner, format })
     : t('home.tileLabel', { name: card.name, format });
   return (
-    <CardTile
-      card={card}
-      onPress={() => onOpen(card)}
-      onLongPress={() => onActions(card)}
-      accessibilityLabel={label}
-      accessibilityHint={t('home.tileHint')}
-      {...cardAccessibilityActions(card)}
-      testID={testId('cardGridTile')}
-    />
+    <CardLink card={card} width={width}>
+      {({ onPress, onLongPress }) => (
+        <CardTile
+          card={card}
+          onPress={onPress}
+          onLongPress={onLongPress}
+          accessibilityLabel={label}
+          accessibilityHint={t('home.tileHint')}
+          {...cardAccessibilityActions(card)}
+          testID={testId('cardGridTile')}
+        />
+      )}
+    </CardLink>
   );
 }
 
@@ -83,11 +96,10 @@ function GridSection({
   cards,
   firstIndex,
   animateEntry,
-  onOpen,
-  onActions,
   testID,
 }: SectionProps): React.JSX.Element {
   const columns = useGridColumns();
+  const cellWidth = useCellWidth(columns);
   const fillers = FILLER_KEYS.slice(0, (columns - (cards.length % columns)) % columns);
   return (
     <View style={styles.section} testID={testID}>
@@ -102,7 +114,7 @@ function GridSection({
             entering={enteringFor(animateEntry, firstIndex + index)}
             layout={LAYOUT}
           >
-            <HomeTile card={card} onOpen={onOpen} onActions={onActions} />
+            <HomeTile card={card} width={cellWidth} />
           </Animated.View>
         ))}
         {fillers.map((key) => (
@@ -118,10 +130,9 @@ function ListModeSection({
   cards,
   firstIndex,
   animateEntry,
-  onOpen,
-  onActions,
   testID,
 }: SectionProps): React.JSX.Element {
+  const rowWidth = useContentWidth();
   return (
     <ListSection title={title} testID={testID}>
       {cards.map((card, index) => (
@@ -130,12 +141,9 @@ function ListModeSection({
           entering={enteringFor(animateEntry, firstIndex + index)}
           layout={LAYOUT}
         >
-          <CardRow
-            card={card}
-            onPress={() => onOpen(card)}
-            onLongPress={() => onActions(card)}
-            testID={testId('cardListItem')}
-          />
+          <CardLink card={card} width={rowWidth}>
+            {(handlers) => <CardRow card={card} {...handlers} testID={testId('cardListItem')} />}
+          </CardLink>
         </Animated.View>
       ))}
     </ListSection>
@@ -156,16 +164,10 @@ function CardSection({
   );
 }
 
-export function CardSections({
-  pinned,
-  others,
-  viewMode,
-  onOpen,
-  onActions,
-}: Props): React.JSX.Element {
+export function CardSections({ pinned, others, viewMode }: Props): React.JSX.Element {
   const animateEntry = useIsFirstMount();
   const hasPinned = pinned.length > 0;
-  const shared = { viewMode, animateEntry, onOpen, onActions };
+  const shared = { viewMode, animateEntry };
   const titles = useSectionTitles(hasPinned, others.length);
 
   return (

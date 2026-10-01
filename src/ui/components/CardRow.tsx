@@ -6,7 +6,7 @@ import { CardThumb } from './CardThumb';
 
 type Props = {
   readonly card: Card;
-  readonly onPress: () => void;
+  readonly onPress?: (() => void) | undefined;
   readonly onLongPress?: (() => void) | undefined;
   readonly testID?: string | undefined;
 };
@@ -19,7 +19,7 @@ export function CardRow({ card, onPress, onLongPress, testID }: Props): React.JS
       subtitle={cardSubtitle(card)}
       leading={<CardThumb card={card} />}
       accessory={card.isPinned ? <Icon name={icons.pin} size={14} tone="muted" /> : undefined}
-      onPress={onPress}
+      {...(onPress ? { onPress } : {})}
       {...(onLongPress ? { onLongPress } : {})}
       accessibilityHint={t('home.tileHint')}
       {...cardAccessibilityActions(card)}

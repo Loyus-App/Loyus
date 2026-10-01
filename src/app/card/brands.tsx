@@ -175,7 +175,6 @@ export default function BrandPickerScreen(): React.JSX.Element {
 const styles = StyleSheet.create((theme, rt) => ({
   screen: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
   header: {
     gap: theme.space(3),
