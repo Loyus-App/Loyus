@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useUnistyles } from 'react-native-unistyles';
 import { useSystemShortcuts } from '@/ui/hooks/useSystemShortcuts';
 
-// biome-ignore lint/style/useNamingConvention: Expo Router requires this exact export name
 export const unstable_settings = {
   anchor: '(cards)',
 };

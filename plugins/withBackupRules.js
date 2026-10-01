@@ -20,7 +20,6 @@ const BACKUP_RULES = `<?xml version="1.0" encoding="utf-8"?>
   <include domain="file" path="card-photos/" />
 </full-backup-content>`;
 
-/** @type {import('expo/config-plugins').ConfigPlugin} */
 const withBackupRules = (config) => {
   return withAndroidManifest(config, async (config) => {
     const app = config.modResults.manifest.application?.[0];

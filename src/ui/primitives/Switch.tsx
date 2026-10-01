@@ -4,7 +4,6 @@ import { haptics } from '../utils/haptics';
 
 const ThemedSwitch = withUnistyles(NativeSwitch, (theme) => ({
   trackColor: { true: theme.colors.accent, false: theme.colors.border },
-  // biome-ignore lint/style/useNamingConvention: React Native prop name
   ios_backgroundColor: theme.colors.border,
 }));
 

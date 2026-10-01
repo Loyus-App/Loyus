@@ -34,7 +34,6 @@ jest.mock('expo-file-system', () => {
     }
   }
 
-  // biome-ignore lint/style/useNamingConvention: mirrors the expo-file-system exports
   return { Directory, File, Paths: { document: new Directory('file:///docs') } };
 });
 

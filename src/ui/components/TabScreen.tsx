@@ -55,7 +55,6 @@ export function TabScreen({
       <Animated.ScrollView
         ref={scrollRef}
         testID={testID}
-        // iOS 27 draws the native search field under the pinned title, so UIKit insets the content below it.
         contentInsetAdjustmentBehavior={pinnedTitle ? 'automatic' : 'never'}
         contentContainerStyle={[styles.content, pinnedTitle && styles.pinnedContent]}
         keyboardShouldPersistTaps="handled"
