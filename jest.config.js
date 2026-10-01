@@ -1,4 +1,3 @@
-/** @type {import('jest').Config} */
 const config = {
   preset: 'jest-expo',
   setupFilesAfterEnv: ['./jest.setup.ts'],
@@ -9,6 +8,7 @@ const config = {
       '<rootDir>/__mocks__/react-native-nitro-modules.js',
     '^react-native-mmkv$': '<rootDir>/__mocks__/react-native-mmkv.js',
     '^expo-crypto$': '<rootDir>/__mocks__/expo-crypto.js',
+    '^expo-alternate-app-icons$': '<rootDir>/__mocks__/expo-alternate-app-icons.js',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',

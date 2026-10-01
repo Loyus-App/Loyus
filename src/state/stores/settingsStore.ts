@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { type AppIconName, DEFAULT_APP_ICON, isAppIconName } from '../../domain/appIcon';
 import { isLanguageCode, type LanguageCode } from '../../domain/language';
 import type { MigrationRegistry } from '../../domain/migration';
 import { runMigrations } from '../../domain/migration';
@@ -40,9 +41,19 @@ const isOneOf =
 
 const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
 
+const isTimestampOrNull = (value: unknown): value is number | null =>
+  value === null || (typeof value === 'number' && Number.isFinite(value));
+
 type SettingsData = Pick<
   SettingsState,
-  'theme' | 'cardViewMode' | 'language' | 'sortMode' | 'maxBrightness' | 'accent'
+  | 'theme'
+  | 'cardViewMode'
+  | 'language'
+  | 'sortMode'
+  | 'maxBrightness'
+  | 'accent'
+  | 'lastBackupAt'
+  | 'appIcon'
 >;
 
 const SETTINGS_GUARDS: { readonly [K in keyof SettingsData]: (value: unknown) => boolean } = {
@@ -52,7 +63,11 @@ const SETTINGS_GUARDS: { readonly [K in keyof SettingsData]: (value: unknown) =>
   sortMode: isSortMode,
   maxBrightness: isBoolean,
   accent: isAccentName,
+  lastBackupAt: isTimestampOrNull,
+  appIcon: isAppIconName,
 };
+
+const SETTINGS_KEYS = Object.keys(SETTINGS_GUARDS) as (keyof SettingsData)[];
 
 function validSettings(persisted: unknown): Partial<SettingsData> {
   if (persisted === null || typeof persisted !== 'object') return {};
@@ -71,12 +86,16 @@ interface SettingsState {
   sortMode: SortMode;
   maxBrightness: boolean;
   accent: AccentName;
+  lastBackupAt: number | null;
+  appIcon: AppIconName;
   setTheme: (theme: ThemePreference) => void;
   setCardViewMode: (mode: CardViewMode) => void;
   setLanguage: (lang: LanguageCode) => void;
   setSortMode: (mode: SortMode) => void;
   setMaxBrightness: (enabled: boolean) => void;
   setAccent: (accent: AccentName) => void;
+  setLastBackupAt: (at: number) => void;
+  setAppIcon: (icon: AppIconName) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -88,12 +107,16 @@ export const useSettingsStore = create<SettingsState>()(
       sortMode: 'mostUsed',
       maxBrightness: true,
       accent: DEFAULT_ACCENT,
+      lastBackupAt: null,
+      appIcon: DEFAULT_APP_ICON,
       setTheme: (theme) => set({ theme }),
       setCardViewMode: (mode) => set({ cardViewMode: mode }),
       setLanguage: (language) => set({ language }),
       setSortMode: (sortMode) => set({ sortMode }),
       setMaxBrightness: (maxBrightness) => set({ maxBrightness }),
       setAccent: (accent) => set({ accent }),
+      setLastBackupAt: (lastBackupAt) => set({ lastBackupAt }),
+      setAppIcon: (appIcon) => set({ appIcon }),
     }),
     {
       name: 'settings',
@@ -107,14 +130,8 @@ export const useSettingsStore = create<SettingsState>()(
           settingsMigrations,
         ) as SettingsState,
       merge: (persisted, current) => ({ ...current, ...validSettings(persisted) }),
-      partialize: (state) => ({
-        theme: state.theme,
-        cardViewMode: state.cardViewMode,
-        language: state.language,
-        sortMode: state.sortMode,
-        maxBrightness: state.maxBrightness,
-        accent: state.accent,
-      }),
+      partialize: (state): SettingsData =>
+        Object.fromEntries(SETTINGS_KEYS.map((key) => [key, state[key]])) as SettingsData,
     },
   ),
 );

@@ -17,6 +17,7 @@
     "test:e2e": "bash scripts/test-e2e.sh",
     "test:e2e:studio": "maestro studio",
     "brands:build": "node scripts/build-brands.mjs",
+    "icons:build": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-app-icons.mjs",
     "postinstall": "husky"
   },
   "lint-staged": {
@@ -25,6 +26,7 @@
   "dependencies": {
     "@expo/ui": "~58.0.7",
     "expo": "~58.0.0-preview.7",
+    "expo-alternate-app-icons": "^8.0.0",
     "expo-brightness": "~58.0.0",
     "expo-build-properties": "~58.0.7",
     "expo-clipboard": "~58.0.1",
@@ -42,7 +44,6 @@
     "expo-localization": "~58.0.1",
     "expo-quick-actions": "^6.0.2",
     "expo-router": "~58.0.8",
-    "expo-sharing": "~58.0.10",
     "expo-splash-screen": "~58.0.1",
     "expo-status-bar": "~58.0.1",
     "expo-symbols": "~58.0.2",
