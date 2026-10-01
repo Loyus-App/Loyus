@@ -1,10 +1,9 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
 import type { LanguageCode } from '@/domain/language';
 import { i18n, resolveLanguage } from '@/infra/i18n';
 import { useSettingsStore } from '@/state/stores/settingsStore';
+import { SettingsSubscreen } from '@/ui/components/SettingsSubscreen';
 import { LANGUAGES, nativeLanguageName } from '@/ui/constants/languages';
 import { ListRow, ListSection } from '@/ui/primitives';
 import { ignore } from '@/ui/utils/ignore';
@@ -20,11 +19,7 @@ export default function LanguageScreen(): React.JSX.Element {
   const language = useSettingsStore((state) => state.language);
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      contentInsetAdjustmentBehavior="automatic"
-    >
+    <SettingsSubscreen>
       <ListSection>
         <ListRow
           title={t('settings.languageAuto')}
@@ -43,18 +38,6 @@ export default function LanguageScreen(): React.JSX.Element {
           />
         ))}
       </ListSection>
-    </ScrollView>
+    </SettingsSubscreen>
   );
 }
-
-const styles = StyleSheet.create((theme, rt) => ({
-  screen: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    padding: theme.space(4),
-    paddingBottom: rt.insets.bottom + theme.space(6),
-    gap: theme.space(6),
-  },
-}));
