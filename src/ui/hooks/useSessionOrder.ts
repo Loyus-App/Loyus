@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { AppState } from 'react-native';
 import type { Card, CardId } from '@/domain/card';
 import type { SortMode } from '@/domain/sort';
+import { onReturnFromBackground } from '@/ui/utils/foreground';
 
 type Snapshot = { readonly key: string; readonly ids: readonly string[] };
 
@@ -14,12 +14,7 @@ function structureKey(cards: readonly Card[]): string {
 
 function useForegroundCount(): number {
   const [count, setCount] = useState(0);
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') setCount((value) => value + 1);
-    });
-    return () => subscription.remove();
-  }, []);
+  useEffect(() => onReturnFromBackground(() => setCount((value) => value + 1)), []);
   return count;
 }
 
