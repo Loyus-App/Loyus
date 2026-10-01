@@ -38,7 +38,6 @@ const TEST_IDS = {
   photoBackTile: 'photo-back-tile',
   checkoutNote: 'checkout-note',
   pinSwitch: 'pin-switch',
-  saveCardButton: 'save-card-button',
   deleteCardButton: 'delete-card-button',
   duplicateWarning: 'duplicate-warning',
   rotatingCodeWarning: 'rotating-code-warning',
@@ -57,12 +56,19 @@ const TEST_IDS = {
   themeLight: 'theme-light',
   themeDark: 'theme-dark',
   accentRow: 'accent-row',
+  appIconRow: 'app-icon-row',
+  appIconScreen: 'app-icon-screen',
   languageRow: 'language-row',
   maxBrightnessSwitch: 'max-brightness-switch',
   exportCardsRow: 'export-cards-row',
   restoreBackupRow: 'restore-backup-row',
   privacyPolicyRow: 'privacy-policy-row',
   aboutVersion: 'about-version',
+  aboutScreen: 'about-screen',
+  aboutRow: 'about-row',
+  helpRow: 'help-row',
+  identityCard: 'identity-card',
+  settingsVersion: 'settings-version',
 } as const;
 
 type TestIdKey = keyof typeof TEST_IDS;

@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { ignore } from '@/ui/utils/ignore';
-import { Button, EmptyState, GradientLayer, Icon, type IconName, icons, Text } from '../primitives';
+import { Button, EmptyState, GradientLayer, icons } from '../primitives';
 import { testId } from '../testIds';
 import { CARD_COLORS, textOnCard } from '../theme/cardColors';
 import { subtleGradient, withAlpha } from '../theme/color';
 import { CARD_ASPECT_RATIO } from './CardTile';
+import { PrivacyPromises } from './PrivacyPromises';
 
 type Props = {
   readonly onScan: () => void;
@@ -61,23 +62,6 @@ function CardFan(): React.JSX.Element {
   );
 }
 
-function PromiseRow({
-  icon,
-  label,
-}: {
-  readonly icon: IconName;
-  readonly label: string;
-}): React.JSX.Element {
-  return (
-    <View style={styles.promise}>
-      <Icon name={icon} size={18} tone="muted" />
-      <Text variant="callout" style={styles.promiseLabel}>
-        {label}
-      </Text>
-    </View>
-  );
-}
-
 export function WelcomeState({ onScan, onManual, onRestore }: Props): React.JSX.Element {
   const { t } = useTranslation();
   const [isRestoring, setIsRestoring] = useState(false);
@@ -93,11 +77,7 @@ export function WelcomeState({ onScan, onManual, onRestore }: Props): React.JSX.
     <View style={styles.container}>
       <EmptyState visual={<CardFan />} title={t('welcome.title')} body={t('welcome.body')}>
         <View style={styles.details}>
-          <View style={styles.promises}>
-            <PromiseRow icon={icons.person} label={t('welcome.noAccount')} />
-            <PromiseRow icon={icons.hand} label={t('welcome.noTracking')} />
-            <PromiseRow icon={icons.offline} label={t('welcome.offline')} />
-          </View>
+          <PrivacyPromises layout="list" />
           <View style={styles.actions}>
             <Button
               label={t('welcome.scan')}
@@ -190,18 +170,6 @@ const styles = StyleSheet.create((theme) => ({
     alignSelf: 'stretch',
     gap: theme.space(8),
     marginTop: theme.space(3),
-  },
-  promises: {
-    alignSelf: 'center',
-    gap: theme.space(3),
-  },
-  promise: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space(3),
-  },
-  promiseLabel: {
-    flexShrink: 1,
   },
   actions: {
     gap: theme.space(2),

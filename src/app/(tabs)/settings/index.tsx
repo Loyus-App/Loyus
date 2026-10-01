@@ -1,15 +1,20 @@
-import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
+import { type BackupStatus, backupStatus } from '@/domain/backup';
 import { useSettingsStore } from '@/state/stores/settingsStore';
+import { AppIconImage } from '@/ui/components/AppIconImage';
+import { SettingsIdentityCard } from '@/ui/components/SettingsIdentityCard';
 import { TabScreen } from '@/ui/components/TabScreen';
+import { APP_INFO } from '@/ui/constants/app';
+import { APP_ICON_LABELS } from '@/ui/constants/appIcons';
 import { nativeLanguageName } from '@/ui/constants/languages';
-import { PRIVACY_POLICY_URL, REPOSITORY_URL } from '@/ui/constants/links';
-import { icons, ListRow, ListSection, SegmentedControl, Switch } from '@/ui/primitives';
+import { ISSUES_URL } from '@/ui/constants/links';
+import { useAppIcon } from '@/ui/hooks/useAppIcon';
+import { useToday } from '@/ui/hooks/useToday';
+import { icons, ListRow, ListSection, SegmentedControl, Switch, Text } from '@/ui/primitives';
 import { testId, tid } from '@/ui/testIds';
 import {
   ACCENT_LABELS,
@@ -17,10 +22,13 @@ import {
   THEME_PREFERENCES,
   type ThemePreference,
 } from '@/ui/theme';
+import { canChangeAppIcon } from '@/ui/utils/appIcon';
 import { exportBackup, restoreBackup } from '@/ui/utils/backup';
+import { formatDayMonth } from '@/ui/utils/dates';
 import { ignore } from '@/ui/utils/ignore';
+import { openLink } from '@/ui/utils/openLink';
 
-const APP_VERSION = Constants.expoConfig?.version;
+const APP_ICON_SIZE = 30;
 
 const THEME_LABELS = {
   system: 'settings.themeSystem',
@@ -41,81 +49,73 @@ const BACKUP_TASKS: Record<BackupTask, () => Promise<void>> = {
   restore: restoreBackup,
 };
 
-function openLink(url: string): void {
-  WebBrowser.openBrowserAsync(url).catch(ignore);
+type Translate = ReturnType<typeof useTranslation>['t'];
+
+function describeBackup(status: BackupStatus, t: Translate, locale: string): string {
+  switch (status.kind) {
+    case 'never':
+      return t('settings.noBackupYet');
+    case 'today':
+      return t('settings.lastBackupToday');
+    case 'earlier':
+      return t('settings.lastBackup', {
+        date: formatDayMonth(status.at, locale, !status.sameYear),
+      });
+  }
 }
 
 export default function SettingsScreen(): React.JSX.Element {
   const { t } = useTranslation();
   return (
     <TabScreen title={t('settings.title')} testID={testId('settingsScreen')}>
-      <AppearanceSection />
-      <LanguageSection />
+      <SettingsIdentityCard testID={testId('identityCard')} />
+      <BackupSection />
       <CheckoutSection />
-      <DataSection />
-      <PrivacySection />
-      <AboutSection />
+      <AppearanceSection />
+      <MoreSection />
+      <Text {...tid('settingsVersion')} variant="caption" tone="muted" style={styles.version}>
+        {t('settings.versionFooter', { name: APP_INFO.name, version: APP_INFO.version })}
+      </Text>
     </TabScreen>
   );
 }
 
-function AppearanceSection(): React.JSX.Element {
-  const { t } = useTranslation();
-  const theme = useSettingsStore((state) => state.theme);
-  const options = THEME_PREFERENCES.map((preference) => ({
-    value: preference,
-    label: t(THEME_LABELS[preference]),
-    testID: testId(THEME_TEST_IDS[preference]),
-  }));
+function BackupSection(): React.JSX.Element {
+  const { t, i18n } = useTranslation();
+  const lastBackupAt = useSettingsStore((state) => state.lastBackupAt);
+  const today = useToday();
+  const status = backupStatus(lastBackupAt, Math.max(today, lastBackupAt ?? today));
+  const [pending, setPending] = useState<BackupTask | null>(null);
+
+  const run = (task: BackupTask) => {
+    setPending(task);
+    BACKUP_TASKS[task]()
+      .catch(ignore)
+      .finally(() => setPending(null));
+  };
 
   return (
-    <ListSection title={t('settings.appearance')}>
-      <View style={styles.segmentRow}>
-        <SegmentedControl
-          options={options}
-          value={theme}
-          onChange={setThemePreference}
-          accessibilityLabel={t('settings.appearance')}
-        />
-      </View>
-      <AccentRow />
-    </ListSection>
-  );
-}
-
-function AccentRow(): React.JSX.Element {
-  const { t } = useTranslation();
-  const accent = useSettingsStore((state) => state.accent);
-
-  return (
-    <ListRow
-      icon={icons.palette}
-      tint="accent"
-      title={t('settings.accent')}
-      value={t(ACCENT_LABELS[accent])}
-      accessory="chevron"
-      onPress={() => router.push('/settings/accent')}
-      testID={testId('accentRow')}
-    />
-  );
-}
-
-function LanguageSection(): React.JSX.Element {
-  const { t } = useTranslation();
-  const language = useSettingsStore((state) => state.language);
-  const languageName =
-    language === 'auto' ? t('settings.languageAuto') : nativeLanguageName(language);
-
-  return (
-    <ListSection title={t('settings.language')}>
+    <ListSection title={t('settings.backup')} footer={t('settings.backupFooter')}>
       <ListRow
-        {...tid('languageRow')}
-        icon={icons.language}
-        tint="blue"
-        title={t('settings.language')}
-        value={languageName}
+        {...tid('exportCardsRow')}
+        icon={icons.export}
+        tint="green"
+        title={t('settings.exportBackup')}
+        subtitle={describeBackup(status, t, i18n.language)}
         accessory="chevron"
-        onPress={() => router.push('/settings/language')}
+        loading={pending === 'export'}
+        disabled={pending === 'restore'}
+        onPress={() => run('export')}
+      />
+      <ListRow
+        {...tid('restoreBackupRow')}
+        icon={icons.import}
+        tint="indigo"
+        title={t('settings.restoreBackup')}
+        accessory="chevron"
+        loading={pending === 'restore'}
+        disabled={pending === 'export'}
+        onPress={() => run('restore')}
       />
     </ListSection>
   );
@@ -145,81 +145,104 @@ function CheckoutSection(): React.JSX.Element {
   );
 }
 
-function DataSection(): React.JSX.Element {
+function AppearanceSection(): React.JSX.Element {
   const { t } = useTranslation();
-  const [pending, setPending] = useState<BackupTask | null>(null);
-
-  const run = (task: BackupTask) => {
-    setPending(task);
-    BACKUP_TASKS[task]()
-      .catch(ignore)
-      .finally(() => setPending(null));
-  };
+  const theme = useSettingsStore((state) => state.theme);
+  const options = THEME_PREFERENCES.map((preference) => ({
+    value: preference,
+    label: t(THEME_LABELS[preference]),
+    testID: testId(THEME_TEST_IDS[preference]),
+  }));
 
   return (
-    <ListSection title={t('settings.data')} footer={t('settings.dataFooter')}>
-      <ListRow
-        {...tid('exportCardsRow')}
-        icon={icons.export}
-        tint="green"
-        title={t('settings.exportBackup')}
-        accessory="chevron"
-        loading={pending === 'export'}
-        disabled={pending === 'restore'}
-        onPress={() => run('export')}
-      />
-      <ListRow
-        {...tid('restoreBackupRow')}
-        icon={icons.import}
-        tint="indigo"
-        title={t('settings.restoreBackup')}
-        accessory="chevron"
-        loading={pending === 'restore'}
-        disabled={pending === 'export'}
-        onPress={() => run('restore')}
-      />
+    <ListSection title={t('settings.appearanceAndLanguage')}>
+      <View style={styles.segmentRow}>
+        <SegmentedControl
+          options={options}
+          value={theme}
+          onChange={setThemePreference}
+          accessibilityLabel={t('settings.theme')}
+        />
+      </View>
+      <AccentRow />
+      {canChangeAppIcon ? <AppIconRow /> : null}
+      <LanguageRow />
     </ListSection>
   );
 }
 
-function PrivacySection(): React.JSX.Element {
+function AccentRow(): React.JSX.Element {
+  const { t } = useTranslation();
+  const accent = useSettingsStore((state) => state.accent);
+
+  return (
+    <ListRow
+      icon={icons.palette}
+      tint="accent"
+      title={t('settings.accent')}
+      value={t(ACCENT_LABELS[accent])}
+      accessory="chevron"
+      onPress={() => router.push('/settings/accent')}
+      testID={testId('accentRow')}
+    />
+  );
+}
+
+function AppIconRow(): React.JSX.Element {
+  const { t } = useTranslation();
+  const appIcon = useAppIcon();
+
+  return (
+    <ListRow
+      leading={<AppIconImage name={appIcon} size={APP_ICON_SIZE} />}
+      title={t('settings.appIcon')}
+      value={t(APP_ICON_LABELS[appIcon])}
+      accessory="chevron"
+      onPress={() => router.push('/settings/app-icon')}
+      testID={testId('appIconRow')}
+    />
+  );
+}
+
+function LanguageRow(): React.JSX.Element {
+  const { t } = useTranslation();
+  const language = useSettingsStore((state) => state.language);
+  const languageName =
+    language === 'auto' ? t('settings.languageAuto') : nativeLanguageName(language);
+
+  return (
+    <ListRow
+      {...tid('languageRow')}
+      icon={icons.language}
+      tint="blue"
+      title={t('settings.language')}
+      value={languageName}
+      accessory="chevron"
+      onPress={() => router.push('/settings/language')}
+    />
+  );
+}
+
+function MoreSection(): React.JSX.Element {
   const { t } = useTranslation();
 
   return (
-    <ListSection title={t('settings.privacy')} footer={t('settings.privacyFooter')}>
-      <ListRow icon={icons.person} tint="gray" title={t('settings.privacyNoAccount')} />
-      <ListRow icon={icons.hand} tint="gray" title={t('settings.privacyNoTracking')} />
-      <ListRow icon={icons.offline} tint="gray" title={t('settings.privacyOffline')} />
+    <ListSection>
       <ListRow
-        {...tid('privacyPolicyRow')}
-        icon={icons.doc}
+        {...tid('helpRow')}
+        icon={icons.feedback}
         tint="gray"
-        title={t('settings.privacyPolicy')}
+        title={t('settings.help')}
         accessory="chevron"
-        onPress={() => openLink(PRIVACY_POLICY_URL)}
+        onPress={() => openLink(ISSUES_URL)}
       />
-    </ListSection>
-  );
-}
-
-function AboutSection(): React.JSX.Element {
-  const { t } = useTranslation();
-
-  return (
-    <ListSection title={t('settings.about')}>
       <ListRow
-        {...tid('aboutVersion')}
+        {...tid('aboutRow')}
         icon={icons.info}
         tint="gray"
-        title={t('settings.version')}
-        value={APP_VERSION}
-      />
-      <ListRow
-        icon={icons.code}
-        tint="gray"
-        title={t('settings.sourceCode')}
+        title={t('settings.aboutAndPrivacy')}
         accessory="chevron"
-        onPress={() => openLink(REPOSITORY_URL)}
+        onPress={() => router.push('/settings/about')}
       />
     </ListSection>
   );
@@ -228,5 +251,8 @@ function AboutSection(): React.JSX.Element {
 const styles = StyleSheet.create((theme) => ({
   segmentRow: {
     padding: theme.space(3),
+  },
+  version: {
+    textAlign: 'center',
   },
 }));
