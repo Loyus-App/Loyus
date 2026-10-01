@@ -192,6 +192,18 @@ Chaque étape livre une app utilisable. L'ordre suit l'impact des principes ci-d
 - Control iOS, tuile Android.
 - Accent personnalisable et icônes d'app alternatives.
 
+## Réglages
+
+Recherche de septembre 2026 sur les écrans de réglages, appliquée à Loyus.
+
+- **Peu de groupes, rangés par sujet.** Android conseille 10 à 15 éléments au plus par écran. L'ancien écran avait 7 sections pour 11 réglages, dont une section Langue d'une seule ligne.
+- **Montrer l'état plutôt que le décrire.** La ligne d'export affiche la date de la dernière sauvegarde : sans cloud, c'est l'information qui protège les cartes.
+- **Rien ne doit ressembler à un bouton sans en être un.** Les engagements de confidentialité passent d'une liste de lignes inertes à une carte d'identité en haut de l'écran.
+- **Version, aide et mentions hors de l'écran principal.** Elles vont dans « À propos et confidentialité », comme le recommande Material.
+- **Rester calme.** Listes groupées façon iOS, typographie constante, rien qui attire l'œil : moins de 5 % des gens changent les réglages par défaut, donc l'important passe avant le cosmétique.
+
+Ordre retenu : carte Loyus (icône active, « Vos cartes restent sur ce téléphone », hors ligne, sans compte, ni pub ni pistage), Sauvegarde, En caisse, Apparence et langue, puis Aide et suggestions et À propos et confidentialité. La version s'affiche en pied de page.
+
 ## Sources
 
 - [Écran Mobile, interview FidMe (2025)](https://www.ecranmobile.fr/Sophie-DESCARREGA-Fidme-Le-consommateur-Francais-detient-en-moyenne-16-cartes-de-fidelite-digitalisees-dans-son_a77673.html)
@@ -220,3 +232,8 @@ Chaque étape livre une app utilisable. L'ordre suit l'impact des principes ci-d
 - [Tuch et al., complexité visuelle et prototypicalité](https://research.google/pubs/the-role-of-visual-complexity-and-prototypicality-regarding-first-impression-of-websites-working-towards-understanding-aesthetic-judgments/)
 - [Apple, WidgetKit Controls](https://developer.apple.com/documentation/widgetkit/creating-controls-to-perform-actions-across-the-system)
 - [ID123, scanners et écrans de téléphone](https://www.id123.io/blog/barcode-scanners-phone-screens/)
+- [Apple HIG, Settings](https://developers.apple.com/design/human-interface-guidelines/patterns/settings/)
+- [Android settings design guidelines](https://source.android.com/docs/core/settings/settings-guidelines)
+- [Material / Android, Settings pattern](https://developer.android.com/design/ui/mobile/guides/patterns/settings)
+- [NN/g, Toggle-Switch Guidelines](https://www.nngroup.com/articles/toggle-switch-guidelines/)
+- [NN/g, The Power of Defaults](https://www.nngroup.com/articles/the-power-of-defaults/)

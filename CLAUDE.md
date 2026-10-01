@@ -58,6 +58,7 @@ yarn test:e2e         # Maestro E2E flows
 - Native navigation: `NativeTabs` (Cards, Settings, Search `role="search"`), native large-title headers, `Stack.Toolbar` for header buttons and menus
 - Icons: SF Symbols / Material Symbols through `expo-symbols` (`icons` in `src/ui/primitives/icons.ts`)
 - Store brands: `assets/brands/*.svg` + `brands.json` → `yarn brands:build` regenerates `src/domain/brandCatalog.ts` (names, aliases, markets, colors, logo framing) and `src/ui/brands/brandLogos.ts`. Logos stay SVG: Metro loads `.svg` as strings (`scripts/svgTransformer.js`), `BrandPlate` / `BrandFill` draw them, `cardColorOf` falls back to the brand color
+- App icons: themes in `src/domain/appIcon.ts` (default `night`), sources `assets/app-icon/<theme>.svg` + `monochrome.svg` → `yarn icons:build` (needs `rsvg-convert` + ImageMagick) regenerates `assets/images/app-icons/` (iOS light/dark/tinted, Android layers, thumbnails) and the splash icon. Alternates switch through `expo-alternate-app-icons` (Settings › Appearance › App icon); native changes need a prebuild
 - Design-system primitives in `src/ui/primitives` (`Text`, `Button`, `ListSection`, `ListRow`, `TextField`…); Loyus components in `src/ui/components`
 
 ## Styling (Unistyles 3.x)
@@ -67,7 +68,7 @@ yarn test:e2e         # Maestro E2E flows
 - `StyleSheet.create((theme, rt) => …)` at module level; variants + `styles.useVariants`; `rt.insets` for safe areas
 - Tokens only: `theme.colors.*`, `theme.space(n)`, `theme.radius.*`, `theme.typography.*`, `theme.barcode.*`, `theme.scanner.*`
 - `withUnistyles` for non-style props; `useUnistyles()` only in leaf components or navigation options
-- Theme changes go through `setThemePreference` (`src/ui/theme/preference.ts`), which also syncs `Appearance`
+- Theme changes go through `setThemePreference` (`src/ui/theme/preference.ts`), which also syncs `Appearance`; theme and accent switches run inside `crossfadeWindow` (`src/infra/platform/crossfade.ts`): on iOS the local module `modules/window-crossfade` covers the window with a snapshot and fades it out once React is idle, so native and React Native parts change together (Android switches instantly)
 
 ## State (Zustand 5 + MMKV)
 
@@ -83,7 +84,7 @@ yarn test:e2e         # Maestro E2E flows
 - `jest.config.js` (not .ts, avoids ts-node dependency)
 - No snapshot tests -- use RNTL assertions
 - Domain: >= 80% coverage, zero RN imports
-- Unistyles and Reanimated use their official mocks (`jest.setup.ts`); `__mocks__/` covers mmkv, expo-crypto, nitro-modules, vision-camera
+- Unistyles and Reanimated use their official mocks (`jest.setup.ts`); `__mocks__/` covers mmkv, expo-crypto, nitro-modules, vision-camera, expo-alternate-app-icons
 - Shared test fixture: `makeCard` in `src/testing/makeCard.ts`
 - Maestro E2E in `.maestro/` (shared flows in `.maestro/shared/`)
 

@@ -25,6 +25,10 @@ paths:
 - Brand logos: `brandLogo(card.brandId)` + `BrandPlate` (tile) / `BrandFill` (thumb); initials are the fallback. Never rasterize the SVGs
 - Motion tokens from `src/ui/theme/motion.ts`: functional only, no bounce, Reduce Motion respected
 - Liquid Glass: `IconButton variant="glass"` (`expo-glass-effect`, iOS 26+, falls back to `raised`) for custom-header actions; native toolbar buttons get glass on their own
+- Form sheets: `sheetOptions` from `src/ui/navigation/stackOptions.ts`; on iOS 26+ the glass sheet owns its background, so sheet content paints none. Sheets sized to their content pad with `sheetBottomInset(rt.insets.bottom)`; scrolling sheets that can reach full height keep `rt.insets.bottom`
+- Settings sub-screens wrap their content in `SettingsSubscreen`; app icons render through `AppIconImage`; app name/version come from `APP_INFO`
+- Native controls on iOS through `@expo/ui/swift-ui`, one `.ios.tsx` file per component next to the React Native version Android keeps: `SortBar` (Menu + inline Picker for the sort; the grid/list `ViewModeToggle` stays visible), `FormatSection` (menu Picker), `SegmentedControl` (segmented Picker), `PhotoSlot` (Menu of photo actions), `CardLink` (ContextMenu with a `CardPeek` barcode preview). React Native content inside SwiftUI goes through `RNHostView matchContents` with an explicit width
+- Don't use expo-router `Link.Preview` / `Link.Menu` for cards: its `display: contents` wrapper drops the tiles from the accessibility tree (VoiceOver and Maestro can't reach them); `CardLink` uses the SwiftUI `ContextMenu` instead
 
 ## i18n
 
