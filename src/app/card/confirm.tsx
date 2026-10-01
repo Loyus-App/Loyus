@@ -37,13 +37,7 @@ export default function ConfirmScreen(): React.JSX.Element {
     <View style={styles.screen} {...tid('confirmScreen')}>
       <CancelToolbar />
       {scan ? (
-        <CardForm
-          initialValues={scan}
-          submitLabel={t('form.save')}
-          autoFocus
-          warnRotating
-          onSubmit={saveScannedCard}
-        />
+        <CardForm initialValues={scan} autoFocus warnRotating onSubmit={saveScannedCard} />
       ) : (
         <View style={styles.center}>
           <EmptyState
