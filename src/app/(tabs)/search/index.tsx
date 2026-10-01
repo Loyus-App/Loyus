@@ -1,15 +1,17 @@
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useWindowDimensions } from 'react-native';
+import { useUnistyles } from 'react-native-unistyles';
 import { useShallow } from 'zustand/react/shallow';
 import type { Card } from '@/domain/card';
 import { selectRecentlyOpened, selectSearchResults } from '@/state/selectors';
 import { useCardStore } from '@/state/stores/cardStore';
+import { CardLink } from '@/ui/components/CardLink';
 import { CardRow } from '@/ui/components/CardRow';
 import { TabScreen } from '@/ui/components/TabScreen';
 import { EmptyState, icons, ListSection } from '@/ui/primitives';
 import { testId } from '@/ui/testIds';
-import { showCardActions } from '@/ui/utils/cardActions';
 
 const selectRecent = selectRecentlyOpened(6);
 
@@ -25,7 +27,6 @@ export default function SearchScreen(): React.JSX.Element {
         autoCapitalize="none"
         autoFocus
         hideWhenScrolling={false}
-        // iOS 27 keeps the field in the header; without this it slides over the pinned title while searching.
         hideNavigationBar={false}
         onChangeText={(event) => setQuery(event.nativeEvent.text)}
         onCancelButtonPress={() => setQuery('')}
@@ -78,12 +79,11 @@ function SearchResults({ query }: { readonly query: string }): React.JSX.Element
 }
 
 function CardResultRow({ card }: { readonly card: Card }): React.JSX.Element {
+  const { width } = useWindowDimensions();
+  const { theme } = useUnistyles();
   return (
-    <CardRow
-      card={card}
-      onPress={() => router.push(`/card/${card.id}`)}
-      onLongPress={() => showCardActions(card)}
-      testID={testId('searchResult')}
-    />
+    <CardLink card={card} width={width - theme.space(4) * 2}>
+      {(handlers) => <CardRow card={card} {...handlers} testID={testId('searchResult')} />}
+    </CardLink>
   );
 }

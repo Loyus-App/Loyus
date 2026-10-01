@@ -7,12 +7,11 @@ import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 import { ActionSheetHost } from '@/ui/components/ActionSheetHost';
-import { modalOptions } from '@/ui/navigation/stackOptions';
+import { modalOptions, sheetOptions } from '@/ui/navigation/stackOptions';
 import { ignore } from '@/ui/utils/ignore';
 
 export { ErrorBoundary } from '@/ui/components/ErrorBoundary';
 
-// biome-ignore lint/style/useNamingConvention: Expo Router requires this exact export name
 export const unstable_settings = {
   anchor: '(tabs)',
 };
@@ -65,21 +64,11 @@ export default function RootLayout(): React.JSX.Element {
           />
           <Stack.Screen
             name="sort"
-            options={{
-              presentation: 'formSheet',
-              headerShown: false,
-              sheetAllowedDetents: 'fitToContents',
-              sheetGrabberVisible: true,
-            }}
+            options={{ ...sheetOptions, sheetAllowedDetents: 'fitToContents' }}
           />
           <Stack.Screen
             name="card/brands"
-            options={{
-              presentation: 'formSheet',
-              headerShown: false,
-              sheetAllowedDetents: [0.75, 1],
-              sheetGrabberVisible: true,
-            }}
+            options={{ ...sheetOptions, sheetAllowedDetents: [0.75, 1] }}
           />
           <Stack.Screen name="card/add" options={{ ...formOptions, title: t('form.titleNew') }} />
           <Stack.Screen
