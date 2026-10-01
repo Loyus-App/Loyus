@@ -14,6 +14,7 @@ import { ColorPicker } from './form/ColorPicker';
 import { FormatSection } from './form/FormatSection';
 import { FormWarnings } from './form/FormWarnings';
 import { PhotoSection } from './form/PhotoSection';
+import { SaveToolbar } from './form/SaveToolbar';
 import { type CardFormInitial, type CardFormValues, useCardForm } from './form/useCardForm';
 import type { CodeIssue, NameIssue } from './form/validation';
 
@@ -22,7 +23,6 @@ export type { CardFormInitial, CardFormValues } from './form/useCardForm';
 type Props = {
   readonly initialValues?: CardFormInitial | undefined;
   readonly editingId?: CardId | undefined;
-  readonly submitLabel: string;
   readonly autoFocus?: boolean;
   readonly warnRotating?: boolean;
   readonly onSubmit: (values: CardFormValues) => void;
@@ -80,7 +80,6 @@ function useCodeMessage(issue: CodeIssue | undefined, format: BarcodeFormat): st
 export function CardForm({
   initialValues,
   editingId,
-  submitLabel,
   autoFocus = false,
   warnRotating = false,
   onSubmit,
@@ -92,140 +91,136 @@ export function CardForm({
   const codeMessage = useCodeMessage(form.issues.code, form.format);
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="interactive"
-      automaticallyAdjustKeyboardInsets
-    >
-      <Preview
-        name={form.draft.name}
-        owner={form.draft.owner}
-        color={form.color}
-        brandId={form.brandId}
-      />
-      <FormWarnings code={form.draft.code} editingId={editingId} warnRotating={warnRotating} />
-      <BrandChips
-        brandId={form.brandId}
-        region={form.region}
-        onPick={form.pickBrand}
-        onRemove={form.clearBrand}
-        onMore={() => router.push('/card/brands')}
-      />
-
-      <View style={styles.group}>
-        <TextField
-          key={form.nameField.key}
-          label={t('form.name')}
-          placeholder={t('form.namePlaceholder')}
-          defaultValue={form.nameField.value}
-          onChangeText={form.onNameChange}
-          inputRef={form.nameRef}
-          error={form.issues.name ? t(NAME_MESSAGE[form.issues.name]) : undefined}
-          autoFocus={autoFocus}
-          autoCapitalize="words"
-          autoCorrect={false}
-          returnKeyType="next"
-          submitBehavior="submit"
-          onSubmitEditing={() => form.codeRef.current?.focus()}
-          {...tid('cardNameInput')}
+    <>
+      <SaveToolbar onPress={() => form.submit(onSubmit)} />
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets
+      >
+        <Preview
+          name={form.draft.name}
+          owner={form.draft.owner}
+          color={form.color}
+          brandId={form.brandId}
         />
-        <BrandSuggestions
-          query={form.draft.name}
+        <FormWarnings code={form.draft.code} editingId={editingId} warnRotating={warnRotating} />
+        <BrandChips
           brandId={form.brandId}
           region={form.region}
           onPick={form.pickBrand}
+          onRemove={form.clearBrand}
+          onMore={() => router.push('/card/brands')}
         />
-        <TextField
-          label={t('form.number')}
-          placeholder={t('form.numberPlaceholder')}
-          defaultValue={form.start.code}
-          onChangeText={form.onCodeChange}
-          inputRef={form.codeRef}
-          error={codeMessage}
-          monospace
-          autoCapitalize="characters"
-          autoCorrect={false}
-          spellCheck={false}
-          returnKeyType="done"
-          {...tid('cardCodeInput')}
-        />
-        {onScanInstead ? (
-          <Button
-            label={t('form.scanInstead')}
-            variant="ghost"
-            icon={icons.barcode}
-            onPress={onScanInstead}
+
+        <View style={styles.group}>
+          <TextField
+            key={form.nameField.key}
+            label={t('form.name')}
+            placeholder={t('form.namePlaceholder')}
+            defaultValue={form.nameField.value}
+            onChangeText={form.onNameChange}
+            inputRef={form.nameRef}
+            error={form.issues.name ? t(NAME_MESSAGE[form.issues.name]) : undefined}
+            autoFocus={autoFocus}
+            autoCapitalize="words"
+            autoCorrect={false}
+            returnKeyType="next"
+            submitBehavior="submit"
+            onSubmitEditing={() => form.codeRef.current?.focus()}
+            {...tid('cardNameInput')}
           />
-        ) : null}
-      </View>
-
-      <FormatSection format={form.format} onChange={form.setFormat} />
-      <ColorPicker
-        autoColor={autoColorOf(form.draft.name, form.brandId)}
-        value={form.color}
-        onChange={form.setColor}
-      />
-
-      <TextField
-        label={t('form.owner')}
-        placeholder={t('form.ownerPlaceholder')}
-        hint={t('form.ownerHint')}
-        defaultValue={form.start.owner}
-        onChangeText={form.onOwnerChange}
-        autoCapitalize="words"
-        autoCorrect={false}
-        returnKeyType="done"
-        {...tid('ownerInput')}
-      />
-
-      <TextField
-        label={t('form.note')}
-        placeholder={t('form.notePlaceholder')}
-        defaultValue={form.start.note}
-        onChangeText={form.onNoteChange}
-        {...tid('noteInput')}
-        multiline
-        scrollEnabled={false}
-        autoCapitalize="sentences"
-      />
-
-      <PhotoSection photos={form.photos} onAdd={form.addPhoto} onRemove={form.removePhoto} />
-
-      <ListSection>
-        <ListRow
-          title={t('form.pin')}
-          accessory={
-            <Switch
-              value={form.isPinned}
-              onValueChange={form.setPinned}
-              accessibilityLabel={t('form.pin')}
-              {...tid('pinSwitch')}
+          <BrandSuggestions
+            query={form.draft.name}
+            brandId={form.brandId}
+            region={form.region}
+            onPick={form.pickBrand}
+          />
+          <TextField
+            label={t('form.number')}
+            placeholder={t('form.numberPlaceholder')}
+            defaultValue={form.start.code}
+            onChangeText={form.onCodeChange}
+            inputRef={form.codeRef}
+            error={codeMessage}
+            monospace
+            autoCapitalize="characters"
+            autoCorrect={false}
+            spellCheck={false}
+            returnKeyType="done"
+            {...tid('cardCodeInput')}
+          />
+          {onScanInstead ? (
+            <Button
+              label={t('form.scanInstead')}
+              variant="ghost"
+              icon={icons.barcode}
+              onPress={onScanInstead}
             />
-          }
+          ) : null}
+        </View>
+
+        <FormatSection format={form.format} onChange={form.setFormat} />
+        <ColorPicker
+          autoColor={autoColorOf(form.draft.name, form.brandId)}
+          value={form.color}
+          onChange={form.setColor}
         />
-      </ListSection>
 
-      <Button
-        label={submitLabel}
-        size="lg"
-        onPress={() => form.submit(onSubmit)}
-        {...tid('saveCardButton')}
-      />
+        <TextField
+          label={t('form.owner')}
+          placeholder={t('form.ownerPlaceholder')}
+          hint={t('form.ownerHint')}
+          defaultValue={form.start.owner}
+          onChangeText={form.onOwnerChange}
+          autoCapitalize="words"
+          autoCorrect={false}
+          returnKeyType="done"
+          {...tid('ownerInput')}
+        />
 
-      {onDelete ? (
+        <TextField
+          label={t('form.note')}
+          placeholder={t('form.notePlaceholder')}
+          defaultValue={form.start.note}
+          onChangeText={form.onNoteChange}
+          {...tid('noteInput')}
+          multiline
+          scrollEnabled={false}
+          autoCapitalize="sentences"
+        />
+
+        <PhotoSection photos={form.photos} onAdd={form.addPhoto} onRemove={form.removePhoto} />
+
         <ListSection>
           <ListRow
-            title={t('form.deleteCard')}
-            destructive
-            onPress={onDelete}
-            {...tid('deleteCardButton')}
+            title={t('form.pin')}
+            accessory={
+              <Switch
+                value={form.isPinned}
+                onValueChange={form.setPinned}
+                accessibilityLabel={t('form.pin')}
+                {...tid('pinSwitch')}
+              />
+            }
           />
         </ListSection>
-      ) : null}
-    </ScrollView>
+
+        {onDelete ? (
+          <ListSection>
+            <ListRow
+              title={t('form.deleteCard')}
+              destructive
+              onPress={onDelete}
+              {...tid('deleteCardButton')}
+            />
+          </ListSection>
+        ) : null}
+      </ScrollView>
+    </>
   );
 }
 
