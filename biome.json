@@ -172,6 +172,14 @@
               {
                 "selector": { "kind": "enumMember" },
                 "formats": ["PascalCase", "CONSTANT_CASE"]
+              },
+              {
+                "selector": { "kind": "const" },
+                "match": "unstable_(.+)|(.+)"
+              },
+              {
+                "selector": { "kind": "objectLiteralProperty" },
+                "match": "ios_(.+)|(.+)"
               }
             ]
           }
@@ -300,7 +308,8 @@
             "noUndeclaredVariables": "off"
           },
           "style": {
-            "noNonNullAssertion": "off"
+            "noNonNullAssertion": "off",
+            "useNamingConvention": "off"
           },
           "suspicious": {
             "noExplicitAny": "off"
