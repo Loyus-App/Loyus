@@ -8,7 +8,7 @@ appId: com.loyus.app
       CARD_CODE: "2001234567893"
       CARD_FORMAT_LABEL: "EAN-13"
 - tapOn:
-    text: "TestStore"
+    text: "TestStore.*"
 - extendedWaitUntil:
     visible:
       id: "barcode-display"

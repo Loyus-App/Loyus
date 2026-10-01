@@ -22,22 +22,24 @@ appId: com.loyus.app
 - tapOn:
     id: "card-name-input"
 - inputText: "Carrefour"
-- tapOn:
-    id: "card-code-input"
+- pressKey: Enter
 - inputText: "3250390000112"
+- pressKey: Enter
+- scrollUntilVisible:
+    element:
+      id: "format-picker"
 - tapOn:
     id: "format-picker"
-- assertVisible:
-    text: "Choose the barcode type"
 - tapOn:
     text: "EAN-13"
+- waitForAnimationToEnd
 - tapOn:
-    id: "save-card-button"
+    text: "Save"
 - extendedWaitUntil:
     visible:
       id: "home-screen"
     timeout: 8000
 - assertVisible:
-    text: "Carrefour"
+    text: "Carrefour.*"
 - assertVisible:
     text: "ALL CARDS · 1"

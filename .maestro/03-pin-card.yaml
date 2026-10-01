@@ -10,13 +10,17 @@ appId: com.loyus.app
 - tapOn:
     id: "card-name-input"
 - inputText: "PinnedStore"
-- tapOn:
-    id: "card-code-input"
+- pressKey: Enter
 - inputText: "PIN12345"
+- pressKey: Enter
+- scrollUntilVisible:
+    element:
+      id: "pin-switch"
 - tapOn:
     id: "pin-switch"
+- waitForAnimationToEnd
 - tapOn:
-    id: "save-card-button"
+    text: "Save"
 - extendedWaitUntil:
     visible:
       id: "home-screen"
@@ -26,7 +30,7 @@ appId: com.loyus.app
 - assertVisible:
     text: "PINNED"
 - assertVisible:
-    text: "PinnedStore"
+    text: "PinnedStore.*"
 - longPressOn:
     id: "card-grid-tile"
 - assertVisible:

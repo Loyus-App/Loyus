@@ -14,11 +14,11 @@ appId: com.loyus.app
       CARD_CODE: "2222222"
       CARD_FORMAT_LABEL: "Code 128"
 - assertVisible:
-    text: "Carrefour"
+    text: "Carrefour.*"
 - assertVisible:
-    text: "Leclerc"
+    text: "Leclerc.*"
 - tapOn:
-    text: "Carrefour"
+    text: "Carrefour.*"
 - extendedWaitUntil:
     visible:
       id: "card-detail-name"
@@ -38,7 +38,7 @@ appId: com.loyus.app
 - assertVisible:
     text: "RECENTLY USED"
 - assertVisible:
-    text: "Carrefour"
+    text: "Carrefour.*"
 - tapOn:
     text: "Store, owner or number"
 - inputText: "Leclerc"
@@ -47,9 +47,9 @@ appId: com.loyus.app
       id: "search-result"
     timeout: 5000
 - assertVisible:
-    text: "Leclerc"
+    text: "Leclerc.*"
 - assertNotVisible:
-    text: "Carrefour"
+    text: "Carrefour.*"
 - eraseText:
     charactersToErase: 20
 - inputText: "Zzz"

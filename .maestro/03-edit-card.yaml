@@ -8,9 +8,9 @@ appId: com.loyus.app
       CARD_CODE: "ABC123"
       CARD_FORMAT_LABEL: "Code 128"
 - assertVisible:
-    text: "OldName"
+    text: "OldName.*"
 - tapOn:
-    text: "OldName"
+    text: "OldName.*"
 - extendedWaitUntil:
     visible:
       id: "card-detail-name"
@@ -30,14 +30,17 @@ appId: com.loyus.app
 - eraseText:
     charactersToErase: 20
 - inputText: "NewName"
+- pressKey: Enter
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
-    id: "save-card-button"
+    text: "Save"
 - extendedWaitUntil:
     visible:
       id: "card-detail-name"
     timeout: 8000
 - assertVisible:
-    text: "NewName"
+    text: "NewName.*"
 - tapOn:
     text: "Close card"
 - extendedWaitUntil:
@@ -45,6 +48,6 @@ appId: com.loyus.app
       id: "home-screen"
     timeout: 5000
 - assertVisible:
-    text: "NewName"
+    text: "NewName.*"
 - assertNotVisible:
-    text: "OldName"
+    text: "OldName.*"
