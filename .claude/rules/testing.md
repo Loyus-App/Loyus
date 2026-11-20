@@ -9,7 +9,7 @@ paths:
 
 ## Framework
 
-- Jest 29 + jest-expo (NOT Jest 30 -- breaking import scope changes)
+- Jest 30 + jest-expo, at the versions `npx expo install --check` expects
 - `jest.config.js` (not .ts, avoids ts-node dependency)
 - No snapshot tests -- use RNTL assertions for component output
 

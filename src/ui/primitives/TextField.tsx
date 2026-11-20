@@ -31,7 +31,12 @@ export function TextField({
       <Text variant="caption" tone="muted" weight="semibold" style={styles.label}>
         {label}
       </Text>
-      <ThemedInput ref={inputRef} accessibilityLabel={label} {...inputProps} style={styles.input} />
+      <ThemedInput
+        ref={inputRef ?? null}
+        accessibilityLabel={label}
+        {...inputProps}
+        style={styles.input}
+      />
       {message ? (
         <Text variant="caption" tone={error ? 'danger' : 'muted'} style={styles.label}>
           {message}
