@@ -103,3 +103,18 @@ Under **Settings → Branches → Branch protection rules** for `main`:
 - Domain layer → zero RN/Expo imports (test enforces)
 - No network calls on critical path (test enforces)
 - Commits in English; conventional style (`type(scope): message`)
+
+## Store listing
+
+Store texts and visuals live in the repo: `store.config.json` (App Store, through `eas metadata`) and `store/play/<locale>/` (Play).
+
+1. Capture raw screenshots on an iPhone 17 Pro Max simulator running an `EXPO_PUBLIC_E2E=true` Release build, once per locale, with the simulator language set to that locale:
+   ```bash
+   maestro test .maestro/store/screenshots.yaml -e LOCALE=fr-FR -e OPEN_LABEL=Ouvrir -e CANCEL_LABEL=Annuler \
+     -e SAVE_LABEL=Enregistrer -e "CLOSE_CARD_LABEL=Fermer la carte" -e SEARCH_LABEL=Rechercher \
+     -e "SEARCH_PLACEHOLDER=Magasin, titulaire ou numéro" -e "SETTINGS_LABEL=Réglages" -e CARDS_LABEL=Cartes -e DARK_LABEL=Sombre
+   ```
+   English labels: `Open`, `Cancel`, `Save`, `Close card`, `Search`, `Store, owner or number`, `Settings`, `Cards`, `Dark`.
+2. `yarn store:assets` frames them with the captions of `store/screenshots.json` (needs Google Chrome and ImageMagick).
+3. Push the App Store listing: `npx eas-cli metadata:push --profile production`. The age rating is set by hand in App Store Connect: `eas metadata` does not send Apple's newer questions yet.
+4. Push the Play listing: `GOOGLE_SERVICE_ACCOUNT_KEY=<key.json> yarn store:play`, with a key of the Play service account. Delete the key afterwards.
