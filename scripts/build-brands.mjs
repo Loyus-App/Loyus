@@ -1,10 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { ROOT, run, withWorkDir } from './lib/tools.mjs';
 
 const BRANDS_DIR = join(ROOT, 'assets/brands');
-const CATALOG_FILE = join(ROOT, 'src/domain/brandCatalog.ts');
-const LOGOS_FILE = join(ROOT, 'src/ui/brands/brandLogos.ts');
+const CATALOG_FILE = join(ROOT, 'src/entities/brand/domain/generated/catalog.ts');
+const LOGOS_FILE = join(ROOT, 'src/entities/brand/ui/generated/logos.ts');
 
 const LIGHT_INK = 0.8;
 const LIGHT_LOGO = 0.88;
@@ -181,16 +181,17 @@ withWorkDir('loyus-brands-', (work) => {
     });
   }
 });
-mkdirSync(join(ROOT, 'src/ui/brands'), { recursive: true });
+const logosToAssets = relative(dirname(LOGOS_FILE), BRANDS_DIR);
+for (const file of [CATALOG_FILE, LOGOS_FILE]) mkdirSync(dirname(file), { recursive: true });
 writeFileSync(
   CATALOG_FILE,
-  `import type { Brand } from './brand';\n\nexport const BRAND_CATALOG: readonly Brand[] = ${JSON.stringify(catalog, null, 2)};\n`,
+  `import type { Brand } from '../brand';\n\nexport const BRAND_CATALOG: readonly Brand[] = ${JSON.stringify(catalog, null, 2)};\n`,
 );
 writeFileSync(
   LOGOS_FILE,
   [
     'export const BRAND_LOGOS: Readonly<Record<string, () => string>> = {',
-    ...logos.map(({ id, file }) => `  '${id}': () => require('../../../assets/brands/${file}'),`),
+    ...logos.map(({ id, file }) => `  '${id}': () => require('${logosToAssets}/${file}'),`),
     '};',
     '',
   ].join('\n'),

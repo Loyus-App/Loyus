@@ -3,30 +3,37 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { type BackupStatus, backupStatus } from '@/domain/backup';
-import { useSettingsStore } from '@/state/stores/settingsStore';
-import { AppIconImage } from '@/ui/components/AppIconImage';
-import { SettingsIdentityCard } from '@/ui/components/SettingsIdentityCard';
-import { TabScreen } from '@/ui/components/TabScreen';
-import { APP_INFO } from '@/ui/constants/app';
-import { APP_ICON_LABELS } from '@/ui/constants/appIcons';
-import { nativeLanguageName } from '@/ui/constants/languages';
-import { ISSUES_URL } from '@/ui/constants/links';
-import { useAppIcon } from '@/ui/hooks/useAppIcon';
-import { useToday } from '@/ui/hooks/useToday';
-import { icons, ListRow, ListSection, SegmentedControl, Switch, Text } from '@/ui/primitives';
-import { testId, tid } from '@/ui/testIds';
+import { useSettingsStore } from '@/entities/settings/state/settingsStore';
 import {
-  ACCENT_LABELS,
   setThemePreference,
   THEME_PREFERENCES,
   type ThemePreference,
-} from '@/ui/theme';
-import { canChangeAppIcon } from '@/ui/utils/appIcon';
-import { exportBackup, restoreBackup } from '@/ui/utils/backup';
-import { formatDayMonth } from '@/ui/utils/dates';
-import { ignore } from '@/ui/utils/ignore';
-import { openLink } from '@/ui/utils/openLink';
+} from '@/entities/settings/ui/preference';
+import { type BackupStatus, backupStatus } from '@/features/backup/domain/backup';
+import { exportBackup, restoreBackup } from '@/features/backup/ui/backupActions';
+import { canChangeAppIcon } from '@/features/settings/ui/appIconActions';
+import { AppIconImage } from '@/features/settings/ui/AppIconImage';
+import { APP_ICON_LABELS } from '@/features/settings/ui/appIconImages';
+import { APP_INFO } from '@/features/settings/ui/appInfo';
+import { formatDayMonth } from '@/features/settings/ui/dates';
+import { nativeLanguageName } from '@/features/settings/ui/languages';
+import { ISSUES_URL } from '@/features/settings/ui/links';
+import { SettingsIdentityCard } from '@/features/settings/ui/SettingsIdentityCard';
+import { useAppIcon } from '@/features/settings/ui/useAppIcon';
+import { useToday } from '@/features/settings/ui/useToday';
+import { ignore } from '@/shared/lib/ignore';
+import { openLink } from '@/shared/platform/openLink';
+import { ACCENT_LABELS } from '@/shared/theme';
+import {
+  icons,
+  ListRow,
+  ListSection,
+  SegmentedControl,
+  Switch,
+  Text,
+} from '@/shared/ui/primitives';
+import { TabScreen } from '@/shared/ui/TabScreen';
+import { testId, tid } from '@/shared/ui/testIds';
 
 const APP_ICON_SIZE = 30;
 

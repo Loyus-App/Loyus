@@ -1,5 +1,5 @@
 import 'react-native-unistyles/mocks';
-import './src/ui/theme/unistyles';
+import './src/boot/unistyles';
 
 jest.mock('react-native-worklets', () => require('react-native-worklets/src/mock'));
 jest.mock('react-native-reanimated/src/initializers', () => ({

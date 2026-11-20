@@ -20,15 +20,16 @@ Create a new screen named "$ARGUMENTS" with all required wiring:
 
 ## 2. UI
 
-- Build from `src/ui/primitives` (`Text`, `ListSection`, `ListRow`, `Button`, `TextField`, `EmptyState`…) and `src/ui/components`
+- Keep the route file thin: the screen and its parts go in `src/features/<feature>/ui/`; the route composes features, a feature never imports another one
+- Build from `src/shared/ui/primitives` (`Text`, `ListSection`, `ListRow`, `Button`, `TextField`, `EmptyState`…), `src/shared/ui` and the entity components (`src/entities/card/ui`…)
 - `import { StyleSheet } from 'react-native-unistyles'`; `StyleSheet.create((theme, rt) => …)` below the component; tokens only
 - Strings through `useTranslation()`; no comments except a rare one-line WHY
 
-## 3. i18n (src/infra/i18n/locales/)
+## 3. i18n (src/shared/i18n/locales/)
 
 - Add keys to `en.ts` first (keys are typed), then to fr, es, pt, ru, de
 
-## 4. testIDs (src/ui/testIds.ts)
+## 4. testIDs (src/shared/ui/testIds.ts)
 
 - Add keys for interactive elements; use `tid('key')` in the screen
 

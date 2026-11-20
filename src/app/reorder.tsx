@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { reorderItems, ScrollViewContainer } from 'react-native-reorderable-list';
 import { StyleSheet, useUnistyles, withUnistyles } from 'react-native-unistyles';
 import { useShallow } from 'zustand/react/shallow';
-import type { Card } from '@/domain/card';
-import { selectPinnedCards, selectUnpinnedCards } from '@/state/selectors';
-import { useCardStore } from '@/state/stores/cardStore';
-import { useSectionTitles } from '@/ui/components/home/sectionTitles';
-import { ReorderSection } from '@/ui/components/reorder/ReorderSection';
-import { Text } from '@/ui/primitives';
+import type { Card } from '@/entities/card/domain/card';
+import { selectPinnedCards, selectUnpinnedCards } from '@/entities/card/state/cardSelectors';
+import { useCardStore } from '@/entities/card/state/cardStore';
+import { ReorderSection } from '@/features/library/ui/ReorderSection';
+import { useSectionTitles } from '@/features/library/ui/sectionTitles';
+import { Text } from '@/shared/ui/primitives';
 
 const Scroll = withUnistyles(ScrollViewContainer);
 

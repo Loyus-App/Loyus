@@ -3,13 +3,13 @@ import { useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SectionList, TextInput, View } from 'react-native';
 import { StyleSheet, withUnistyles } from 'react-native-unistyles';
-import { allBrands, type Brand, popularBrands, suggestBrands } from '@/domain/brand';
-import { deviceRegion } from '@/infra/platform/region';
-import { useUiStore } from '@/state/stores/uiStore';
-import { CardThumb } from '@/ui/components/CardThumb';
-import { CARD_ASPECT_RATIO } from '@/ui/components/CardTile';
-import { Icon, icons, Text } from '@/ui/primitives';
-import { testId, tid } from '@/ui/testIds';
+import { allBrands, type Brand, popularBrands, suggestBrands } from '@/entities/brand/domain/brand';
+import { CardThumb } from '@/entities/card/ui/CardThumb';
+import { CARD_ASPECT_RATIO } from '@/entities/card/ui/CardTile';
+import { deviceRegion } from '@/shared/platform/region';
+import { Icon, icons, Text } from '@/shared/ui/primitives';
+import { testId, tid } from '@/shared/ui/testIds';
+import { useUiStore } from '@/shared/ui/uiStore';
 
 type Section = {
   readonly key: string;

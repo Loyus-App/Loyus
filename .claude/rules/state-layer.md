@@ -1,6 +1,7 @@
 ---
 paths:
-  - "src/state/**"
+  - "src/**/state/**"
+  - "src/shared/ui/uiStore.ts"
 ---
 
 # State Layer Rules
@@ -8,13 +9,14 @@ paths:
 ## Zustand 5 + MMKV Persistence
 
 - Use `create()` from zustand with `persist` middleware + `createJSONStorage(() => mmkvStateStorage)`
-- One store per bounded concern: `cardStore`, `settingsStore`, `uiStore`, `captureStore`
+- One store per bounded concern, in the `state/` segment of its slice: `cardStore` (`entities/card`), `settingsStore` (`entities/settings`), `captureStore` (`entities/barcode`); `uiStore` lives in `shared/ui`
+- A `state/` file never imports `ui/` code
 - `partialize`: exclude all actions, persist only data fields
 - Schema versioning: `version` number + `migrate` callback using domain `runMigrations`
 
 ## Selectors
 
-- Selectors live in `src/state/selectors/` -- never subscribe to whole-store
+- Selectors live next to their store (`src/entities/card/state/cardSelectors.ts`) -- never subscribe to whole-store
 - Use `useShallow` for array/object selectors to prevent unnecessary rerenders
 - Selector functions are pure and composable (e.g., `selectPinnedCards(mode)`, `selectCardById`)
 

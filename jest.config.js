@@ -16,7 +16,7 @@ const config = {
     '!src/**/index.ts',
   ],
   coverageThreshold: {
-    'src/domain/**/*.ts': {
+    'src/{entities,features}/*/domain/**/*.ts': {
       lines: 80,
       branches: 70,
       functions: 80,

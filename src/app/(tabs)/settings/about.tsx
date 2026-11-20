@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { AppIconImage } from '@/ui/components/AppIconImage';
-import { PrivacyPromises } from '@/ui/components/PrivacyPromises';
-import { SettingsSubscreen } from '@/ui/components/SettingsSubscreen';
-import { APP_INFO } from '@/ui/constants/app';
-import { PRIVACY_POLICY_URL, REPOSITORY_URL } from '@/ui/constants/links';
-import { useAppIcon } from '@/ui/hooks/useAppIcon';
-import { icons, ListRow, ListSection, Text } from '@/ui/primitives';
-import { testId, tid } from '@/ui/testIds';
-import { openLink } from '@/ui/utils/openLink';
+import { AppIconImage } from '@/features/settings/ui/AppIconImage';
+import { APP_INFO } from '@/features/settings/ui/appInfo';
+import { PRIVACY_POLICY_URL, REPOSITORY_URL } from '@/features/settings/ui/links';
+import { SettingsSubscreen } from '@/features/settings/ui/SettingsSubscreen';
+import { useAppIcon } from '@/features/settings/ui/useAppIcon';
+import { openLink } from '@/shared/platform/openLink';
+import { icons, ListRow, ListSection, Text } from '@/shared/ui/primitives';
+import { PrivacyPromises } from '@/shared/ui/PrivacyPromises';
+import { testId, tid } from '@/shared/ui/testIds';
 
 const ICON_SIZE = 64;
 

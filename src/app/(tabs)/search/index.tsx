@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useWindowDimensions } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 import { useShallow } from 'zustand/react/shallow';
-import type { Card } from '@/domain/card';
-import { selectRecentlyOpened, selectSearchResults } from '@/state/selectors';
-import { useCardStore } from '@/state/stores/cardStore';
-import { CardLink } from '@/ui/components/CardLink';
-import { CardRow } from '@/ui/components/CardRow';
-import { TabScreen } from '@/ui/components/TabScreen';
-import { EmptyState, icons, ListSection } from '@/ui/primitives';
-import { testId } from '@/ui/testIds';
+import type { Card } from '@/entities/card/domain/card';
+import { selectRecentlyOpened, selectSearchResults } from '@/entities/card/state/cardSelectors';
+import { useCardStore } from '@/entities/card/state/cardStore';
+import { CardLink } from '@/entities/card/ui/CardLink';
+import { CardRow } from '@/entities/card/ui/CardRow';
+import { EmptyState, icons, ListSection } from '@/shared/ui/primitives';
+import { TabScreen } from '@/shared/ui/TabScreen';
+import { testId } from '@/shared/ui/testIds';
 
 const selectRecent = selectRecentlyOpened(6);
 

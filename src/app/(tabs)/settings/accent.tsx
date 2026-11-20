@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { ACCENT_NAMES, type AccentName, useSettingsStore } from '@/state/stores/settingsStore';
-import { SettingsSubscreen } from '@/ui/components/SettingsSubscreen';
-import { ListRow, ListSection } from '@/ui/primitives';
-import { ACCENT_LABELS, accentColor, setAccentPreference } from '@/ui/theme';
+import { useSettingsStore } from '@/entities/settings/state/settingsStore';
+import { setAccentPreference } from '@/entities/settings/ui/preference';
+import { SettingsSubscreen } from '@/features/settings/ui/SettingsSubscreen';
+import { ACCENT_LABELS, accentColor } from '@/shared/theme';
+import { ACCENT_NAMES, type AccentName } from '@/shared/theme/accents';
+import { ListRow, ListSection } from '@/shared/ui/primitives';
 
 const SWATCH_SIZE = 30;
 

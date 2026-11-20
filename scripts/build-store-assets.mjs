@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { DEFAULT_APP_ICON, IOS_CORNER_RATIO } from '../src/domain/appIcon.ts';
+import { DEFAULT_APP_ICON, IOS_CORNER_RATIO } from '../src/entities/settings/domain/appIcon.ts';
 import { ROOT, runAsync, withWorkDirAsync } from './lib/tools.mjs';
 
 const STORE_DIR = join(ROOT, 'store');

@@ -1,7 +1,7 @@
 import { NativeTabs } from 'expo-router/native-tabs';
 import { useTranslation } from 'react-i18next';
 import { useUnistyles } from 'react-native-unistyles';
-import { useSystemShortcuts } from '@/ui/hooks/useSystemShortcuts';
+import { useSystemShortcuts } from '@/features/shortcuts/ui/useSystemShortcuts';
 
 export const unstable_settings = {
   anchor: '(cards)',

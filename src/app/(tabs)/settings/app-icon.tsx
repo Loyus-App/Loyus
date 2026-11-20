@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { APP_ICONS, DEFAULT_APP_ICON } from '@/domain/appIcon';
-import { AppIconImage } from '@/ui/components/AppIconImage';
-import { SettingsSubscreen } from '@/ui/components/SettingsSubscreen';
-import { APP_ICON_LABELS } from '@/ui/constants/appIcons';
-import { useAppIcon } from '@/ui/hooks/useAppIcon';
-import { ListRow, ListSection } from '@/ui/primitives';
-import { testId } from '@/ui/testIds';
-import { chooseAppIcon } from '@/ui/utils/appIcon';
+import { APP_ICONS, DEFAULT_APP_ICON } from '@/entities/settings/domain/appIcon';
+import { chooseAppIcon } from '@/features/settings/ui/appIconActions';
+import { AppIconImage } from '@/features/settings/ui/AppIconImage';
+import { APP_ICON_LABELS } from '@/features/settings/ui/appIconImages';
+import { SettingsSubscreen } from '@/features/settings/ui/SettingsSubscreen';
+import { useAppIcon } from '@/features/settings/ui/useAppIcon';
+import { ListRow, ListSection } from '@/shared/ui/primitives';
+import { testId } from '@/shared/ui/testIds';
 
 const THUMBNAIL_SIZE = 44;
 

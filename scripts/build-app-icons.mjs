@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { APP_ICONS, DEFAULT_APP_ICON, IOS_CORNER_RATIO } from '../src/domain/appIcon.ts';
+import { APP_ICONS, DEFAULT_APP_ICON, IOS_CORNER_RATIO } from '../src/entities/settings/domain/appIcon.ts';
 import { ROOT, runAsync, withWorkDirAsync } from './lib/tools.mjs';
 
 const SOURCE_DIR = join(ROOT, 'assets/app-icon');
