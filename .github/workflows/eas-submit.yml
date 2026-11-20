@@ -24,26 +24,19 @@ concurrency:
 jobs:
   release:
     name: Build + submit
-    runs-on: ubuntu-latest
+    runs-on: loyus-arc
     if: github.repository == 'Loyus-App/Loyus'
     environment: production
     steps:
       - uses: actions/checkout@v4
 
-      - run: corepack enable
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: yarn
+      - uses: ./.github/actions/install
 
       - name: Setup EAS CLI
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-
-      - run: yarn install --immutable
 
       - name: Build production (wait for completion)
         if: ${{ github.event.inputs.skip_build != 'true' }}

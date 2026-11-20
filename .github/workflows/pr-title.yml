@@ -10,7 +10,7 @@ permissions:
 jobs:
   validate:
     name: Validate conventional commit title
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || 'loyus-arc' }}
     steps:
       - name: Check conventional-commit title
         env:
