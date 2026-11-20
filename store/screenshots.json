@@ -1,0 +1,66 @@
+{
+  "tagline": {
+    "fr-FR": "Tes cartes de fidélité, prêtes à la caisse.",
+    "en-US": "Your loyalty cards, ready at the till."
+  },
+  "shots": [
+    {
+      "id": "01-cards",
+      "raw": "home",
+      "caption": {
+        "fr-FR": { "title": "Toutes tes cartes.\n*Une seule poche.*", "subtitle": "Fini le portefeuille qui déborde." },
+        "en-US": { "title": "All your cards.\n*One pocket.*", "subtitle": "No more bulging wallet." }
+      }
+    },
+    {
+      "id": "02-checkout",
+      "raw": "checkout",
+      "caption": {
+        "fr-FR": { "title": "Un tap,\n*c'est scanné.*", "subtitle": "Luminosité à fond, code net, même sans réseau." },
+        "en-US": { "title": "One tap,\n*scanned.*", "subtitle": "Full brightness, sharp code, even offline." }
+      }
+    },
+    {
+      "id": "03-brands",
+      "raw": "brands",
+      "caption": {
+        "fr-FR": { "title": "Scanne une fois,\n*c'est rangé.*", "subtitle": "Plus de 400 enseignes, logo et couleur compris." },
+        "en-US": { "title": "Scan it once,\n*it's saved.*", "subtitle": "Over 400 stores, logo and color included." }
+      }
+    },
+    {
+      "id": "04-search",
+      "raw": "search",
+      "caption": {
+        "fr-FR": { "title": "Retrouvée en\n*deux lettres.*", "subtitle": "Par enseigne, titulaire ou numéro." },
+        "en-US": { "title": "Found in\n*two letters.*", "subtitle": "By store, owner or number." }
+      }
+    },
+    {
+      "id": "05-icons",
+      "raw": "icons",
+      "platforms": ["apple"],
+      "caption": {
+        "fr-FR": { "title": "Ton icône,\n*ta couleur.*", "subtitle": "Dix icônes, clair ou sombre, six accents." },
+        "en-US": { "title": "Your icon,\n*your color.*", "subtitle": "Ten icons, light or dark, six accents." }
+      }
+    },
+    {
+      "id": "05-dark",
+      "raw": "home-dark",
+      "platforms": ["play"],
+      "caption": {
+        "fr-FR": { "title": "Clair ou sombre,\n*à ton goût.*", "subtitle": "Six couleurs d'accent, grille ou liste." },
+        "en-US": { "title": "Light or dark,\n*your call.*", "subtitle": "Six accent colors, grid or list." }
+      }
+    },
+    {
+      "id": "06-privacy",
+      "raw": "settings",
+      "caption": {
+        "fr-FR": { "title": "Rien ne sort\n*de ton téléphone.*", "subtitle": "Pas de compte, pas de pub, pas de pisteur." },
+        "en-US": { "title": "Nothing leaves\n*your phone.*", "subtitle": "No account, no ads, no trackers." }
+      }
+    }
+  ]
+}

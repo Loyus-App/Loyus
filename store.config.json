@@ -1,0 +1,109 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0.0",
+    "copyright": "2026 Arthur Monteiro",
+    "categories": [
+      "SHOPPING",
+      "UTILITIES"
+    ],
+    "release": {
+      "automaticRelease": true
+    },
+    "info": {
+      "fr-FR": {
+        "title": "Loyus : cartes de fidélité",
+        "subtitle": "Tes cartes, prêtes à la caisse",
+        "promoText": "Le portefeuille qui déborde, c'est fini. Scanne une carte une fois, elle sort en un tap à la caisse, même en mode avion. Pas de compte, pas de pub.",
+        "keywords": [
+          "fidélité",
+          "carte",
+          "portefeuille",
+          "wallet",
+          "code barre",
+          "magasin",
+          "caisse",
+          "points",
+          "club",
+          "scanner",
+          "hors ligne"
+        ],
+        "description": "La carte de la boulangerie, celle du ciné, de la salle de sport, du magasin de bricolage... Elles finissent au fond d'un tiroir, ou restent à la maison pile le jour où tu en as besoin. Loyus les range dans ton téléphone, une bonne fois pour toutes.\n\nSCANNE UNE FOIS, C'EST RANGÉ\n• Vise la carte avec l'appareil photo, ou lis le code depuis une photo ou une capture d'écran.\n• Pas de code-barres sur la carte ? Tape le numéro, Loyus dessine le code.\n• Plus de 400 enseignes reconnues : ta carte prend le logo et la couleur du magasin.\n\nÀ LA CAISSE, ZÉRO STRESS\n• Un tap et le code s'affiche en grand, luminosité à fond, écran qui reste allumé.\n• Des codes calibrés pour les scanners des magasins (normes GS1), nets au pixel près.\n• Code trop long ? Fais-le pivoter sur tout l'écran, ou copie le numéro.\n• Ça marche sans réseau, même au sous-sol du supermarché.\n\nTES CARTES, TON ORDRE\n• Épingle tes préférées en haut.\n• Trie par les plus utilisées, les plus récentes, de A à Z ou à ta façon.\n• Retrouve n'importe quelle carte par enseigne, titulaire ou numéro.\n• Ajoute une note (code PIN, numéro d'adhérent), le nom du titulaire et des photos recto verso.\n\nTOUJOURS SOUS LA MAIN\n• Widgets pour l'écran d'accueil et l'écran verrouillé.\n• Raccourcis sur l'icône vers tes trois cartes les plus utilisées.\n• Dix icônes d'app au choix, thème clair ou sombre, six couleurs d'accent.\n\nTES DONNÉES RESTENT CHEZ TOI\nPas de compte, pas de pub, pas de pisteur. Loyus n'a même pas accès à Internet : tout reste sur ton téléphone. Pour changer de téléphone ou garder une copie, exporte tes cartes dans un fichier.\n\nLoyus est gratuit et open source.",
+        "marketingUrl": "https://github.com/Loyus-App/Loyus",
+        "supportUrl": "https://github.com/Loyus-App/Loyus/issues",
+        "privacyPolicyUrl": "https://github.com/Loyus-App/Loyus/blob/main/docs/PRIVACY_POLICY.md",
+        "screenshots": {
+          "APP_IPHONE_67": [
+            "store/apple/fr-FR/01-cards.jpg",
+            "store/apple/fr-FR/02-checkout.jpg",
+            "store/apple/fr-FR/03-brands.jpg",
+            "store/apple/fr-FR/04-search.jpg",
+            "store/apple/fr-FR/05-icons.jpg",
+            "store/apple/fr-FR/06-privacy.jpg"
+          ]
+        }
+      },
+      "en-US": {
+        "title": "Loyus: Loyalty Card Wallet",
+        "subtitle": "Your cards, ready at the till",
+        "promoText": "No more bulging wallet. Scan a card once and pull it up in one tap at the till, even in airplane mode. No account, no ads.",
+        "keywords": [
+          "loyalty",
+          "card",
+          "wallet",
+          "rewards",
+          "barcode",
+          "store",
+          "membership",
+          "points",
+          "club",
+          "scanner",
+          "offline"
+        ],
+        "description": "The bakery card, the cinema card, the gym card, the hardware store card... They end up in a drawer, or at home on the one day you need them. Loyus puts them all in your phone, for good.\n\nSCAN IT ONCE, DONE\n• Point the camera at the card, or read the code from a photo or a screenshot.\n• No barcode on the card? Type the number and Loyus draws the code.\n• Over 400 known stores: your card gets the store's logo and color.\n\nAT THE TILL, NO FUSS\n• One tap shows the code full size, brightness up, screen kept awake.\n• Codes sized for store scanners (GS1 specs), sharp to the pixel.\n• Code too long? Rotate it across the whole screen, or copy the number.\n• Works offline, even in the supermarket basement.\n\nYOUR CARDS, YOUR ORDER\n• Pin your favorites to the top.\n• Sort by most used, recently used, A to Z or your own way.\n• Find any card by store, owner or number.\n• Add a note (PIN, member number), the owner's name and front and back photos.\n\nALWAYS AT HAND\n• Home Screen and Lock Screen widgets.\n• Shortcuts on the app icon to your three most used cards.\n• Ten app icons, light or dark theme, six accent colors.\n\nYOUR DATA STAYS WITH YOU\nNo account, no ads, no trackers. Loyus doesn't even have internet access: everything stays on your phone. To switch phones or keep a copy, export your cards to a file.\n\nLoyus is free and open source.",
+        "marketingUrl": "https://github.com/Loyus-App/Loyus",
+        "supportUrl": "https://github.com/Loyus-App/Loyus/issues",
+        "privacyPolicyUrl": "https://github.com/Loyus-App/Loyus/blob/main/docs/PRIVACY_POLICY.md",
+        "screenshots": {
+          "APP_IPHONE_67": [
+            "store/apple/en-US/01-cards.jpg",
+            "store/apple/en-US/02-checkout.jpg",
+            "store/apple/en-US/03-brands.jpg",
+            "store/apple/en-US/04-search.jpg",
+            "store/apple/en-US/05-icons.jpg",
+            "store/apple/en-US/06-privacy.jpg"
+          ]
+        }
+      }
+    },
+    "advisory": {
+      "ageRatingOverride": "NONE",
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "kidsAgeBand": null,
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false,
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "advertising": false,
+      "ageAssurance": false,
+      "ageRatingOverrideV2": "NONE",
+      "developerAgeRatingInfoUrl": null,
+      "gunsOrOtherWeapons": "NONE",
+      "healthOrWellnessTopics": false,
+      "messagingAndChat": false,
+      "parentalControls": false,
+      "userGeneratedContent": false
+    }
+  }
+}

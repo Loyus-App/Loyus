@@ -1,0 +1,131 @@
+# Seeds made-up cards and captures the raw store screenshots into store/raw/${LOCALE}.
+appId: com.loyus.app
+env:
+  OUT: store/raw/${LOCALE}
+---
+- tapOn:
+    text: "${CANCEL_LABEL}"
+    optional: true
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 15000
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Boulangerie Lemoine"
+      CODE: "3760123456784"
+      FORMAT: "EAN13"
+      OWNER: ""
+      PIN: "true"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Le Comptoir Vert"
+      CODE: "3760987654326"
+      FORMAT: "EAN13"
+      OWNER: ""
+      PIN: "true"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Librairie Page 42"
+      CODE: "PAGE42-0815"
+      FORMAT: "CODE128"
+      OWNER: ""
+      PIN: "false"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Atlas Fitness"
+      CODE: "ATL-778812"
+      FORMAT: "CODE128"
+      OWNER: "Sam"
+      PIN: "false"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Bricoline"
+      CODE: "3760555012343"
+      FORMAT: "EAN13"
+      OWNER: ""
+      PIN: "false"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Fleurs et Cie"
+      CODE: "FLEURS-2207"
+      FORMAT: "CODE128"
+      OWNER: ""
+      PIN: "false"
+- runFlow:
+    file: add-card.yaml
+    env:
+      NAME: "Pharmacie du Port"
+      CODE: "3760444123457"
+      FORMAT: "EAN13"
+      OWNER: ""
+      PIN: "false"
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/home
+- tapOn: "Boulangerie Lemoine.*"
+- extendedWaitUntil:
+    visible:
+      id: "barcode-display"
+    timeout: 8000
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/checkout
+- tapOn: "${CLOSE_CARD_LABEL}"
+- openLink: "loyus://card/brands"
+- tapOn:
+    text: "${OPEN_LABEL}"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "brand-picker-screen"
+    timeout: 8000
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/brands
+- launchApp
+- tapOn: "${SEARCH_LABEL}"
+- extendedWaitUntil:
+    visible:
+      id: "search-screen"
+    timeout: 8000
+- tapOn: "${SEARCH_PLACEHOLDER}"
+- inputText: "li"
+- hideKeyboard
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/search
+- launchApp
+- tapOn: "${SETTINGS_LABEL}"
+- extendedWaitUntil:
+    visible:
+      id: "settings-screen"
+    timeout: 8000
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/settings
+- scrollUntilVisible:
+    element:
+      id: "app-icon-row"
+    centerElement: true
+- tapOn:
+    id: "app-icon-row"
+- extendedWaitUntil:
+    visible:
+      id: "app-icon-screen"
+    timeout: 5000
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/icons
+- launchApp
+- tapOn: "${SETTINGS_LABEL}"
+- scrollUntilVisible:
+    element:
+      text: "${DARK_LABEL}"
+    centerElement: true
+- tapOn: "${DARK_LABEL}"
+- tapOn: "${CARDS_LABEL}"
+- waitForAnimationToEnd
+- takeScreenshot: ${OUT}/home-dark
