@@ -39,7 +39,7 @@ describe('useCardForm', () => {
         finishCopy = resolve;
       }),
     );
-    const onValid = jest.fn<void, [CardFormValues]>();
+    const onValid = jest.fn<undefined, [CardFormValues]>();
     const { result } = renderForm();
 
     act(() => result.current.onNameChange('Bakery'));
@@ -60,7 +60,7 @@ describe('useCardForm', () => {
   });
 
   it('saves once when the button is pressed twice', async () => {
-    const onValid = jest.fn<void, [CardFormValues]>();
+    const onValid = jest.fn<undefined, [CardFormValues]>();
     const { result } = renderForm();
 
     act(() => result.current.onNameChange('Bakery'));

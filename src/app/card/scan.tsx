@@ -58,7 +58,7 @@ function usePhotoImport(): { readonly busy: boolean; readonly start: () => void 
     running.current = true;
     const resume = useCaptureStore.getState().isScanning;
     useCaptureStore.getState().setIsScanning(false);
-    importFromPhoto(setBusy)
+    void importFromPhoto(setBusy)
       .catch(() => false)
       .then((imported) => {
         running.current = false;

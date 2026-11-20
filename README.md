@@ -136,7 +136,7 @@ After the first build, `yarn start` is enough: Metro serves the JavaScript and c
 | --------------------------- | --------------------------------------------------------------- |
 | `yarn start`                | Metro for the dev build                                         |
 | `yarn ios` / `yarn android` | Build and run the dev build                                     |
-| `yarn check:fix`            | Biome lint and format                                           |
+| `yarn check:fix`            | Lint (oxlint) and format (oxfmt)                                |
 | `yarn typecheck`            | TypeScript check (`tsc --noEmit`)                               |
 | `yarn test`                 | Jest with React Native Testing Library                          |
 | `yarn test:e2e`             | [Maestro](https://maestro.dev) flows in [`.maestro/`](.maestro) |

@@ -7,7 +7,7 @@ Offline-first loyalty-card wallet for iOS/Android. Expo SDK 58, React Native 0.8
 ```bash
 yarn ios              # Dev build for iOS (no Expo Go)
 yarn android          # Dev build for Android
-yarn check:fix        # Biome lint + format (biome check --write)
+yarn check:fix        # oxlint --fix, then oxfmt
 yarn typecheck        # TypeScript strict (tsc --noEmit)
 yarn test             # Jest unit tests
 yarn test:e2e         # Maestro E2E flows
@@ -27,21 +27,22 @@ yarn test:e2e         # Maestro E2E flows
 - Store subscriptions via selectors only (never whole-store)
 - Domain layer enforced by `src/domain/__tests__/architecture.test.ts`
 
-## Linting (Biome.js, NOT ESLint)
+## Linting and formatting (OXC: oxlint + oxfmt)
 
-- Run: `yarn check:fix` (biome check --write)
-- Config: `biome.json` at repo root
-- NEVER suggest ESLint, Prettier, or eslint-* packages
+- Run: `yarn check:fix` (`oxlint --fix && oxfmt`); CI runs `yarn check`
+- Config: `.oxlintrc.json` (type-aware rules through `oxlint-tsgolint`) and `.oxfmtrc.json` at repo root; both cover `src/` and `__mocks__/` only
+- Lint exceptions go in `.oxlintrc.json` `overrides`, never in `oxlint-disable` comments
+- NEVER suggest ESLint, Prettier, Biome, or eslint-* packages
 
 ## Conventions
 
 - TypeScript strict: `strict: true`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
-- No `any` in app code (noExplicitAny: error in Biome)
+- No `any` in app code (`typescript/no-explicit-any`: error in oxlint)
 - Optional fields: `field?: T | undefined`
 - Spread conditionally: `...(val !== undefined ? { field: val } : {})`
 - Branded types for IDs: `CardId = string & { readonly [Brand]: typeof Brand }`
 - Readonly interfaces for domain types
-- `import type` for type-only imports (enforced by Biome useImportType)
+- `import type` for type-only imports (enforced by oxlint `typescript/consistent-type-imports`)
 
 ## i18n
 

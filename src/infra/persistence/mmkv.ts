@@ -3,7 +3,7 @@ import type { StateStorage } from 'zustand/middleware';
 
 export const mmkv = createMMKV({ id: 'loyus-store' });
 
-export const mmkvStateStorage: StateStorage = {
+export const mmkvStateStorage = {
   getItem: (name: string): string | null => {
     return mmkv.getString(name) ?? null;
   },
@@ -13,4 +13,4 @@ export const mmkvStateStorage: StateStorage = {
   removeItem: (name: string): void => {
     mmkv.remove(name);
   },
-};
+} satisfies StateStorage;

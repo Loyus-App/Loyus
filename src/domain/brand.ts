@@ -130,7 +130,7 @@ export function searchBrands(
 export function findBrandByName(
   catalog: readonly Brand[],
   name: string,
-  region?: string | undefined,
+  region?: string,
 ): Brand | undefined {
   const query = normalizeBrandName(name);
   if (!query) return undefined;
@@ -170,7 +170,7 @@ export function suggestBrands(text: string, options?: BrandQueryOptions): Brand[
   return searchBrands(BRAND_CATALOG, text, options);
 }
 
-export function matchBrand(name: string, region?: string | undefined): Brand | undefined {
+export function matchBrand(name: string, region?: string): Brand | undefined {
   return findBrandByName(BRAND_CATALOG, name, region);
 }
 

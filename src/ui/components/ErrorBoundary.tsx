@@ -12,7 +12,12 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps): React.JSX.Element 
   return (
     <View style={styles.screen}>
       <EmptyState icon={icons.warning} title={t('error.title')} body={t('error.body')}>
-        <Button label={t('error.retry')} onPress={() => retry().catch(ignore)} />
+        <Button
+          label={t('error.retry')}
+          onPress={() => {
+            retry().catch(ignore);
+          }}
+        />
       </EmptyState>
     </View>
   );

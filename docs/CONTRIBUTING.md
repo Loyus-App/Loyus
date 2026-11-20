@@ -9,12 +9,12 @@ corepack enable      # once per machine — picks the Yarn version pinned in pac
 yarn install         # triggers `postinstall` script, which wires Husky hooks
 ```
 
-After install, commits will run `yarn lint-staged` automatically (fast Biome check on staged files only). To skip in an emergency: `git commit --no-verify`. CI enforces the same checks, so skipping only delays the pain.
+After install, commits will run `yarn lint-staged` automatically (oxlint and oxfmt on staged files only). To skip in an emergency: `git commit --no-verify`. CI enforces the same checks, so skipping only delays the pain.
 
 ## Quality gates (local)
 
 ```bash
-yarn check:fix       # Biome lint + format (autofix)
+yarn check:fix       # oxlint + oxfmt (autofix)
 yarn typecheck       # TypeScript strict
 yarn test            # Jest unit tests
 yarn test:e2e        # Maestro E2E (requires iOS simulator + Maestro CLI)
@@ -26,7 +26,7 @@ Four workflows run on every PR and push to `main`:
 
 | Workflow            | Trigger                    | Purpose                                       |
 |---------------------|----------------------------|-----------------------------------------------|
-| `ci.yml`            | PR + push `main`           | Lint (Biome) / Typecheck (tsc) / Unit tests (Jest) in parallel |
+| `ci.yml`            | PR + push `main`           | Lint (OXC) / Typecheck (tsc) / Unit tests (Jest) in parallel |
 | `e2e.yml`           | PR + push `main`           | Maestro E2E on macOS + iOS simulator          |
 | `pr-title.yml`      | PR open/edit/sync          | Enforce conventional commit title             |
 | `eas-build.yml`     | Manual dispatch + push `main` paths | EAS preview build (non-blocking, --no-wait) |
@@ -84,7 +84,7 @@ Under **Settings → Branches → Branch protection rules** for `main`:
 - Require approvals — 1 (solo) or 2 (team)
 - Dismiss stale reviews on new commits
 - **Require status checks to pass before merging:**
-  - `Lint (Biome)`
+  - `Lint (OXC)`
   - `Typecheck`
   - `Unit tests (Jest)`
   - `e2e-ios`
@@ -97,7 +97,7 @@ Under **Settings → Branches → Branch protection rules** for `main`:
 ## Code conventions
 
 - Strict 4-layer architecture — see root `CLAUDE.md` and `.claude/rules/*`
-- TypeScript strict, no `any` (Biome enforces)
+- TypeScript strict, no `any` (oxlint enforces)
 - No `console.log` in committed code
 - New user-facing strings → add to all 6 locale files (`src/infra/i18n/locales/`)
 - Domain layer → zero RN/Expo imports (test enforces)

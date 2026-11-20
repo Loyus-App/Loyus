@@ -25,4 +25,4 @@ export function renderHook<T>(hook: () => T): RenderedHook<T> {
   };
 }
 
-export const act = TestRenderer.act;
+export { act } from 'react';

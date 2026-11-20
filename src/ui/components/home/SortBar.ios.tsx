@@ -7,8 +7,8 @@ import { SORT_MODES, type SortMode } from '@/domain/sort';
 import type { CardViewMode } from '@/state/stores/settingsStore';
 import { chooseSortMode } from '../../utils/sortMode';
 import { ReorderButton } from './ReorderButton';
-import { SortPill, useSortLabel } from './SortPill';
 import { SORT_LABEL_KEY } from './sortLabels';
+import { SortPill, useSortLabel } from './SortPill';
 import { ViewModeToggle } from './ViewModeToggle';
 
 type Props = {

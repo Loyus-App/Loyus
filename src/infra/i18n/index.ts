@@ -31,7 +31,7 @@ export function resolveLanguage(savedLanguage: LanguageCode): AppLanguage {
 }
 
 export function initI18n(savedLanguage: LanguageCode): void {
-  i18next.use(initReactI18next).init({
+  void i18next.use(initReactI18next).init({
     lng: resolveLanguage(savedLanguage),
     fallbackLng: DEFAULT_LANGUAGE,
     resources: RESOURCES,

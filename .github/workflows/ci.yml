@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   lint:
-    name: Lint (Biome)
+    name: Lint (OXC)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +21,7 @@ jobs:
           node-version: 24
           cache: yarn
       - run: yarn install --immutable
-      - name: Biome check
+      - name: oxlint + oxfmt
         run: yarn check
 
   typecheck:

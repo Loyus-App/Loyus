@@ -12,16 +12,18 @@ function settled(): Promise<void> {
   });
 }
 
-export function crossfadeWindow(apply: () => void, durationMs: number): Promise<void> {
+export async function crossfadeWindow(apply: () => void, durationMs: number): Promise<void> {
   if (!isAvailable) {
     apply();
-    return Promise.resolve();
+    return;
   }
   latest += 1;
   const id = latest;
-  return cover()
-    .catch(() => undefined)
-    .then(apply)
-    .then(settled)
-    .finally(() => (id === latest ? reveal(durationMs) : undefined));
+  await cover().catch(() => undefined);
+  try {
+    apply();
+    await settled();
+  } finally {
+    if (id === latest) await reveal(durationMs);
+  }
 }
