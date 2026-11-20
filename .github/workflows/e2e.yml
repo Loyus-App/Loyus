@@ -84,7 +84,8 @@ jobs:
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Build E2E dev-client
-        run: npx expo run:ios --configuration Release --no-bundler
+        # One retry: expo-modules-autolinking times out its module scan after 5 s on a busy runner
+        run: npx expo run:ios --configuration Release --no-bundler || npx expo run:ios --configuration Release --no-bundler
         env:
           EXPO_PUBLIC_E2E: "true"
           CI: "true"
