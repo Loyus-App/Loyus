@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import {
   type AccessibilityActionEvent,
   type AccessibilityActionInfo,
@@ -23,7 +23,7 @@ type Props = {
   readonly icon?: IconName;
   readonly tint?: BadgeTint;
   readonly leading?: ReactNode;
-  readonly accessory?: 'chevron' | 'check' | ReactNode | undefined;
+  readonly accessory?: 'chevron' | 'check' | ReactElement | undefined;
   readonly destructive?: boolean;
   readonly onPress?: () => void;
   readonly onLongPress?: () => void;

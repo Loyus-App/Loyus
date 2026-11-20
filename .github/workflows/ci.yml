@@ -11,12 +11,12 @@ concurrency:
 
 jobs:
   lint:
-    name: Lint (Biome)
+    name: Lint (OXC)
     runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'loyus-arc' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install
-      - name: Biome check
+      - name: oxlint + oxfmt
         run: yarn check
 
   typecheck:

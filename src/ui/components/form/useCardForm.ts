@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { TextInputInstance } from 'react-native';
 import { type Brand, brandById, matchBrand } from '@/domain/brand';
 import { BarcodeFormat, type CardPhotos } from '@/domain/card';
@@ -112,19 +112,19 @@ export function useCardForm(
     setTimeout(() => nameRef.current?.focus(), FOCUS_AFTER_SHEET_MS);
   };
 
-  const onPick = useRef({ pickBrand, chooseOtherStore });
-  onPick.current = { pickBrand, chooseOtherStore };
   const brandPick = useUiStore((state) => state.brandPick);
-
-  useEffect(() => {
-    if (!brandPick) return;
+  const applyBrandPick = useEffectEvent(() => {
     const pick = useUiStore.getState().takeBrandPick();
     const brand = brandById(pick?.brandId ?? undefined);
     if (brand) {
-      onPick.current.pickBrand(brand);
+      pickBrand(brand);
       return;
     }
-    onPick.current.chooseOtherStore();
+    chooseOtherStore();
+  });
+
+  useEffect(() => {
+    if (brandPick) applyBrandPick();
   }, [brandPick]);
 
   const linkedBrand = (name: string): string | undefined => {
@@ -147,7 +147,7 @@ export function useCardForm(
     }
     submitting.current = true;
     const choices = { format, color, brandId: linkedBrand(current.name), isPinned };
-    photoDraft
+    void photoDraft
       .settled()
       .then((photos) => {
         onValid(valuesOf(current, { ...choices, photos }));

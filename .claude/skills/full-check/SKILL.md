@@ -1,6 +1,6 @@
 ---
 name: full-check
-description: Run the complete Loyus quality check suite (Biome, TypeScript, Jest, Maestro)
+description: Run the complete Loyus quality check suite (oxlint, oxfmt, TypeScript, Jest, Maestro)
 disable-model-invocation: true
 allowed-tools: Bash(yarn *)
 ---
@@ -11,7 +11,7 @@ Run the complete verification suite for Loyus. Execute each step sequentially â€
 
 ## Steps
 
-### 1. Biome check
+### 1. Lint and format (oxlint + oxfmt)
 
 ```bash
 yarn check:fix

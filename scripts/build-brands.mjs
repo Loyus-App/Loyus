@@ -196,6 +196,6 @@ writeFileSync(
   ].join('\n'),
 );
 
-run(join(ROOT, 'node_modules/.bin/biome'), ['format', '--write', CATALOG_FILE, LOGOS_FILE]);
+run(join(ROOT, 'node_modules/.bin/oxfmt'), [CATALOG_FILE, LOGOS_FILE]);
 
 console.log(`${catalog.length} brands, ${logos.length} logos`);

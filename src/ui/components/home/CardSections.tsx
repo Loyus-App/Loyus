@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowDimensions, View } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -33,11 +33,12 @@ const LAYOUT = transitions.layout();
 const FILLER_KEYS = ['filler-1', 'filler-2', 'filler-3'] as const;
 
 function useIsFirstMount(): boolean {
-  const isFirstMount = useRef(true);
+  const [isFirstMount, setIsFirstMount] = useState(true);
   useEffect(() => {
-    isFirstMount.current = false;
+    const frame = requestAnimationFrame(() => setIsFirstMount(false));
+    return () => cancelAnimationFrame(frame);
   }, []);
-  return isFirstMount.current;
+  return isFirstMount;
 }
 
 function useGridColumns(): number {
