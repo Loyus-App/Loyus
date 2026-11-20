@@ -1,11 +1,11 @@
 import { createSign } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import appConfig from '../app.config.ts';
 import { ROOT } from './lib/tools.mjs';
 
-const PACKAGE_NAME = 'com.loyus.app';
+const PACKAGE_NAME = appConfig({ config: {} }).android.package;
 const DEFAULT_LANGUAGE = 'fr-FR';
-const CONTACT_EMAIL = 'arthurmtro@gmail.com';
 const PLAY_DIR = join(ROOT, 'store/play');
 const API = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}`;
 const UPLOAD_API = `https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/${PACKAGE_NAME}`;
@@ -58,7 +58,7 @@ async function uploadImage(edit, locale, imageType, file) {
 }
 
 const { id: edit } = await call('POST', `${API}/edits`);
-await call('PUT', `${API}/edits/${edit}/details`, { defaultLanguage: DEFAULT_LANGUAGE, contactEmail: CONTACT_EMAIL });
+await call('PATCH', `${API}/edits/${edit}/details`, { defaultLanguage: DEFAULT_LANGUAGE });
 
 const locales = readdirSync(PLAY_DIR, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())

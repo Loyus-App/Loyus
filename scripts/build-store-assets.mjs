@@ -15,6 +15,8 @@ const FORMATS = {
   play: { width: 1080, height: 1920, dir: (locale) => join(STORE_DIR, 'play', locale, 'images/phoneScreenshots') },
 };
 
+const CAPTURE_RATIO = FORMATS.apple.height / FORMATS.apple.width;
+
 const { tagline, shots } = JSON.parse(readFileSync(join(STORE_DIR, 'screenshots.json'), 'utf8'));
 const locales = Object.keys(tagline);
 
@@ -53,7 +55,7 @@ function screenshotPage({ width, height }, raw, { title, subtitle }) {
   const titleSize = Math.round(width * 0.085);
   const top = Math.round(height * 0.065);
   const phoneTop = Math.round(height * 0.235);
-  const phoneWidth = Math.min(width * 0.78, (height - phoneTop - height * 0.035) / (2868 / 1320));
+  const phoneWidth = Math.min(width * 0.78, (height - phoneTop - height * 0.035) / CAPTURE_RATIO);
   const bezel = Math.round(phoneWidth * 0.022);
   return page(
     width,
