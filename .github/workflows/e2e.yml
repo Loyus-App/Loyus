@@ -21,7 +21,7 @@ concurrency:
 jobs:
   e2e-ios:
     runs-on: xcode-27
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     env:
       XCODE_VERSION: "27"
@@ -62,6 +62,12 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer
 
+      - name: Free disk space
+        run: |
+          xcrun simctl delete unavailable
+          rm -rf ~/Library/Developer/CoreSimulator/Caches
+          df -h /
+
       - name: Boot simulator
         run: |
           xcrun simctl boot "$SIMULATOR" 2>/dev/null || true
@@ -84,14 +90,14 @@ jobs:
           CI: "true"
 
       - name: Save CocoaPods cache
-        if: always() && steps.pods-cache.outputs.cache-hit != 'true'
+        if: steps.pods-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ~/Library/Caches/CocoaPods
           key: ${{ steps.pods-cache.outputs.cache-primary-key }}
 
       - name: Save DerivedData cache
-        if: always() && steps.derived-data-cache.outputs.cache-hit != 'true'
+        if: steps.derived-data-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
