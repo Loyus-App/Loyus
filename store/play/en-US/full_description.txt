@@ -1,0 +1,27 @@
+The bakery card, the cinema card, the gym card, the hardware store card... They end up in a drawer, or at home on the one day you need them. Loyus puts them all in your phone, for good.
+
+SCAN IT ONCE, DONE
+• Point the camera at the card, or read the code from a photo or a screenshot.
+• No barcode on the card? Type the number and Loyus draws the code.
+• Over 400 known stores: your card gets the store's logo and color.
+
+AT THE TILL, NO FUSS
+• One tap shows the code full size, brightness up, screen kept awake.
+• Codes sized for store scanners (GS1 specs), sharp to the pixel.
+• Code too long? Rotate it across the whole screen, or copy the number.
+• Works offline, even in the supermarket basement.
+
+YOUR CARDS, YOUR ORDER
+• Pin your favorites to the top.
+• Sort by most used, recently used, A to Z or your own way.
+• Find any card by store, owner or number.
+• Add a note (PIN, member number), the owner's name and front and back photos.
+
+ALWAYS AT HAND
+• Shortcuts on the app icon to your three most used cards.
+• Light or dark theme, six accent colors, grid or list.
+
+YOUR DATA STAYS WITH YOU
+No account, no ads, no trackers. Loyus doesn't even have internet access: everything stays on your phone. To switch phones or keep a copy, export your cards to a file.
+
+Loyus is free and open source.

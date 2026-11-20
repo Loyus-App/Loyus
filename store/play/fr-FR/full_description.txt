@@ -1,0 +1,27 @@
+La carte de la boulangerie, celle du ciné, de la salle de sport, du magasin de bricolage... Elles finissent au fond d'un tiroir, ou restent à la maison pile le jour où tu en as besoin. Loyus les range dans ton téléphone, une bonne fois pour toutes.
+
+SCANNE UNE FOIS, C'EST RANGÉ
+• Vise la carte avec l'appareil photo, ou lis le code depuis une photo ou une capture d'écran.
+• Pas de code-barres sur la carte ? Tape le numéro, Loyus dessine le code.
+• Plus de 400 enseignes reconnues : ta carte prend le logo et la couleur du magasin.
+
+À LA CAISSE, ZÉRO STRESS
+• Un tap et le code s'affiche en grand, luminosité à fond, écran qui reste allumé.
+• Des codes calibrés pour les scanners des magasins (normes GS1), nets au pixel près.
+• Code trop long ? Fais-le pivoter sur tout l'écran, ou copie le numéro.
+• Ça marche sans réseau, même au sous-sol du supermarché.
+
+TES CARTES, TON ORDRE
+• Épingle tes préférées en haut.
+• Trie par les plus utilisées, les plus récentes, de A à Z ou à ta façon.
+• Retrouve n'importe quelle carte par enseigne, titulaire ou numéro.
+• Ajoute une note (code PIN, numéro d'adhérent), le nom du titulaire et des photos recto verso.
+
+TOUJOURS SOUS LA MAIN
+• Raccourcis sur l'icône vers tes trois cartes les plus utilisées.
+• Thème clair ou sombre, six couleurs d'accent, grille ou liste.
+
+TES DONNÉES RESTENT CHEZ TOI
+Pas de compte, pas de pub, pas de pisteur. Loyus n'a même pas accès à Internet : tout reste sur ton téléphone. Pour changer de téléphone ou garder une copie, exporte tes cartes dans un fichier.
+
+Loyus est gratuit et open source.
