@@ -86,8 +86,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-widgets',
       {
-        bundleIdentifier: 'com.loyus.app.widgets',
-        groupIdentifier: 'group.com.loyus.app',
+        bundleIdentifier: 'com.loyus.app.widget',
+        groupIdentifier: 'group.com.loyus.app.shared',
         widgets: [
           {
             name: 'LoyusCards',
