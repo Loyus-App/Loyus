@@ -32,6 +32,8 @@ Four workflows run on every PR and push to `main`:
 | `eas-build.yml`     | Manual dispatch + push `main` paths | EAS preview build (non-blocking, --no-wait) |
 | `eas-submit.yml`    | Push tag `v*` + manual     | Production build + submit to App Store / Play |
 
+Linux jobs run on the self-hosted ARC runner scale set `loyus-arc`; pull requests from forks run on `ubuntu-latest` instead, so outside code never reaches the cluster. E2E runs on `xcode-27`. Jobs install Node, Yarn and the dependencies through `.github/actions/install`.
+
 ### PR title convention
 
 All PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/):
