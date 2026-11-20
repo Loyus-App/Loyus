@@ -1,0 +1,41 @@
+appId: com.loyus.app
+---
+- openLink: "loyus://card/confirm?code=${CODE}&format=${FORMAT}"
+- tapOn:
+    text: "${OPEN_LABEL}"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "card-name-input"
+    timeout: 8000
+- tapOn:
+    id: "card-name-input"
+- inputText: "${NAME}"
+- runFlow:
+    when:
+      true: ${OWNER != ''}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: "owner-input"
+      - tapOn:
+          id: "owner-input"
+      - inputText: "${OWNER}"
+- runFlow:
+    when:
+      true: ${PIN == 'true'}
+    commands:
+      - hideKeyboard
+      - scrollUntilVisible:
+          element:
+            id: "pin-switch"
+          centerElement: true
+      - tapOn:
+          id: "pin-switch"
+- hideKeyboard
+- tapOn:
+    text: "${SAVE_LABEL}"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 8000

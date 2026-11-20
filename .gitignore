@@ -47,3 +47,5 @@ yarn-error.*
 
 .gradle/
 modules/*/android/build/
+
+/store/raw/
