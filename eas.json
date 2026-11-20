@@ -20,5 +20,16 @@
       "autoIncrement": true,
       "corepack": true
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6762515599"
+      },
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
   }
 }
