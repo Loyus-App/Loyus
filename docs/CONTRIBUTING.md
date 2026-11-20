@@ -32,6 +32,8 @@ Workflows:
 | `eas-build.yml`     | Manual dispatch            | EAS build of any profile (non-blocking, --no-wait) |
 | `eas-submit.yml`    | Push tag `v*` + manual     | CI checks, production build, submit to TestFlight / Play internal |
 
+Linux jobs run on the self-hosted ARC runner scale set `loyus-arc`; pull requests from forks run on `ubuntu-latest` instead, so outside code never reaches the cluster. E2E runs on `xcode-27`. Jobs install Node, Yarn and the dependencies through `.github/actions/install`.
+
 ### PR title convention
 
 All PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/):
@@ -82,7 +84,7 @@ Store credentials live on EAS (`eas credentials`), not in GitHub:
 
 The App Store Connect app ID and the Play track live in the `submit.production` profile of `eas.json`.
 
-Play only accepts API uploads once the first AAB has been uploaded by hand in Play Console. Keep `releaseStatus: draft` until the app is published once.
+Keep `releaseStatus: draft` until the Play app is published once: Play rejects any other status on a draft app.
 
 ### Required GitHub Actions environment
 

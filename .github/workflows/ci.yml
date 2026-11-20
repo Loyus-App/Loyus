@@ -13,43 +13,28 @@ concurrency:
 jobs:
   lint:
     name: Lint (Biome)
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'loyus-arc' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: yarn
-      - run: yarn install --immutable
+      - uses: ./.github/actions/install
       - name: Biome check
         run: yarn check
 
   typecheck:
     name: Typecheck
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'loyus-arc' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: yarn
-      - run: yarn install --immutable
+      - uses: ./.github/actions/install
       - name: tsc --noEmit
         run: yarn typecheck
 
   test:
     name: Unit tests (Jest)
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'loyus-arc' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: yarn
-      - run: yarn install --immutable
+      - uses: ./.github/actions/install
       - name: Jest with coverage
         run: npx jest --coverage --ci
       - name: Upload coverage report

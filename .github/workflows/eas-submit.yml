@@ -33,7 +33,7 @@ jobs:
   release:
     name: Build + submit
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: loyus-arc
     if: github.repository == 'Loyus-App/Loyus'
     environment: production
     permissions:
@@ -43,12 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: corepack enable
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: yarn
+      - uses: ./.github/actions/install
 
       - name: Setup EAS CLI
         uses: expo/expo-github-action@v8
@@ -56,12 +51,10 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - run: yarn install --immutable
-
       - name: Check tag matches app version
         if: github.ref_type == 'tag'
         run: |
-          version=$(npx expo config --json | jq -r .version)
+          version=$(npx expo config --json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).version')
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
             echo "::error::Tag $GITHUB_REF_NAME does not match app.config.ts version $version"
             exit 1
@@ -92,11 +85,17 @@ jobs:
       - name: Resolve build IDs
         id: builds
         run: |
-          for platform in ios android; do
-            id=$(jq -r --arg p "$platform" 'map(select(.platform == ($p | ascii_upcase))) | max_by(.createdAt) | .id // empty' builds.json)
-            echo "$platform=$id" >> "$GITHUB_OUTPUT"
-            echo "$platform build: ${id:-none}"
-          done
+          node -e '
+            const fs = require("fs");
+            const builds = JSON.parse(fs.readFileSync("builds.json", "utf8"));
+            for (const platform of ["ios", "android"]) {
+              const latest = builds
+                .filter((build) => build.platform === platform.toUpperCase())
+                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `${platform}=${latest?.id ?? ""}\n`);
+              console.log(`${platform} build: ${latest?.id ?? "none"}`);
+            }
+          '
 
       - name: Submit iOS to TestFlight
         if: steps.builds.outputs.ios != ''
@@ -120,6 +119,11 @@ jobs:
 
       - name: Create GitHub release
         if: github.ref_type == 'tag'
-        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
-        env:
-          GH_TOKEN: ${{ github.token }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createRelease({
+              ...context.repo,
+              tag_name: process.env.GITHUB_REF_NAME,
+              generate_release_notes: true,
+            });
