@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn", "oxc", "react"],
+  "plugins": ["typescript", "unicorn", "oxc", "react", "import"],
   "options": { "typeAware": true },
   "ignorePatterns": ["/*", "!/src/", "!/__mocks__/"],
   "categories": { "correctness": "error" },
@@ -9,6 +9,11 @@
     "eslint/default-case-last": "error",
     "eslint/default-param-last": "error",
     "eslint/eqeqeq": "error",
+    "eslint/max-lines": ["error", { "max": 200, "skipBlankLines": true, "skipComments": true }],
+    "eslint/max-lines-per-function": [
+      "error",
+      { "max": 80, "skipBlankLines": true, "skipComments": true }
+    ],
     "eslint/no-await-in-loop": "error",
     "eslint/no-case-declarations": "error",
     "eslint/no-console": "warn",
@@ -44,6 +49,8 @@
     "eslint/prefer-rest-params": "error",
     "eslint/prefer-template": "error",
     "eslint/require-await": "error",
+    "import/namespace": "off",
+    "import/no-cycle": "error",
     "oxc/no-accumulating-spread": "error",
     "oxc/no-const-enum": "error",
     "react/jsx-fragments": "error",
@@ -96,9 +103,38 @@
     {
       "files": ["**/__tests__/**", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
       "rules": {
+        "eslint/max-lines": "off",
+        "eslint/max-lines-per-function": "off",
         "typescript/no-explicit-any": "off",
         "typescript/no-non-null-assertion": "off"
       }
+    },
+    {
+      "files": [
+        "src/domain/brandCatalog.ts",
+        "src/infra/i18n/locales/**",
+        "src/ui/brands/brandLogos.ts"
+      ],
+      "rules": { "eslint/max-lines": "off" }
+    },
+    {
+      "files": [
+        "src/app/(tabs)/settings/index.tsx",
+        "src/app/card/?id?.tsx",
+        "src/app/card/brands.tsx",
+        "src/app/card/scan.tsx",
+        "src/ui/components/CardForm.tsx"
+      ],
+      "rules": { "eslint/max-lines": "off" }
+    },
+    {
+      "files": [
+        "src/app/card/brands.tsx",
+        "src/ui/components/CardForm.tsx",
+        "src/ui/components/form/useCardForm.ts",
+        "src/widgets/CardsWidget.ios.tsx"
+      ],
+      "rules": { "eslint/max-lines-per-function": "off" }
     },
     {
       "files": ["**/__mocks__/**"],
