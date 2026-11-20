@@ -1,6 +1,6 @@
 # Loyus
 
-Offline-first loyalty-card wallet for iOS/Android. Expo SDK 58, React Native 0.88, React 19.3, TypeScript 6 strict. Yarn 4 (Corepack, `nodeLinker: node-modules`).
+Offline-first loyalty-card wallet for iOS/Android. Expo SDK 58, React Native 0.88, React 19.3, TypeScript 6 strict (Expo SDK 58 expects ~6.0; TypeScript 7 ships no JS API or `tsserver`). Yarn 4 (Corepack, `nodeLinker: node-modules`).
 
 ## Build and Run
 
@@ -81,7 +81,7 @@ yarn test:e2e         # Maestro E2E flows
 
 ## Testing
 
-- Jest 29 + jest-expo (NOT Jest 30 -- breaking import scope changes)
+- Jest 30 + jest-expo; Expo-managed versions (jest, jest-expo, react, react-native…) follow `npx expo install --check`
 - `jest.config.js` (not .ts, avoids ts-node dependency)
 - No snapshot tests -- use RNTL assertions
 - Domain: >= 80% coverage, zero RN imports

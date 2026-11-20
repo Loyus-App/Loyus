@@ -33,7 +33,7 @@ Strict type checking. All errors must be resolved — no `any` escape hatches, n
 yarn test
 ```
 
-Jest 29 suite. All tests must pass. If a test fails, diagnose the root cause and fix it.
+Jest 30 suite. All tests must pass. If a test fails, diagnose the root cause and fix it.
 
 ### 4. E2E tests (if simulator available)
 
