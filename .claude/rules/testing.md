@@ -18,7 +18,7 @@ paths:
 - Official Unistyles and Reanimated mocks in `jest.setup.ts`; `__mocks__/` for mmkv, expo-crypto, nitro-modules, vision-camera
 - Unistyles mock matches 3.2.x `StyleSheet` API
 - MMKV mock uses in-memory Map for synchronous get/set
-- `jest.setup.ts` loads the Unistyles config, which pulls in `src/ui/theme/preference.ts` and `src/infra/platform/crossfade.ts`: tests that mock modules under that chain call `jest.resetModules()` and `require` the subject afterwards (see `crossfade.test.ts`)
+- `jest.setup.ts` loads the Unistyles config, which pulls in `src/entities/settings/ui/preference.ts` and `src/shared/platform/crossfade.ts`: tests that mock modules under that chain call `jest.resetModules()` and `require` the subject afterwards (see `crossfade.test.ts`)
 
 ## Transform Patterns
 

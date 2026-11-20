@@ -15,7 +15,7 @@ You are a Maestro E2E flow specialist for Loyus, an Expo/React Native loyalty-ca
 
 - All flows live in `.maestro/` at repo root
 - Shared reusable flows in `.maestro/shared/` (e.g., `launch-fresh.yaml`)
-- Use `testID` selectors (`id:` in YAML), NOT text matchers — read `src/ui/testIds.ts` for the full list
+- Use `testID` selectors (`id:` in YAML), NOT text matchers — read `src/shared/ui/testIds.ts` for the full list
 - `extendedWaitUntil` with 15000ms timeout instead of `sleep`
 - `appId: com.loyus.app`
 - Every flow starts with `runFlow: shared/launch-fresh.yaml`
@@ -25,11 +25,11 @@ You are a Maestro E2E flow specialist for Loyus, an Expo/React Native loyalty-ca
 
 `EXPO_PUBLIC_E2E=true` enables mocks:
 - `Appearance` can be forced to light or dark
-- `tid()` helper in `src/ui/testIds.ts` returns `{ testID }` spread attributes
+- `tid()` helper in `src/shared/ui/testIds.ts` returns `{ testID }` spread attributes
 
 ## Available testIDs
 
-Read `src/ui/testIds.ts` for the full list of available test identifiers. Always use testID-based selectors. Key ones:
+Read `src/shared/ui/testIds.ts` for the full list of available test identifiers. Always use testID-based selectors. Key ones:
 
 - `home-screen`, `home-title` — Home screen
 - `add-card-button`, `save-card-button` — Card creation

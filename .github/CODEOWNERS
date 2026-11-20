@@ -1,6 +1,7 @@
 *                               @arthurmtro
 
-/src/domain/                    @arthurmtro
+/src/**/domain/                 @arthurmtro
+/src/shared/lib/                @arthurmtro
 
 /.github/                       @arthurmtro
 /eas.json                       @arthurmtro

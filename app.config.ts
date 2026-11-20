@@ -1,5 +1,5 @@
 import type { ExpoConfig, ConfigContext } from 'expo/config';
-import { ALTERNATE_APP_ICONS, type AppIconName, DEFAULT_APP_ICON, nativeIconName } from './src/domain/appIcon.ts';
+import { ALTERNATE_APP_ICONS, type AppIconName, DEFAULT_APP_ICON, nativeIconName } from './src/entities/settings/domain/appIcon.ts';
 
 const APP_ICONS_DIR = './assets/images/app-icons';
 
@@ -119,7 +119,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                 'accessoryRectangular',
                 'accessoryCircular',
               ],
-              initialLayout: 'src/widgets/CardsWidget.ios.tsx',
+              initialLayout: 'src/features/shortcuts/ui/widget/CardsWidget.ios.tsx',
             },
             android: null,
           },

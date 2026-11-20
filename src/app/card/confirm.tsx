@@ -2,14 +2,14 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { type BarcodeFormat, isBarcodeFormat } from '@/domain/card';
-import { isE2E } from '@/infra/env';
-import { useCaptureStore } from '@/state/stores/captureStore';
-import { CardForm, type CardFormValues } from '@/ui/components/CardForm';
-import { CancelToolbar } from '@/ui/components/form/CancelToolbar';
-import { Button, EmptyState, icons } from '@/ui/primitives';
-import { tid } from '@/ui/testIds';
-import { saveNewCard } from '@/ui/utils/cardActions';
+import { type BarcodeFormat, isBarcodeFormat } from '@/entities/barcode/domain/barcodeFormat';
+import { useCaptureStore } from '@/entities/barcode/state/captureStore';
+import { CancelToolbar } from '@/features/card-editor/ui/CancelToolbar';
+import { CardForm, type CardFormValues } from '@/features/card-editor/ui/CardForm';
+import { saveNewCard } from '@/features/card-editor/ui/saveNewCard';
+import { isE2E } from '@/shared/platform/env';
+import { Button, EmptyState, icons } from '@/shared/ui/primitives';
+import { tid } from '@/shared/ui/testIds';
 
 type Scan = { readonly code: string; readonly format: BarcodeFormat };
 

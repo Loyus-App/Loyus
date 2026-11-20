@@ -151,21 +151,20 @@ Expo SDK 58 · React Native 0.88 · React 19.3 · TypeScript (strict) · expo-ro
 ```text
 src/
 ├── app/        routes (expo-router): tabs, card screens and sheets
-├── domain/     pure TypeScript: cards, barcode layout, sorting, search, backups
-├── state/      zustand stores, selectors and migrations
-├── infra/      camera, files, i18n, persistence, shortcuts
-├── ui/         design system: theme, primitives, components, hooks
-└── widgets/    iOS Home Screen and Lock Screen widgets
+├── boot/       startup: theme config, i18n, appearance
+├── features/   one folder per capability: library, checkout, scan, card-editor, settings, backup, shortcuts (quick actions and widgets)
+├── entities/   business objects shared by features: card, barcode, brand, settings
+└── shared/     design system and plumbing: ui, theme, i18n, storage, platform, lib
 modules/
 └── image-barcode-scanner/   native module that reads barcodes from photos
 plugins/        Expo config plugins
 ```
 
-Dependencies flow one way: `app` and `ui` → `state` → `domain`, with `infra` wrapping the native APIs. [`architecture.test.ts`](src/domain/__tests__/architecture.test.ts) keeps the domain free of React Native and Expo, and [`noNetwork.test.ts`](src/domain/__tests__/noNetwork.test.ts) fails CI if network calls reach the app. [`CLAUDE.md`](CLAUDE.md) has the full rules for each layer.
+Each slice splits into `domain/` (pure TypeScript), `state/` (zustand stores), `infra/` (native APIs) and `ui/`. Dependencies flow one way, `app` → `features` → `entities` → `shared`, and a feature never imports another one. [`architecture.test.ts`](src/__tests__/architecture.test.ts) enforces these boundaries and keeps domain code free of React Native and Expo, and [`noNetwork.test.ts`](src/__tests__/noNetwork.test.ts) fails CI if network calls reach the app. [`CLAUDE.md`](CLAUDE.md) has the full rules.
 
 ## How it works
 
-The till screen encodes the card with JsBarcode (1D codes) or node-qrcode (QR), then [`layoutSymbol`](src/domain/barcodeLayout.ts) picks the largest module that fits the screen within the ranges of the [GS1 General Specifications](https://ref.gs1.org/standards/genspecs/). Every module is a whole number of device pixels, so bar edges stay sharp and scanners read even widths.
+The till screen encodes the card with JsBarcode (1D codes) or node-qrcode (QR), then [`layoutSymbol`](src/entities/barcode/domain/barcodeLayout.ts) picks the largest module that fits the screen within the ranges of the [GS1 General Specifications](https://ref.gs1.org/standards/genspecs/). Every module is a whole number of device pixels, so bar edges stay sharp and scanners read even widths.
 
 | Rule         | 1D codes                                                   | QR code                              |
 | ------------ | ---------------------------------------------------------- | ------------------------------------ |

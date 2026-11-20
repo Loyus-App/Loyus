@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import type { Card, CardId } from '@/domain/card';
-import { selectCardById } from '@/state/selectors';
-import { useCardStore } from '@/state/stores/cardStore';
-import { CardForm, type CardFormInitial } from '@/ui/components/CardForm';
-import { CancelToolbar } from '@/ui/components/form/CancelToolbar';
-import { Button, EmptyState, icons } from '@/ui/primitives';
-import { confirmDeleteCard } from '@/ui/utils/cardActions';
-import { haptics } from '@/ui/utils/haptics';
+import type { Card, CardId } from '@/entities/card/domain/card';
+import { selectCardById } from '@/entities/card/state/cardSelectors';
+import { useCardStore } from '@/entities/card/state/cardStore';
+import { confirmDeleteCard } from '@/entities/card/ui/cardActions';
+import { CancelToolbar } from '@/features/card-editor/ui/CancelToolbar';
+import { CardForm, type CardFormInitial } from '@/features/card-editor/ui/CardForm';
+import { haptics } from '@/shared/platform/haptics';
+import { Button, EmptyState, icons } from '@/shared/ui/primitives';
 
 function initialOf(card: Card): CardFormInitial {
   return {

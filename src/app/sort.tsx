@@ -2,12 +2,12 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { SORT_MODES, type SortMode } from '@/domain/sort';
-import { useSettingsStore } from '@/state/stores/settingsStore';
-import { SORT_A11Y_KEY, SORT_LABEL_KEY } from '@/ui/components/home/sortLabels';
-import { sheetBottomInset } from '@/ui/navigation/stackOptions';
-import { ListRow, ListSection, Text } from '@/ui/primitives';
-import { chooseSortMode } from '@/ui/utils/sortMode';
+import { SORT_MODES, type SortMode } from '@/entities/card/domain/sort';
+import { useSettingsStore } from '@/entities/settings/state/settingsStore';
+import { SORT_A11Y_KEY, SORT_LABEL_KEY } from '@/features/library/ui/sortLabels';
+import { chooseSortMode } from '@/features/library/ui/sortMode';
+import { ListRow, ListSection, Text } from '@/shared/ui/primitives';
+import { sheetBottomInset } from '@/shared/ui/stackOptions';
 
 export default function SortSheet(): React.JSX.Element {
   const { t } = useTranslation();

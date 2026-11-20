@@ -3,15 +3,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, type ImageLoadEvent, ScrollView, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import type { Card, CardId } from '@/domain/card';
-import { photoUri } from '@/infra/persistence/cardPhotos';
-import { selectCardById } from '@/state/selectors';
-import { useCardStore } from '@/state/stores/cardStore';
-import { CARD_ASPECT_RATIO } from '@/ui/components/CardTile';
-import { PHOTO_SIDE_TEXT, PHOTO_SIDES, type PhotoSide } from '@/ui/constants/photoSides';
-import { useToolbarIcon } from '@/ui/hooks/useToolbarIcon';
-import { modalOptions } from '@/ui/navigation/stackOptions';
-import { EmptyState, icons, Text } from '@/ui/primitives';
+import type { Card, CardId } from '@/entities/card/domain/card';
+import { photoUri } from '@/entities/card/infra/cardPhotos';
+import { selectCardById } from '@/entities/card/state/cardSelectors';
+import { useCardStore } from '@/entities/card/state/cardStore';
+import { CARD_ASPECT_RATIO } from '@/entities/card/ui/CardTile';
+import { PHOTO_SIDE_TEXT, PHOTO_SIDES, type PhotoSide } from '@/entities/card/ui/photoSides';
+import { EmptyState, icons, Text } from '@/shared/ui/primitives';
+import { modalOptions } from '@/shared/ui/stackOptions';
+import { useToolbarIcon } from '@/shared/ui/useToolbarIcon';
 
 function close(): void {
   router.back();

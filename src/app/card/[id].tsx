@@ -5,21 +5,29 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccessibilityInfo, type LayoutChangeEvent, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { type Card, type CardId, photoFileNames } from '@/domain/card';
-import { selectCardById } from '@/state/selectors';
-import { useCardStore } from '@/state/stores/cardStore';
-import { useSettingsStore } from '@/state/stores/settingsStore';
-import { BarcodePanel, type PanelArea, useBarcodeLayout } from '@/ui/components/BarcodePanel';
-import { CardThumb } from '@/ui/components/CardThumb';
-import { useCheckoutDisplay } from '@/ui/hooks/useCheckoutDisplay';
-import { useToolbarIcon } from '@/ui/hooks/useToolbarIcon';
-import { modalOptions } from '@/ui/navigation/stackOptions';
-import { Button, EmptyState, GradientLayer, icons, RoundAction, Text } from '@/ui/primitives';
-import { tid } from '@/ui/testIds';
-import { brandWash, cardColorOf } from '@/ui/theme';
-import { confirmDeleteCard, editCard, shareCard, togglePin } from '@/ui/utils/cardActions';
-import { haptics } from '@/ui/utils/haptics';
-import { ignore } from '@/ui/utils/ignore';
+import { BarcodePanel, type PanelArea, useBarcodeLayout } from '@/entities/barcode/ui/BarcodePanel';
+import { type Card, type CardId, photoFileNames } from '@/entities/card/domain/card';
+import { selectCardById } from '@/entities/card/state/cardSelectors';
+import { useCardStore } from '@/entities/card/state/cardStore';
+import { confirmDeleteCard, editCard, shareCard, togglePin } from '@/entities/card/ui/cardActions';
+import { cardColorOf } from '@/entities/card/ui/cardColors';
+import { CardThumb } from '@/entities/card/ui/CardThumb';
+import { useSettingsStore } from '@/entities/settings/state/settingsStore';
+import { useCheckoutDisplay } from '@/features/checkout/ui/useCheckoutDisplay';
+import { ignore } from '@/shared/lib/ignore';
+import { haptics } from '@/shared/platform/haptics';
+import { brandWash } from '@/shared/theme';
+import {
+  Button,
+  EmptyState,
+  GradientLayer,
+  icons,
+  RoundAction,
+  Text,
+} from '@/shared/ui/primitives';
+import { modalOptions } from '@/shared/ui/stackOptions';
+import { tid } from '@/shared/ui/testIds';
+import { useToolbarIcon } from '@/shared/ui/useToolbarIcon';
 
 const COPIED_FEEDBACK_MS = 1500;
 const NO_NOTE: Size = { width: 0, height: 0 };

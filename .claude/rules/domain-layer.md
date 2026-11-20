@@ -1,14 +1,16 @@
 ---
 paths:
-  - "src/domain/**"
+  - "src/**/domain/**"
+  - "src/shared/lib/**"
 ---
 
 # Domain Layer Rules
 
 ## Purity Constraint
 
-Zero React Native, Expo, Zustand, or React imports allowed in `src/domain/`.
-Enforced by `src/domain/__tests__/architecture.test.ts` (scans all domain files for forbidden import patterns).
+Zero React Native, Expo, Zustand, or React imports allowed in any `domain/` segment (`src/{entities,features}/*/domain/`) or in `src/shared/lib/`.
+A `domain/` file imports only other `domain/` folders and `shared/lib`.
+Enforced by `src/__tests__/architecture.test.ts` (scans those files for forbidden imports and checks what they import).
 
 Allowed: pure TypeScript, stdlib, `node:crypto` in tests only.
 

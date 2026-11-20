@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
-import { CardForm } from '@/ui/components/CardForm';
-import { CancelToolbar } from '@/ui/components/form/CancelToolbar';
-import { saveNewCard } from '@/ui/utils/cardActions';
+import { CancelToolbar } from '@/features/card-editor/ui/CancelToolbar';
+import { CardForm } from '@/features/card-editor/ui/CardForm';
+import { saveNewCard } from '@/features/card-editor/ui/saveNewCard';
 
 export default function AddCardScreen(): React.JSX.Element {
   return (

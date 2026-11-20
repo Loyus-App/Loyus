@@ -10,7 +10,7 @@ color: purple
 
 You are a design system auditor for Loyus.
 
-## Design tokens (src/ui/theme/tokens.ts)
+## Design tokens (src/shared/theme/tokens.ts)
 
 ### Spacing
 | Token | Value |
@@ -22,7 +22,7 @@ You are a design system auditor for Loyus.
 | xl | 32 |
 | xxl | 48 |
 
-### Tokens (`src/ui/theme/tokens.ts`, `themes.ts`)
+### Tokens (`src/shared/theme/tokens.ts`, `themes.ts`)
 - Radius: sm 9, card 12, md 14, lg 24, pill 999
 - Spacing: `theme.space(n)` = n × 4
 - Typography (system font): display 34, title 28, headline 20, body 16, callout 15, caption 13, label 12, code 22 (monospace, for card numbers)
@@ -40,7 +40,7 @@ You are a design system auditor for Loyus.
 
 ## Audit checklist
 
-1. Grep for hardcoded colors (hex values not from tokens): `grep -rn '#[0-9a-fA-F]\{6\}' src/ui/`
-2. Grep for hardcoded spacing (numeric margins/paddings): `grep -rn 'margin.*[0-9]\|padding.*[0-9]' src/ui/`
-3. Verify StyleSheet import source: `grep -rn "from 'react-native'" src/ui/components/` (should be minimal)
+1. Grep for hardcoded colors (hex values not from tokens): `grep -rn '#[0-9a-fA-F]\{6\}' src/app src/*/*/ui --exclude-dir=generated`
+2. Grep for hardcoded spacing (numeric margins/paddings): `grep -rn 'margin.*[0-9]\|padding.*[0-9]' src/app src/*/*/ui`
+3. Verify StyleSheet import source: `grep -rn "from 'react-native'" src/app src/*/*/ui` (should be minimal)
 4. Check dark mode support in modified components

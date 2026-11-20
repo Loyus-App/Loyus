@@ -6,20 +6,24 @@ import { useTranslation } from 'react-i18next';
 import { Alert, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { Camera, type CameraDevice, useCameraDevice } from 'react-native-vision-camera';
-import type { BarcodeFormat } from '@/domain/card';
-import { type ImageBarcode, isImageScanAvailable, scanImage } from '@/infra/camera/imageScan';
-import { i18n } from '@/infra/i18n';
-import { useCaptureStore } from '@/state/stores/captureStore';
-import { CameraPermissionGate } from '@/ui/components/CameraPermissionGate';
-import { ScannerControl, ScannerMessage, ScannerOverlay } from '@/ui/components/ScannerOverlay';
-import { TorchToggle } from '@/ui/components/TorchToggle';
-import { useCodeScanHandler } from '@/ui/hooks/useCodeScanHandler';
-import { useScanOutput } from '@/ui/hooks/useScanOutput';
-import { useTorch } from '@/ui/hooks/useTorch';
-import { Button, icons } from '@/ui/primitives';
-import { testId, tid } from '@/ui/testIds';
-import { haptics } from '@/ui/utils/haptics';
-import { choosePhoto } from '@/ui/utils/photoPicker';
+import type { BarcodeFormat } from '@/entities/barcode/domain/barcodeFormat';
+import { useCaptureStore } from '@/entities/barcode/state/captureStore';
+import {
+  type ImageBarcode,
+  isImageScanAvailable,
+  scanImage,
+} from '@/features/scan/infra/imageScan';
+import { CameraPermissionGate } from '@/features/scan/ui/CameraPermissionGate';
+import { ScannerControl, ScannerMessage, ScannerOverlay } from '@/features/scan/ui/ScannerOverlay';
+import { TorchToggle } from '@/features/scan/ui/TorchToggle';
+import { useCodeScanHandler } from '@/features/scan/ui/useCodeScanHandler';
+import { useScanOutput } from '@/features/scan/ui/useScanOutput';
+import { useTorch } from '@/features/scan/ui/useTorch';
+import { i18n } from '@/shared/i18n';
+import { haptics } from '@/shared/platform/haptics';
+import { choosePhoto } from '@/shared/platform/photoPicker';
+import { Button, icons } from '@/shared/ui/primitives';
+import { testId, tid } from '@/shared/ui/testIds';
 
 const SCAN_PICKER_OPTIONS: ImagePickerOptions = { mediaTypes: ['images'], allowsEditing: false };
 

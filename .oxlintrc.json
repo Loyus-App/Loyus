@@ -110,11 +110,7 @@
       }
     },
     {
-      "files": [
-        "src/domain/brandCatalog.ts",
-        "src/infra/i18n/locales/**",
-        "src/ui/brands/brandLogos.ts"
-      ],
+      "files": ["src/**/generated/**", "src/shared/i18n/locales/**"],
       "rules": { "eslint/max-lines": "off" }
     },
     {
@@ -123,16 +119,17 @@
         "src/app/card/?id?.tsx",
         "src/app/card/brands.tsx",
         "src/app/card/scan.tsx",
-        "src/ui/components/CardForm.tsx"
+        "src/features/card-editor/ui/CardForm.tsx",
+        "src/features/library/ui/CardSections.tsx"
       ],
       "rules": { "eslint/max-lines": "off" }
     },
     {
       "files": [
         "src/app/card/brands.tsx",
-        "src/ui/components/CardForm.tsx",
-        "src/ui/components/form/useCardForm.ts",
-        "src/widgets/CardsWidget.ios.tsx"
+        "src/features/card-editor/ui/CardForm.tsx",
+        "src/features/card-editor/ui/useCardForm.ts",
+        "src/features/shortcuts/ui/widget/CardsWidget.ios.tsx"
       ],
       "rules": { "eslint/max-lines-per-function": "off" }
     },

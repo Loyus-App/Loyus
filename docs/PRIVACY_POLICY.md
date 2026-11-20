@@ -91,8 +91,8 @@ Questions or concerns: `arthurmtro@gmail.com`.
 
 Per Apple App Store Review Guideline 5.2 and Google Play Policy on Impersonation:
 
-- Production code (`app/`, `src/ui/`, `src/infra/`, `src/state/`, `src/domain/`, `assets/`): **no retailer brand names, logos, or trademarks**. Audit via `grep` confirmed zero matches for Carrefour, Leclerc, Auchan, Lidl, Intermarché, Casino, Monoprix, Franprix, Fnac, Decathlon, Starbucks, Sephora, McDonald, Burger King, Ikea, Zara, H&M, Uniqlo, Nike, Adidas, Stocard, Klarna, Fidme, Loyverse.
-- Test fixtures (`src/domain/__tests__/`, `src/state/__tests__/`, `.maestro/`): reference common retailer names (Carrefour, Starbucks, Monoprix) **only as test-input strings**. These do not ship in the release binary and do not appear in any user-visible screen or store listing.
+- Production code (`src/app/`, `src/features/`, `src/entities/`, `src/shared/`, `assets/`): **no retailer brand names, logos, or trademarks**. Audit via `grep` confirmed zero matches for Carrefour, Leclerc, Auchan, Lidl, Intermarché, Casino, Monoprix, Franprix, Fnac, Decathlon, Starbucks, Sephora, McDonald, Burger King, Ikea, Zara, H&M, Uniqlo, Nike, Adidas, Stocard, Klarna, Fidme, Loyverse.
+- Test fixtures (`src/**/__tests__/`, `.maestro/`): reference common retailer names (Carrefour, Starbucks, Monoprix) **only as test-input strings**. These do not ship in the release binary and do not appear in any user-visible screen or store listing.
 - App icon + screenshots: must use **generic names only** (e.g., "Coffee Shop", "Bookstore", "Gym"). Screenshot seed data to be produced with generic names before submission — see `docs/STORE_LISTING.md` § Screenshot Spec.
 
 ## Appendix B — Claim-to-code mapping
@@ -101,8 +101,8 @@ Every substantive claim in this policy is backed by a verifiable architectural f
 
 | Claim | Enforced by |
 |-------|-------------|
-| No data transmitted | `src/domain/__tests__/noNetwork.test.ts` scans the critical path for `fetch`, `XMLHttpRequest`, `axios`, `ky`, `got`, `http.request`, `https.request`, `WebSocket`, `@apollo` — CI-gated. |
+| No data transmitted | `src/__tests__/noNetwork.test.ts` scans the critical path for `fetch`, `XMLHttpRequest`, `axios`, `ky`, `got`, `http.request`, `https.request`, `WebSocket`, `@apollo` — CI-gated. |
 | No analytics SDK | `package.json` has no analytics dependency; reviewable in the open-source repo. |
-| Data stored locally only | `src/state/stores/*.ts` persists via Zustand + MMKV adapter (`src/infra/persistence`); no other persistence path exists. |
-| Camera frames not recorded | `src/ui/components/CameraPermissionGate.tsx` + scan pipeline use `react-native-vision-camera` code scanner only; no `CameraRoll` / MediaLibrary writes; no file I/O in the scan pipeline. |
+| Data stored locally only | `src/entities/*/state/*Store.ts` persist via Zustand + MMKV adapter (`src/shared/storage`); no other persistence path exists. |
+| Camera frames not recorded | `src/features/scan/ui/CameraPermissionGate.tsx` + scan pipeline use `react-native-vision-camera` code scanner only; no `CameraRoll` / MediaLibrary writes; no file I/O in the scan pipeline. |
 | No account required | No authentication code in the repo. |

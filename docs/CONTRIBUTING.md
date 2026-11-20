@@ -113,7 +113,7 @@ Under **Settings → Branches → Branch protection rules** for `main`:
 - Strict 4-layer architecture — see root `CLAUDE.md` and `.claude/rules/*`
 - TypeScript strict, no `any` (oxlint enforces)
 - No `console.log` in committed code
-- New user-facing strings → add to all 6 locale files (`src/infra/i18n/locales/`)
+- New user-facing strings → add to all 6 locale files (`src/shared/i18n/locales/`)
 - Domain layer → zero RN/Expo imports (test enforces)
 - No network calls on critical path (test enforces)
 - Commits in English; conventional style (`type(scope): message`)

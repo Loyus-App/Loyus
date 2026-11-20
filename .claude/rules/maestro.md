@@ -13,7 +13,7 @@ paths:
 
 ## Selectors
 
-- Use testID selectors from `src/ui/testIds.ts` constants where one exists, NOT text matchers
+- Use testID selectors from `src/shared/ui/testIds.ts` constants where one exists, NOT text matchers
 - Reference testID values by their `id:` property in Maestro YAML
 - Several elements are native-only and have no testID -- select these by their (localized,
   English-build) visible text or accessibility label instead:
@@ -49,7 +49,7 @@ paths:
 
 - E2E-gated deep-link prefill via `useLocalSearchParams` for captureStore injection
   (`loyus:///card/confirm?code=<code>&format=<FORMAT>`, `FORMAT` matches a `BarcodeFormat`
-  enum value from `src/domain/card.ts`, e.g. `EAN13`, `QR_CODE`)
+  enum value from `src/entities/barcode/domain/barcodeFormat.ts`, e.g. `EAN13`, `QR_CODE`)
 - No `EXPO_PUBLIC_E2E` in Maestro env headers -- it is a build-time flag only
 
 ## Parameterized Shared Flows

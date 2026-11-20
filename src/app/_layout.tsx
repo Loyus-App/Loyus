@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
-import { ActionSheetHost } from '@/ui/components/ActionSheetHost';
-import { modalOptions, sheetOptions } from '@/ui/navigation/stackOptions';
-import { ignore } from '@/ui/utils/ignore';
+import { ignore } from '@/shared/lib/ignore';
+import { ActionSheetHost } from '@/shared/ui/ActionSheetHost';
+import { modalOptions, sheetOptions } from '@/shared/ui/stackOptions';
 
-export { ErrorBoundary } from '@/ui/components/ErrorBoundary';
+export { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 export const unstable_settings = {
   anchor: '(tabs)',
