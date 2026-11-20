@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { ACCENT_NAMES, type AccentName, useSettingsStore } from '@/state/stores/settingsStore';
+import { SettingsSubscreen } from '@/ui/components/SettingsSubscreen';
 import { ListRow, ListSection } from '@/ui/primitives';
 import { ACCENT_LABELS, accentColor, setAccentPreference } from '@/ui/theme';
 
@@ -17,11 +18,7 @@ export default function AccentScreen(): React.JSX.Element {
   const accent = useSettingsStore((state) => state.accent);
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      contentInsetAdjustmentBehavior="automatic"
-    >
+    <SettingsSubscreen>
       <ListSection footer={t('settings.accentFooter')}>
         {ACCENT_NAMES.map((name) => (
           <ListRow
@@ -34,20 +31,11 @@ export default function AccentScreen(): React.JSX.Element {
           />
         ))}
       </ListSection>
-    </ScrollView>
+    </SettingsSubscreen>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  screen: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    padding: theme.space(4),
-    paddingBottom: rt.insets.bottom + theme.space(6),
-    gap: theme.space(6),
-  },
   swatch: (name: AccentName) => ({
     width: SWATCH_SIZE,
     height: SWATCH_SIZE,

@@ -8,42 +8,64 @@ appId: com.loyus.app
       id: "settings-screen"
     timeout: 15000
 - assertVisible:
-    id: "theme-system"
+    id: "identity-card"
 - assertVisible:
-    id: "theme-light"
+    text: ".*No backup yet"
 - assertVisible:
-    id: "theme-dark"
+    id: "export-cards-row"
+- assertVisible:
+    id: "restore-backup-row"
+- scrollUntilVisible:
+    element:
+      id: "max-brightness-switch"
+    direction: DOWN
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      text: "System"
+    direction: DOWN
+    centerElement: true
 - tapOn:
-    id: "theme-dark"
+    text: "Dark"
 - takeScreenshot: "05-settings-theme-dark"
 - tapOn:
-    id: "theme-light"
+    text: "Light"
 - takeScreenshot: "05-settings-theme-light"
 - tapOn:
-    id: "theme-system"
+    text: "System"
+- scrollUntilVisible:
+    element:
+      id: "language-row"
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: "language-row"
 - extendedWaitUntil:
     visible:
-      text: "Same as the phone"
+      text: "Same as the phone.*"
     timeout: 5000
 - assertVisible:
     text: "English"
 - assertVisible:
     text: "Français"
 - tapOn:
-    text: "Same as the phone"
+    text: "Same as the phone.*"
 - extendedWaitUntil:
     visible:
       id: "settings-screen"
     timeout: 5000
-- assertVisible:
-    id: "max-brightness-switch"
-- assertVisible:
-    id: "export-cards-row"
-- assertVisible:
-    id: "restore-backup-row"
-- assertVisible:
-    id: "privacy-policy-row"
+- scrollUntilVisible:
+    element:
+      id: "settings-version"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "about-row"
+- extendedWaitUntil:
+    visible:
+      id: "about-screen"
+    timeout: 5000
 - assertVisible:
     id: "about-version"
+- assertVisible:
+    id: "privacy-policy-row"

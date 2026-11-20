@@ -66,6 +66,10 @@ jobs:
         run: |
           xcrun simctl boot "$SIMULATOR" 2>/dev/null || true
           xcrun simctl bootstatus "$SIMULATOR" -b
+          xcrun simctl spawn "$SIMULATOR" defaults write com.apple.Preferences DidShowContinuousPathIntroduction -bool true
+          for key in KeyboardAutocorrection KeyboardPrediction KeyboardContinuousPathEnabled; do
+            xcrun simctl spawn "$SIMULATOR" defaults write com.apple.Preferences "$key" -bool false
+          done
 
       - name: Install Maestro
         run: |

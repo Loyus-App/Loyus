@@ -1,9 +1,7 @@
-import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { ROOT, run, withWorkDir } from './lib/tools.mjs';
 
-const ROOT = new URL('..', import.meta.url).pathname;
 const BRANDS_DIR = join(ROOT, 'assets/brands');
 const CATALOG_FILE = join(ROOT, 'src/domain/brandCatalog.ts');
 const LOGOS_FILE = join(ROOT, 'src/ui/brands/brandLogos.ts');
@@ -67,10 +65,6 @@ function logoTone(brand, svg, lightness) {
 }
 
 const VIEW_BOX_FULL = /viewBox\s*=\s*["']\s*([-\d.]+)[\s,]+([-\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i;
-
-function run(command, args) {
-  return execFileSync(command, args, { encoding: 'utf8' }).trim();
-}
 
 function viewBoxOf(svg) {
   const box = svg.match(VIEW_BOX_FULL);
@@ -161,33 +155,32 @@ const brands = manifest.brands
   .filter((brand) => !brand.outOfScope)
   .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
 
-const work = mkdtempSync(join(tmpdir(), 'loyus-brands-'));
 const catalog = [];
 const logos = [];
-for (const brand of brands) {
-  const file = brand.logo?.file;
-  const svgPath = file ? join(BRANDS_DIR, file) : '';
-  const usable = file && existsSync(svgPath) && !excludedSources.has(brand.logo?.source);
-  let logo;
-  if (usable) {
-    const svg = readFileSync(svgPath, 'utf8');
-    const { lightness, ...framing } = frame(svg, svgPath, work);
-    logo = { tone: logoTone(brand, svg, lightness), ...framing };
-    logos.push({ id: brand.id, file });
+withWorkDir('loyus-brands-', (work) => {
+  for (const brand of brands) {
+    const file = brand.logo?.file;
+    const svgPath = file ? join(BRANDS_DIR, file) : '';
+    const usable = file && existsSync(svgPath) && !excludedSources.has(brand.logo?.source);
+    let logo;
+    if (usable) {
+      const svg = readFileSync(svgPath, 'utf8');
+      const { lightness, ...framing } = frame(svg, svgPath, work);
+      logo = { tone: logoTone(brand, svg, lightness), ...framing };
+      logos.push({ id: brand.id, file });
+    }
+    catalog.push({
+      id: brand.id,
+      name: brand.name,
+      aliases: extraTerms(brand),
+      markets: brand.markets ?? [],
+      popularity: brand.popularity ?? 3,
+      wallets: brand.seenIn?.length ?? 0,
+      color: tileColor(brand.colors),
+      ...(logo ? { logo } : {}),
+    });
   }
-  catalog.push({
-    id: brand.id,
-    name: brand.name,
-    aliases: extraTerms(brand),
-    markets: brand.markets ?? [],
-    popularity: brand.popularity ?? 3,
-    wallets: brand.seenIn?.length ?? 0,
-    color: tileColor(brand.colors),
-    ...(logo ? { logo } : {}),
-  });
-}
-
-rmSync(work, { recursive: true, force: true });
+});
 mkdirSync(join(ROOT, 'src/ui/brands'), { recursive: true });
 writeFileSync(
   CATALOG_FILE,
@@ -203,6 +196,6 @@ writeFileSync(
   ].join('\n'),
 );
 
-run(join(ROOT, 'node_modules/.bin/biome'), ['format', '--write', CATALOG_FILE, LOGOS_FILE]);
+run(join(ROOT, 'node_modules/.bin/oxfmt'), [CATALOG_FILE, LOGOS_FILE]);
 
 console.log(`${catalog.length} brands, ${logos.length} logos`);

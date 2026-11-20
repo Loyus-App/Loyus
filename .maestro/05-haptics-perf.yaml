@@ -8,7 +8,7 @@ appId: com.loyus.app
       CARD_CODE: "1234567890128"
       CARD_FORMAT_LABEL: "EAN-13"
 - assertVisible:
-    text: "Perf Test"
+    text: "Perf Test.*"
 - tapOn:
     id: "card-grid-tile"
 - extendedWaitUntil:
@@ -29,8 +29,10 @@ appId: com.loyus.app
     timeout: 5000
 - longPressOn:
     id: "card-list-item"
+- assertVisible:
+    text: "Edit"
 - tapOn:
-    text: "Cancel"
+    point: "50%,8%"
 - tapOn:
     text: "Grid"
 - tapOn:

@@ -20,8 +20,8 @@ type TileCard = {
 
 type Props = {
   readonly card: TileCard;
-  readonly onPress?: () => void;
-  readonly onLongPress?: () => void;
+  readonly onPress?: (() => void) | undefined;
+  readonly onLongPress?: (() => void) | undefined;
   readonly accessibilityLabel?: string;
   readonly accessibilityHint?: string;
   readonly accessibilityActions?: AccessibilityActionInfo[] | undefined;

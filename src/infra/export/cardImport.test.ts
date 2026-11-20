@@ -24,7 +24,6 @@ jest.mock('expo-file-system', () => {
     }
   }
 
-  // biome-ignore lint/style/useNamingConvention: mirrors the expo-file-system exports
   return { File };
 });
 

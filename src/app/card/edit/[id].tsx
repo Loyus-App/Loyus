@@ -52,7 +52,6 @@ export default function EditCardScreen(): React.JSX.Element {
       <CardForm
         initialValues={initialOf(card)}
         editingId={card.id}
-        submitLabel={t('form.saveChanges')}
         onSubmit={(values) => {
           useCardStore.getState().updateCard(card.id, values);
           haptics.success();

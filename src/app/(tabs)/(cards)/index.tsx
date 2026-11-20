@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useShallow } from 'zustand/react/shallow';
-import { BarcodeFormat, type Card } from '@/domain/card';
+import { BarcodeFormat } from '@/domain/card';
 import { isE2E } from '@/infra/env';
 import { selectPinnedCards, selectUnpinnedCards } from '@/state/selectors';
 import { useCardStore } from '@/state/stores/cardStore';
@@ -16,7 +16,6 @@ import { useRememberShownOrder, useSessionOrder } from '@/ui/hooks/useSessionOrd
 import { IconButton, icons } from '@/ui/primitives';
 import { testId } from '@/ui/testIds';
 import { restoreBackup } from '@/ui/utils/backup';
-import { showCardActions } from '@/ui/utils/cardActions';
 
 const E2E_SEED_LABEL = 'E2E add test card';
 
@@ -26,10 +25,6 @@ function openScanner(): void {
 
 function openManualEntry(): void {
   router.push('/card/add');
-}
-
-function openCard(card: Card): void {
-  router.push(`/card/${card.id}`);
 }
 
 function addTestCard(): void {
@@ -66,13 +61,7 @@ export default function HomeScreen(): React.JSX.Element {
         {hasCards ? (
           <>
             <SortBar sortMode={sortMode} viewMode={viewMode} onViewModeChange={setCardViewMode} />
-            <CardSections
-              pinned={pinned}
-              others={others}
-              viewMode={viewMode}
-              onOpen={openCard}
-              onActions={showCardActions}
-            />
+            <CardSections pinned={pinned} others={others} viewMode={viewMode} />
           </>
         ) : (
           <WelcomeState onScan={openScanner} onManual={openManualEntry} onRestore={restoreBackup} />

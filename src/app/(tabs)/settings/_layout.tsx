@@ -15,6 +15,14 @@ export default function SettingsLayout(): React.JSX.Element {
         name="accent"
         options={{ title: t('settings.accent'), headerLargeTitle: false }}
       />
+      <Stack.Screen
+        name="app-icon"
+        options={{ title: t('settings.appIcon'), headerLargeTitle: false }}
+      />
+      <Stack.Screen
+        name="about"
+        options={{ title: t('settings.about'), headerLargeTitle: false }}
+      />
     </Stack>
   );
 }

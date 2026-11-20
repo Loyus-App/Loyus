@@ -10,6 +10,8 @@ import { i18n } from '@/infra/i18n';
 import { useCardStore } from '@/state/stores/cardStore';
 import type { SheetAction } from '@/state/stores/uiStore';
 import type { CardFormValues } from '@/ui/components/form/useCardForm';
+import type { IconName } from '@/ui/primitives/Icon';
+import { icons } from '@/ui/primitives/icons';
 import { showActionSheet } from './actionSheet';
 import { haptics } from './haptics';
 import { ignore } from './ignore';
@@ -18,6 +20,10 @@ export function saveNewCard(values: CardFormValues): void {
   useCardStore.getState().addCard(values);
   haptics.success();
   router.dismissTo('/');
+}
+
+export function openCard(card: Card): void {
+  router.push(`/card/${card.id}`);
 }
 
 export function editCard(card: Card): void {
@@ -58,19 +64,34 @@ export function confirmDeleteCard(card: Card, onDeleted?: () => void): void {
   );
 }
 
-type CardAction = SheetAction & { readonly name: 'pin' | 'edit' | 'share' | 'delete' };
+export type CardAction = SheetAction & {
+  readonly name: 'pin' | 'edit' | 'share' | 'delete';
+  readonly icon: IconName;
+};
 
-function cardActionList(card: Card): CardAction[] {
+export function cardActionList(card: Card): CardAction[] {
   return [
     {
       name: 'pin',
+      icon: card.isPinned ? icons.unpin : icons.pin,
       label: i18n.t(card.isPinned ? 'cardActions.unpin' : 'cardActions.pin'),
       run: () => togglePin(card),
     },
-    { name: 'edit', label: i18n.t('cardActions.edit'), run: () => editCard(card) },
-    { name: 'share', label: i18n.t('cardActions.share'), run: () => shareCard(card) },
+    {
+      name: 'edit',
+      icon: icons.edit,
+      label: i18n.t('cardActions.edit'),
+      run: () => editCard(card),
+    },
+    {
+      name: 'share',
+      icon: icons.share,
+      label: i18n.t('cardActions.share'),
+      run: () => shareCard(card),
+    },
     {
       name: 'delete',
+      icon: icons.trash,
       label: i18n.t('cardActions.delete'),
       run: () => confirmDeleteCard(card),
       destructive: true,

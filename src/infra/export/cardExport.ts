@@ -1,9 +1,10 @@
-import { File, Paths } from 'expo-file-system';
-import { shareAsync } from 'expo-sharing';
+import { Directory, File, Paths } from 'expo-file-system';
+import { Platform, Share } from 'react-native';
 import type { Card } from '../../domain/card';
 import { serializeCards } from '../../domain/serializer';
 import { deleteQuietly } from '../files';
-import { i18n } from '../i18n';
+
+const PICKER_CANCELLED = 'ERR_PICKER_CANCELLED';
 
 export function buildExportFileName(date: Date = new Date()): string {
   const y = date.getUTCFullYear();
@@ -12,18 +13,36 @@ export function buildExportFileName(date: Date = new Date()): string {
   return `loyus-cards-${y}-${m}-${d}.json`;
 }
 
-export async function exportCards(cards: readonly Card[]): Promise<void> {
-  const now = new Date();
-  const file = new File(Paths.cache, buildExportFileName(now));
+function isPickerCancelled(error: unknown): boolean {
+  return (error as { code?: unknown } | null)?.code === PICKER_CANCELLED;
+}
+
+async function saveToChosenFolder(name: string, json: string): Promise<boolean> {
+  let folder: Directory;
   try {
-    await file.write(serializeCards(cards, now));
-    await shareAsync(file.uri, {
-      mimeType: 'application/json',
-      dialogTitle: i18n.t('settings.exportDialogTitle'),
-      // biome-ignore lint/style/useNamingConvention: Apple UTI API requires this exact key name
-      UTI: 'public.json',
-    });
+    folder = await Directory.pickDirectoryAsync();
+  } catch (error) {
+    if (isPickerCancelled(error)) return false;
+    throw error;
+  }
+  await folder.createFile(name, 'application/json').write(json);
+  return true;
+}
+
+async function shareFromCache(name: string, json: string): Promise<boolean> {
+  const file = new File(Paths.cache, name);
+  try {
+    await file.write(json);
+    const result = await Share.share({ url: file.uri });
+    return result.action === Share.sharedAction;
   } finally {
     deleteQuietly(file);
   }
+}
+
+export function exportCards(cards: readonly Card[]): Promise<boolean> {
+  const now = new Date();
+  const name = buildExportFileName(now);
+  const json = serializeCards(cards, now);
+  return Platform.OS === 'android' ? saveToChosenFolder(name, json) : shareFromCache(name, json);
 }

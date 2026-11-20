@@ -8,7 +8,7 @@ appId: com.loyus.app
       CARD_CODE: "1234567890128"
       CARD_FORMAT_LABEL: "EAN-13"
 - assertVisible:
-    text: "Export Test Card"
+    text: "Export Test Card.*"
 - tapOn:
     text: "Settings"
 - extendedWaitUntil:

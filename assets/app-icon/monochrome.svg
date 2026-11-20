@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <rect id="card" x="190" y="170" width="480" height="690" rx="44"/>
+    <mask id="clear-of-middle-and-front" maskUnits="userSpaceOnUse" x="-512" y="-512" width="2048" height="2048">
+      <rect x="-512" y="-512" width="2048" height="2048" fill="#fff"/>
+      <use href="#card" transform="rotate(9 430 860)" fill="#000" stroke="#000" stroke-width="44"/>
+      <use href="#card" fill="#000" stroke="#000" stroke-width="44"/>
+      <rect x="-512" y="860" width="2048" height="1024" fill="#000"/>
+    </mask>
+    <mask id="clear-of-front" maskUnits="userSpaceOnUse" x="-512" y="-512" width="2048" height="2048">
+      <rect x="-512" y="-512" width="2048" height="2048" fill="#fff"/>
+      <use href="#card" fill="#000" stroke="#000" stroke-width="44"/>
+      <rect x="-512" y="860" width="2048" height="1024" fill="#000"/>
+    </mask>
+    <mask id="motif-cutout" maskUnits="userSpaceOnUse" x="-512" y="-512" width="2048" height="2048">
+      <rect x="-512" y="-512" width="2048" height="2048" fill="#fff"/>
+      <g fill="#000">
+        <rect x="250" y="240" width="16" height="150"/>
+        <rect x="276" y="240" width="8" height="150"/>
+        <rect x="294" y="240" width="8" height="150"/>
+        <rect x="312" y="240" width="22" height="150"/>
+        <rect x="344" y="240" width="8" height="150"/>
+        <rect x="362" y="240" width="14" height="150"/>
+        <rect x="386" y="240" width="8" height="150"/>
+        <rect x="404" y="240" width="24" height="150"/>
+        <rect x="438" y="240" width="8" height="150"/>
+        <rect x="456" y="240" width="8" height="150"/>
+        <rect x="474" y="240" width="16" height="150"/>
+        <rect x="500" y="240" width="8" height="150"/>
+        <rect x="518" y="240" width="20" height="150"/>
+        <rect x="548" y="240" width="8" height="150"/>
+        <rect x="566" y="240" width="14" height="150"/>
+        <rect x="250" y="710" width="170" height="26" rx="13"/>
+        <rect x="250" y="754" width="110" height="26" rx="13"/>
+        <path d="M560 797.6C524 770 506 749.6 506 728C506 710 520.4 698 536 698C548 698 556.4 705.2 560 713.6C563.6 705.2 572 698 584 698C599.6 698 614 710 614 728C614 749.6 596 770 560 797.6Z"/>
+      </g>
+    </mask>
+  </defs>
+  <g id="cards" fill="#fff">
+    <g mask="url(#clear-of-middle-and-front)">
+      <use href="#card" transform="rotate(18 430 860)" opacity="0.4"/>
+    </g>
+    <g mask="url(#clear-of-front)">
+      <use href="#card" transform="rotate(9 430 860)" opacity="0.7"/>
+    </g>
+    <g mask="url(#motif-cutout)">
+      <use href="#card"/>
+    </g>
+  </g>
+</svg>
