@@ -10,7 +10,7 @@ permissions:
 jobs:
   validate:
     name: Validate conventional commit title
-    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || 'loyus-arc' }}
+    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'loyus-arc' || 'ubuntu-latest' }}
     steps:
       - name: Check conventional-commit title
         env:
