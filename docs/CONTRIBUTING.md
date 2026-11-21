@@ -71,7 +71,7 @@ Only one GitHub secret, in **Settings → Secrets and variables → Actions**:
 
 | Secret       | How to get it |
 |--------------|---------------|
-| `EXPO_TOKEN` | Token of the `loyus-github-actions` robot (Developer role): https://expo.dev/accounts/<owner>/settings/access-tokens |
+| `EXPO_TOKEN` | Personal access token of the account owner, named "Loyus GitHub Actions": https://expo.dev/accounts/<owner>/settings/access-tokens. Robot tokens cannot bump the remote build number on a personal account |
 
 Store credentials live on EAS (`eas credentials`), not in GitHub:
 
